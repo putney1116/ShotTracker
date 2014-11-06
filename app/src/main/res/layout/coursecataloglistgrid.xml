@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+        <TextView android:id="@+id/coursecatalogitem1"
+        	android:layout_height="wrap_content"
+        	android:layout_width="wrap_content"
+        	android:width="175dip"
+        	android:textColor="#000000"
+        	android:gravity="center"
+        />
+        <TextView android:id="@+id/coursecatalogitem2"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"
+	        android:width="75dip"
+	        android:textColor="#000000"
+	        android:gravity="center"
+	    />
+</LinearLayout>

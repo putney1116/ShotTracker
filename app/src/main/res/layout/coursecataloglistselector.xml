@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:id="@+id/coursecatalogselectorpage"
+android:orientation="vertical"
+android:background="@drawable/golfgreen"    		
+>
+	<RelativeLayout android:id="@+id/coursecatalogborderbox"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="30dp"
+    android:layout_centerInParent="true"
+    android:background="#35697B"
+    >
+    	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:id="@+id/coursecataloglistbox"
+		android:background="#FFFFFF"   
+		android:layout_margin="10dp"
+    	android:layout_centerInParent="true" 		
+		>
+			<LinearLayout android:id="@+id/coursecatalogheader"
+			android:background="#ff347c12"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			>
+				<TextView android:id="@+id/coursecatalogheaderitem1"
+				android:layout_height="fill_parent"
+				android:layout_width="wrap_content"
+				android:text="Course"
+				android:width="175dip"
+				android:textStyle="bold"
+				android:gravity="center"
+				/>
+				<TextView android:id="@+id/coursecatalogheaderitem2"
+				android:layout_height="fill_parent"
+				android:layout_width="wrap_content"
+				android:text="Par"
+				android:width="75dip"
+				android:textStyle="bold"
+				android:gravity="center"
+				/>
+			</LinearLayout>
+			
+			<View android:layout_width="fill_parent"
+			android:layout_height="1dip"
+			android:background="#000000" 
+			android:id="@+id/coursecatalogdivider"
+			android:layout_below="@+id/coursecatalogheader"
+			/>
+			
+			<ListView android:id="@android:id/list"
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent"   
+			android:layout_below="@+id/coursecatalogdivider"
+			>
+			</ListView>
+		</RelativeLayout>
+	</RelativeLayout>	
+</RelativeLayout>

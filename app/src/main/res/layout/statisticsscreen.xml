@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:id="@+id/statisticsscreenpage"
+android:orientation="vertical"
+android:background="@drawable/golfgreen"    		
+>	
+	<Spinner android:id="@+id/StatsSpinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="0dp"
+	android:layout_marginTop="10dp"
+	android:layout_marginRight="10dp"
+	android:layout_marginLeft="10dp"
+    />
+	
+	<Spinner android:id="@+id/CourseSpinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="0dp"
+	android:layout_marginTop="10dp"
+	android:layout_marginRight="10dp"
+	android:layout_marginLeft="10dp"
+	android:layout_below="@id/StatsSpinner"
+	android:visibility="gone"
+    />
+	
+	<Spinner android:id="@+id/PlayerSpinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="0dp"
+	android:layout_marginTop="10dp"
+	android:layout_marginRight="10dp"
+	android:layout_marginLeft="10dp"
+	android:layout_below="@id/StatsSpinner"
+	android:visibility="gone"
+    />
+	
+   	<RelativeLayout
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:id="@+id/statisticslistbox"
+	android:background="#FFFFFF"
+	android:layout_centerInParent="true"
+    android:layout_below="@id/CourseSpinner"
+    android:layout_margin="10dp"	
+	>
+		<ListView android:id="@android:id/list"
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent"   
+		
+		android:clickable="false"
+		android:scrollingCache="false"
+		/>
+		<TextView android:id="@+id/defaultColor"
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="gone"/>
+	</RelativeLayout>	
+</LinearLayout>
+

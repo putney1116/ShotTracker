@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+android:orientation="vertical"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:padding="0dp"
+android:background="@drawable/golfgreen"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+    <fragment
+    android:id="@+id/pastmaptab"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    class="com.google.android.gms.maps.MapFragment" />
+    <Spinner 
+    android:id="@+id/pastmapspinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="0dp"
+	android:layout_marginTop="10dp"
+	android:layout_marginRight="10dp"
+	android:layout_marginLeft="10dp"
+    />
+</RelativeLayout>

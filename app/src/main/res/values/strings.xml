@@ -1,0 +1,5 @@
+<resources>
+    <string name="hello">Hello World, ShotTracker!</string>
+    <string name="app_name">ShotTracker</string>
+    <string name="MapKey">AIzaSyAoyH7TKJ3-_vy3o8rMPX0G5BloJr2Ev6Y</string>
+</resources>
