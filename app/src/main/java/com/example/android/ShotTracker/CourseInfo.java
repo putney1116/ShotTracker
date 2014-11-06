@@ -47,7 +47,7 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 	
 	double lat[] = new double[2];
 	double lng[] = new double[2];
-    //Testing this commit
+    //Hey Douche
 	
 	private Location greenLocation = new Location("");
 	private Location playerLocation = new Location("");
