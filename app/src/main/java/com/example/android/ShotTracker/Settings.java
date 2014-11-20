@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class Settings extends Activity{
-
+//hello
 	private AlertDialog.Builder builder;
 
 	/** Called when the activity is first created. */
