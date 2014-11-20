@@ -1,5 +1,7 @@
 package com.example.android.ShotTracker;
 
+// D. McGlinchey - First comment!!
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
