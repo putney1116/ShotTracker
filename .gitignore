@@ -3,3 +3,8 @@ local.properties
 
 .gradle/*
 .idea/*
+
+app/app.iml
+
+app/build/*
+build/*
