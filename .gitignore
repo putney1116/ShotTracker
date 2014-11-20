@@ -5,6 +5,8 @@ local.properties
 .idea/*
 
 app/app.iml
+ShotTracker.iml
 
 app/build/*
 build/*
+
