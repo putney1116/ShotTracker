@@ -1,2 +1,5 @@
 #ignore path-dependent file
 local.properties
+
+.gradle/*
+.idea/*
