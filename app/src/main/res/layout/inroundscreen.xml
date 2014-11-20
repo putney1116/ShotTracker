@@ -25,7 +25,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     		android:orientation="vertical"
     		android:background="@drawable/greenandsky"
     		>
-    			
+
 				<Button android:id="@+id/finishbutton"
     			android:layout_width="wrap_content"
     			android:layout_height="wrap_content"
@@ -173,10 +173,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			android:background="@drawable/golfgreen"
 			>
 				<fragment
+                xmlns:android="http://schemas.android.com/apk/res/android"
         		android:id="@+id/maptab2"
         		android:layout_width="match_parent"
         		android:layout_height="match_parent"
-        		class="com.google.android.gms.maps.MapFragment" />
+                android:name="com.google.android.gms.maps.MapFragment"/>
 			</RelativeLayout>
 			<RelativeLayout
 			android:orientation="horizontal"
