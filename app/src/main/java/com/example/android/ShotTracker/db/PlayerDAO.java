@@ -89,4 +89,17 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return players;
     }
 
+    /**
+     * For testing, add a set of default players.
+     */
+    public void loadPlayers() {
+        List<Player> players = new ArrayList<Player>();
+        players.add(new Player("Eric Putney"));
+        players.add(new Player("Erik Jensen"));
+        players.add(new Player("Darren"));
+        players.add(new Player("Justin"));
+
+        for (Player player : players) save(player);
+    }
+
 }

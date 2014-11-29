@@ -123,9 +123,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
         clubs.add(new Club("PW"));
         clubs.add(new Club("SW"));
 
-        for (Club club : clubs) {
-            save(club);
-        }
+        for (Club club : clubs) save(club);
 
     }
 }
