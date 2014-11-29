@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.SQLException;
 
 /**
- * Database Access Object class.
+ * Generic Database Access Object class.
  * Implementes CRUD methods for database tables.
  */
 public class ShotTrackerDBDAO {
