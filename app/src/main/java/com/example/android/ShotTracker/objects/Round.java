@@ -42,8 +42,8 @@ public class Round {
         this.mDate = date;
     }
 
-    /** Getters
-     *
+    /**
+     * Getters
      */
     public int getID() {
         return this.mID;
