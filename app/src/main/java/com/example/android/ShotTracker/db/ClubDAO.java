@@ -105,4 +105,27 @@ public class ClubDAO extends ShotTrackerDBDAO {
         return clubs;
     }
 
+    /**
+     * For testing, add a set of clubs to the DB
+     */
+    public void loadClubs() {
+        List<Club> clubs = new ArrayList<Club>();
+        clubs.add(new Club("Driver"));
+        clubs.add(new Club("3 Wood"));
+        clubs.add(new Club("5 Wood"));
+        clubs.add(new Club("3 Iron"));
+        clubs.add(new Club("4 Iron"));
+        clubs.add(new Club("5 Iron"));
+        clubs.add(new Club("6 Iron"));
+        clubs.add(new Club("7 Iron"));
+        clubs.add(new Club("8 Iron"));
+        clubs.add(new Club("9 Iron"));
+        clubs.add(new Club("PW"));
+        clubs.add(new Club("SW"));
+
+        for (Club club : clubs) {
+            save(club);
+        }
+
+    }
 }
