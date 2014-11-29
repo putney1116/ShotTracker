@@ -1,12 +1,13 @@
-/**
- * Created by damcglinchey on 11/28/14.
- */
-package com.example.android.ShotTracker;
+package com.example.android.ShotTracker.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Data base helper class to get db object and create/update tables
+ * if necessary.
+ */
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "shottracker.db";
