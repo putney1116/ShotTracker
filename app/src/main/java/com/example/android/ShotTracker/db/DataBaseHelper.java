@@ -47,8 +47,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COURSEHOLEID_COLUMN = "CourseHoleID";
     public static final String COURSEHOLENUMBER_COLUMN = "CourseHoleNumber";
     public static final String PAR_COLUMN = "Par";
+    public static final String WOMENPAR_COLUMN = "WomenPar";
     public static final String MENHANDICAP_COLUMN = "MenHandicap";
     public static final String WOMENHANDICAP_COLUMN = "WomenHandicap";
+    public static final String BLUEYARD_COLUMN = "BlueTeeYards";
+    public static final String WHITEYARD_COLUMN = "WhiteTeeYards";
+    public static final String REDYARD_COLUMN = "RedTeeYards";
 
     public static final String COURSEHOLEINFOID_COLUMN = "CourseHoleInfoID";
     public static final String INFO_COLUMN = "Info";
@@ -117,8 +121,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SUBCOURSEID_COLUMN + " INTEGER NOT NULL, "
             + COURSEHOLENUMBER_COLUMN + " INT NOT NULL, "
             + PAR_COLUMN + " INT NOT NULL, "
-            + MENHANDICAP_COLUMN + " NUMERIC, "
-            + WOMENHANDICAP_COLUMN + " NUMERIC"
+            + WOMENPAR_COLUMN + " INT, "
+            + MENHANDICAP_COLUMN + " INT, "
+            + WOMENHANDICAP_COLUMN + " INT, "
+            + BLUEYARD_COLUMN + " NUMERIC, "
+            + WHITEYARD_COLUMN + " NUMERIC, "
+            + REDYARD_COLUMN + " NUMERIC"
             + ");";
 
     private static final String CREATE_COURSEHOLEINFO_TABLE = " CREATE TABLE "
