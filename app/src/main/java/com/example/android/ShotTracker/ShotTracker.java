@@ -147,7 +147,27 @@ public class ShotTracker extends Activity{
 				}
 			}
     	});
-    	
+
+        //Initializes the button that calls the activity to test the database
+        Button dbButton = (Button)findViewById(R.id.dbButton);
+
+        dbButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Sets the vibrate time
+                vibe.vibrate(15);
+
+                try{
+                    Intent myIntent = new Intent(v.getContext(), TestDatabase.class);
+                    startActivity(myIntent);
+
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     	//Initializes the button that exits the application
     	Button exitButton = (Button)findViewById(R.id.exitButton);
     	
