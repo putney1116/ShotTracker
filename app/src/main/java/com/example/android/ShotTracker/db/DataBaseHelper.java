@@ -126,9 +126,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + WOMENPAR_COLUMN + " INT, "
             + MENHANDICAP_COLUMN + " INT, "
             + WOMENHANDICAP_COLUMN + " INT, "
-            + BLUEYARD_COLUMN + " NUMERIC, "
-            + WHITEYARD_COLUMN + " NUMERIC, "
-            + REDYARD_COLUMN + " NUMERIC"
+            + BLUEYARD_COLUMN + " INT, "
+            + WHITEYARD_COLUMN + " INT, "
+            + REDYARD_COLUMN + " INT"
             + ");";
 
     private static final String CREATE_COURSEHOLEINFO_TABLE = " CREATE TABLE "

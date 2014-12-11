@@ -9,8 +9,12 @@ public class CourseHole {
     private int mSubCourseID;
     private int mHoleNum;
     private int mPar;
-    private float mMenHandicap;
-    private float mWomenHandicap;
+    private int mWPar;
+    private int mMenHandicap;
+    private int mWomenHandicap;
+    private int mBlueYardage;
+    private int mWhiteYardage;
+    private int mRedYardage;
 
     ///\todo add list of CourseHoleInfo objects
 
@@ -19,14 +23,20 @@ public class CourseHole {
      */
     public CourseHole() {}
 
-    public CourseHole(int id, int cid, int hnum, int par, float mhandicap, float whandicap)
+    public CourseHole(int id, int cid, int hnum, int par, int wpar,
+                      int mhandicap, int whandicap, int blueyardage,
+                      int whiteyardage, int redyardage)
     {
         this.mID = id;
         this.mSubCourseID = cid;
         this.mHoleNum = hnum;
         this.mPar = par;
+        this.mWPar = wpar;
         this.mMenHandicap = mhandicap;
         this.mWomenHandicap = whandicap;
+        this.mBlueYardage = blueyardage;
+        this.mWhiteYardage = whiteyardage;
+        this.mRedYardage = redyardage;
     }
 
     public CourseHole(int cid, int hnum, int par)
@@ -55,12 +65,28 @@ public class CourseHole {
         this.mPar = par;
     }
 
+    public void setWPar(int wpar){
+        this.mWPar = wpar;
+    }
+
     public void setMenHandicap(int mhandicap) {
         this.mMenHandicap = mhandicap;
     }
 
     public void setWomenHandicap(int whandicap) {
         this.mWomenHandicap = whandicap;
+    }
+
+    public void setBlueYardage(int blueyardage) {
+        this.mBlueYardage = blueyardage;
+    }
+
+    public void setWhiteYardage(int whiteyardage) {
+        this.mWhiteYardage = whiteyardage;
+    }
+
+    public void setRedYardage(int redyardage) {
+        this.mRedYardage = redyardage;
     }
 
     /**
@@ -82,11 +108,27 @@ public class CourseHole {
         return this.mPar;
     }
 
-    public float getMenHandicap() {
+    public int getWPar() {
+        return this.mWPar;
+    }
+
+    public int getMenHandicap() {
         return this.mMenHandicap;
     }
 
-    public float getWomenHandicap() {
+    public int getWomenHandicap() {
         return this.mWomenHandicap;
+    }
+
+    public int getBlueYardage() {
+        return this.mBlueYardage;
+    }
+
+    public int getWhiteYardage() {
+        return this.mWhiteYardage;
+    }
+
+    public int getRedYardage() {
+        return this.mRedYardage;
     }
 }
