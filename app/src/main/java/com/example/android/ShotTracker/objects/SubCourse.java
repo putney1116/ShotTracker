@@ -8,16 +8,24 @@ public class SubCourse {
     private int mID;
     private int mCourseID;
     private String mName;
+    private float mRating;
 
     /**
      * Constructors
      */
     public SubCourse() {}
 
-    public SubCourse(int id, int courseid, String name) {
+    public SubCourse(int id, int courseid, String name, float rating) {
         this.mID = id;
         this.mCourseID = courseid;
         this.mName = name;
+        this.mRating = rating;
+    }
+
+    public SubCourse(int courseid, String name, float rating) {
+        this.mCourseID = courseid;
+        this.mName = name;
+        this.mRating = rating;
     }
 
     public SubCourse(int courseid, String name) {
@@ -40,6 +48,8 @@ public class SubCourse {
         this.mName = name;
     }
 
+    public void setRating(float rating) { this.mRating = rating; }
+
     /**
      * Getters
      */
@@ -54,4 +64,6 @@ public class SubCourse {
     public String getName() {
         return this.mName;
     }
+
+    public float getRating() { return this.mRating; }
 }

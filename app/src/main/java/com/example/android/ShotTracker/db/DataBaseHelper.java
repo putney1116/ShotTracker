@@ -43,6 +43,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String SUBCOURSEID_COLUMN = "SubCourseID";
     public static final String SUBCOURSENAME_COLUMN = "SubCourseName";
+    public static final String SUBCOURSERATING_COLUMN = "SubCourseRating";
 
     public static final String COURSEHOLEID_COLUMN = "CourseHoleID";
     public static final String COURSEHOLENUMBER_COLUMN = "CourseHoleNumber";
@@ -112,7 +113,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SUBCOURSE_TABLE + "("
             + SUBCOURSEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COURSEID_COLUMN + " INTEGER NOT NULL, "
-            + SUBCOURSENAME_COLUMN + " TEXT NOT NULL"
+            + SUBCOURSENAME_COLUMN + " TEXT NOT NULL, "
+            + SUBCOURSERATING_COLUMN + " NUMERIC"
             + ");";
 
     private static final String CREATE_COURSEHOLE_TABLE = "CREATE TABLE "
