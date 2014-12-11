@@ -9,6 +9,8 @@ public class Course {
     private String mName;
     private String mLocation;
 
+    //\todo Add private member for list of SubCourse objects and setters, getters, constructors
+
     /**
      * Constructors
      */

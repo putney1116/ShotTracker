@@ -10,6 +10,8 @@ public class SubCourse {
     private String mName;
     private float mRating;
 
+    //\todo Add private member for list of CourseHole objects and setters, getters, constructors
+
     /**
      * Constructors
      */

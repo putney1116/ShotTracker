@@ -23,11 +23,11 @@ public class PlayerDAO extends ShotTrackerDBDAO {
     }
 
     /**
-     * Save Player to the database
+     * Insert Player to the database
      * @param player Player object to insert into DB
      * @return
      */
-    public long save(Player player) {
+    public long create(Player player) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
         ///\todo Test if player handicap exists before inserting.
@@ -68,7 +68,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
      * Get a list of all Players in the DB
      * @return
      */
-    public List<Player> getPlayers() {
+    public List<Player> readPlayers() {
         List<Player> players = new ArrayList<Player>();
 
         ///\todo Check nulls
@@ -89,6 +89,8 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return players;
     }
 
+    //\todo Add function that fetches a player by ID
+
     /**
      * For testing, add a set of default players.
      */
@@ -99,7 +101,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         players.add(new Player("Darren"));
         players.add(new Player("Justin"));
 
-        for (Player player : players) save(player);
+        for (Player player : players) create(player);
     }
 
 }

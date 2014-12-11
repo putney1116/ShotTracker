@@ -16,7 +16,7 @@ public class CourseHole {
     private int mWhiteYardage;
     private int mRedYardage;
 
-    ///\todo add list of CourseHoleInfo objects
+    //\todo Add private member for list of CourseHoleInfo objects and setters, getters, constructors
 
     /**
      * Constructors

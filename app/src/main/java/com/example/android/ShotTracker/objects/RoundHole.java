@@ -14,6 +14,8 @@ public class RoundHole {
     private int mPenalties;
     private int mFairways;
 
+    //\todo Add private member for list of Shot objects and setters, getters, constructors
+
     /**
      * Constructors
      */

@@ -28,7 +28,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
      * @param club Club to be added to DB
      * @return
      */
-    public long save(Club club) {
+    public long create(Club club) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.CLUBNAME_COLUMN, club.getClub());
 
@@ -42,7 +42,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
      *
      * @return List of Club objects
      */
-    public List<Club> getClubs() {
+    public List<Club> readClubs() {
         List<Club> clubs = new ArrayList<Club>();
 
         Cursor cursor = database.query(DataBaseHelper.CLUB_TABLE,
@@ -60,15 +60,17 @@ public class ClubDAO extends ShotTrackerDBDAO {
         return clubs;
     }
 
+    //\todo Add function that fetches a club by ID
+
     /**
      * Add a Club to a Players bag using PlayerID.
-     * \todo Could use Player object instead of playerID, think about it
+     * \todo use Player object instead of playerID
      *
      * @param playerID Player ID Club will be associated with
      * @param club Club to be added to players bag
      * @return
      */
-    public long addClubToBag(int playerID, Club club) {
+    public long createClubToBag(int playerID, Club club) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.PLAYERID_COLUMN, playerID);
         values.put(DataBaseHelper.CLUBID_COLUMN, club.getID());
@@ -76,7 +78,14 @@ public class ClubDAO extends ShotTrackerDBDAO {
         return database.insert(DataBaseHelper.BAG_TABLE, null, values);
     }
 
-    public List<Club> getClubsInBag(int playerID) {
+
+    /**
+     * \todo use player object instead of playerID
+     *
+     * @param playerID
+     * @return
+     */
+    public List<Club> readClubsInBag(int playerID) {
         List<Club> clubs = new ArrayList<Club>();
 
         /// Build multi-table query using NATURAL JOIN
@@ -123,7 +132,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
         clubs.add(new Club("PW"));
         clubs.add(new Club("SW"));
 
-        for (Club club : clubs) save(club);
+        for (Club club : clubs) create(club);
 
     }
 }

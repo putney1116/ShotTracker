@@ -11,6 +11,8 @@ public class Round {
     private int mSubCourseID;
     private Date mDate;
 
+    //\todo Add private member for list of RoundHole objects and setters, getters, constructors
+
     /**
      * Constructors
      */

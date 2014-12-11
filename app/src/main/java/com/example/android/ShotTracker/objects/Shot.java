@@ -17,6 +17,8 @@ public class Shot {
     private float mShotEndLat;
     private float mShotEndLong;
 
+    //\todo Add private member for list of ShotTypes objects and setters, getters, constructors
+
     /**
      * Default Constructor
      */

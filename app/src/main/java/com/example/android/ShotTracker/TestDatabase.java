@@ -40,7 +40,7 @@ public class TestDatabase extends Activity {
 
         pd.loadPlayers();
 
-        List<Player> players = pd.getPlayers();
+        List<Player> players = pd.readPlayers();
 
         Log.e(TAG, "Number of Players = " + players.size());
 
