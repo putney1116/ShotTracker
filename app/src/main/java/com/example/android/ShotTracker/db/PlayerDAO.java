@@ -31,7 +31,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
         ///\todo Test if player handicap exists before inserting.
-        values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
+//        values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
 
         return database.insert(DataBaseHelper.PLAYER_TABLE, null, values);
     }
