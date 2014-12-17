@@ -5,8 +5,8 @@ package com.example.android.ShotTracker.objects;
  */
 public class ShotType {
 
-    private int mID;
-    private String mType;
+    private int mID = -1;
+    private String mType = "";
 
     /**
      * Default Constructor

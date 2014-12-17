@@ -5,27 +5,29 @@ package com.example.android.ShotTracker.objects;
  */
 public class CourseHoleInfo {
 
-    private int mID;
-    private int mCourseHoleID;
-    private String mInfo;
-    private float mLat;
-    private float mLong;
+    private int mID = -1;
+    private CourseHole mCourseHole;
+    private String mInfo = "";
+    private float mLat = -1;
+    private float mLong = -1;
 
     /**
      * Constructors
      */
     public CourseHoleInfo () {}
 
-    public CourseHoleInfo(int id, int hid, String info, float latitude, float longitude) {
+    public CourseHoleInfo(int id, CourseHole coursehole, String info,
+                          float latitude, float longitude) {
         this.mID = id;
-        this.mCourseHoleID = hid;
+        this.mCourseHole = coursehole;
         this.mInfo = info;
         this.mLat = latitude;
         this.mLong = longitude;
     }
 
-    public CourseHoleInfo(int hid, String info, float latitude, float longitude) {
-        this.mCourseHoleID = hid;
+    public CourseHoleInfo(CourseHole coursehole, String info,
+                          float latitude, float longitude) {
+        this.mCourseHole = coursehole;
         this.mInfo = info;
         this.mLat = latitude;
         this.mLong = longitude;
@@ -38,8 +40,8 @@ public class CourseHoleInfo {
         this.mID = id;
     }
 
-    public void setCourseHoleID(int id) {
-        this.mCourseHoleID = id;
+    public void setCourseHoleID(CourseHole coursehole) {
+        this.mCourseHole.setID(coursehole.getID());
     }
 
     public void setInfo(String info) {
@@ -67,7 +69,7 @@ public class CourseHoleInfo {
     }
 
     public int getCourseHoleID() {
-        return this.mCourseHoleID;
+        return this.mCourseHole.getID();
     }
 
     public String getInfo() {

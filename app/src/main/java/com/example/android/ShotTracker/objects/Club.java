@@ -5,8 +5,8 @@ package com.example.android.ShotTracker.objects;
  */
 public class Club {
 
-    private int mID;
-    private String mClub;
+    private int mID = -1;
+    private String mClub = "";
 
     /**
      * Default Constructor

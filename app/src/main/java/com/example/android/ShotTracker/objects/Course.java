@@ -5,9 +5,9 @@ package com.example.android.ShotTracker.objects;
  */
 public class Course {
 
-    private int mID;
-    private String mName;
-    private String mLocation;
+    private int mID = -1;
+    private String mName = "";
+    private String mLocation = "";
 
     //\todo Add private member for list of SubCourse objects and setters, getters, constructors
 
