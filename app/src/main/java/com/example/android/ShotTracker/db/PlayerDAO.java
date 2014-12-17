@@ -2,6 +2,7 @@ package com.example.android.ShotTracker.db;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.Throwable;
 
 import com.example.android.ShotTracker.objects.Player;
 
@@ -29,23 +30,31 @@ public class PlayerDAO extends ShotTrackerDBDAO {
      */
     public long create(Player player) {
         ContentValues values = new ContentValues();
+
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
-        ///\todo Test if player handicap exists before inserting.
-//        values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
+
+        if (player.getHandicap() > 0)
+            values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
 
         return database.insert(DataBaseHelper.PLAYER_TABLE, null, values);
     }
 
     /**
      * Update Player information
-     * @param player Player information to be updated
+     * @param player Player information to be updated. Player ID must be set.
      * @return
      */
     public long update(Player player) {
         ContentValues values = new ContentValues();
+
+        // check that playerID is set, otherwise we can't update
+        if (player.getID() < 0)
+            throw new RuntimeException("player ID not set in PlayerDAO.update()");
+
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
-        ///\todo Test if player handicap exists before inserting.
-        values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
+
+        if (player.getHandicap() > 0)
+            values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
 
         long result = database.update(DataBaseHelper.PLAYER_TABLE, values,
                 WHERE_ID_EQUALS,
@@ -60,6 +69,10 @@ public class PlayerDAO extends ShotTrackerDBDAO {
      * @return
      */
     public int deletePlayer(Player player) {
+        // check that playerID is set, otherwise we can't delete
+        if (player.getID() < 0)
+            throw new RuntimeException("player ID not set in PlayerDAO.delete()");
+
         return database.delete(DataBaseHelper.PLAYER_TABLE,
                 WHERE_ID_EQUALS, new String[] { player.getID() + ""});
     }
@@ -68,7 +81,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
      * Get a list of all Players in the DB
      * @return
      */
-    public List<Player> readPlayers() {
+    public List<Player> readListofPlayers() {
         List<Player> players = new ArrayList<Player>();
 
         ///\todo Check nulls
@@ -90,18 +103,5 @@ public class PlayerDAO extends ShotTrackerDBDAO {
     }
 
     //\todo Add function that fetches a player by ID
-
-    /**
-     * For testing, add a set of default players.
-     */
-    public void loadPlayers() {
-        List<Player> players = new ArrayList<Player>();
-        players.add(new Player("Eric Putney"));
-        players.add(new Player("Erik Jensen"));
-        players.add(new Player("Darren"));
-        players.add(new Player("Justin"));
-
-        for (Player player : players) create(player);
-    }
 
 }
