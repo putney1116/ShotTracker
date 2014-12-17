@@ -16,11 +16,14 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.DataBaseHelper;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.ClubDAO;
 import com.example.android.ShotTracker.objects.Club;
+import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.SubCourse;
 
 /**
  * Activity for testing the database
@@ -34,7 +37,8 @@ public class TestDatabase extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings);
+        setContentView(R.layout.testdatabase);
+//        setContentView(R.layout.homescreen);
 
         //db = new DatabaseHelper(getApplicationContext());
 
@@ -43,10 +47,14 @@ public class TestDatabase extends Activity {
         // load stuff into the DB
         loadPlayers();
         loadClubs();
+        loadCourses();
+
+        // make DAO objects
+        PlayerDAO pd = new PlayerDAO(getApplicationContext());
+        ClubDAO cd = new ClubDAO(getApplicationContext());
+        CourseDAO courseDAO = new CourseDAO(getApplicationContext());
 
         // Get all the players
-        PlayerDAO pd = new PlayerDAO(getApplicationContext());
-
         List<Player> players = pd.readListofPlayers();
 
         Log.e(TAG, "Number of Players = " + players.size());
@@ -56,8 +64,6 @@ public class TestDatabase extends Activity {
         }
 
         // Get all the clubs
-        ClubDAO cd = new ClubDAO(getApplicationContext());
-
         List<Club> clubs = cd.readListofClubs();
 
         Log.e(TAG, "Number of Clubs = " + clubs.size());
@@ -81,6 +87,25 @@ public class TestDatabase extends Activity {
         for (Club club : clubsInBag) {
             Log.d(TAG, club.getClub() + " in " + p0.getName() + "'s bag");
         }
+
+        // Get all the courses
+        List<Course> courses = courseDAO.readListofCourses();
+
+        Log.d(TAG, "Number of Courses = " + courses.size());
+
+        for (Course course : courses) {
+            Log.d(TAG, course.getID() + ": " + course.getName() + " - " + course.getLocation());
+
+            // get subcourses
+            List<SubCourse> subCourses = courseDAO.readListofSubCourses(course);
+            Log.d(TAG, "  Number of SubCourses = " + subCourses.size());
+
+            for (SubCourse subCourse : subCourses) {
+                Log.d(TAG, "   " + subCourse.getID() + ": "
+                + subCourse.getName() + " - Rating = " + subCourse.getRating());
+            }
+        }
+
 
         Log.d(TAG, "Finish------");
     }
@@ -123,4 +148,26 @@ public class TestDatabase extends Activity {
 
     }
 
+    /**
+     * For testing, add a set of Courses and SubCourses to the DB
+     */
+    public void loadCourses() {
+        List<Course> courses = new ArrayList<Course>();
+        courses.add(new Course("Pine Valley Golf Club", "Clementon, New Jersey"));
+        courses.add(new Course("Cypress Point Gold Club", "Pebble Beach, California"));
+        courses.add(new Course("Pebble Beach Golf Links", "Pebble Beach, California"));
+
+        CourseDAO courseDAO = new CourseDAO(getApplicationContext());
+        for (Course course : courses) {
+            courseDAO.createCourse(course);
+
+            List<SubCourse> subCourses = new ArrayList<SubCourse>();
+            subCourses.add(new SubCourse(course.getID(),"Front 9",course.getID()+2));
+            subCourses.add(new SubCourse(course.getID(),"Back 9",course.getID()+3));
+
+            for (SubCourse subCourse : subCourses) {
+                courseDAO.createSubCourse(subCourse);
+            }
+        }
+    }
 }
