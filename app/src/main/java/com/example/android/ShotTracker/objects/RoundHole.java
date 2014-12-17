@@ -5,14 +5,14 @@ package com.example.android.ShotTracker.objects;
  */
 public class RoundHole {
 
-    private int mID;
-    private int mRoundID;
-    private int mCourseHoleID;
-    private int mPlayerID;
-    private int mScore;
-    private int mPutts;
-    private int mPenalties;
-    private int mFairways;
+    private int mID = -1;
+    private Round mRound;
+    private CourseHole mCourseHole;
+    private Player mPlayer;
+    private int mScore = -1;
+    private int mPutts = -1;
+    private int mPenalties = -1;
+    private int mFairways = -1;
 
     //\todo Add private member for list of Shot objects and setters, getters, constructors
 
@@ -21,23 +21,23 @@ public class RoundHole {
      */
     public RoundHole() {}
 
-    public RoundHole(int id, int rid, int hid, int pid,
+    public RoundHole(int id, Round round, CourseHole coursehole, Player player,
                      int score, int putts, int penalties, int fairways) {
         this.mID = id;
-        this.mRoundID = rid;
-        this.mCourseHoleID = hid;
-        this.mPlayerID = pid;
+        this.mRound = round;
+        this.mCourseHole = coursehole;
+        this.mPlayer = player;
         this.mScore = score;
         this.mPutts = putts;
         this.mPenalties = penalties;
         this.mFairways = fairways;
     }
 
-    public RoundHole(int rid, int hid, int pid,
+    public RoundHole(Round round, CourseHole coursehole, Player player,
                      int score, int putts, int penalties, int fairways) {
-        this.mRoundID = rid;
-        this.mCourseHoleID = hid;
-        this.mPlayerID = pid;
+        this.mRound = round;
+        this.mCourseHole = coursehole;
+        this.mPlayer = player;
         this.mScore = score;
         this.mPutts = putts;
         this.mPenalties = penalties;
@@ -51,16 +51,16 @@ public class RoundHole {
         this.mID = id;
     }
 
-    public void setRoundID(int id) {
-        this.mRoundID = id;
+    public void setRoundID(Round round) {
+        this.mRound.setID(round.getID());
     }
 
-    public void setCourseHoleID(int id) {
-        this.mCourseHoleID = id;
+    public void setCourseHoleID(CourseHole coursehole) {
+        this.mCourseHole.setID(coursehole.getID());
     }
 
-    public void setPlayerID(int id) {
-        this.mPlayerID = id;
+    public void setPlayerID(Player player) {
+        this.mPlayer.setID(player.getID());
     }
 
     public void setScore(int score) {
@@ -87,15 +87,15 @@ public class RoundHole {
     }
 
     public int getRoundID() {
-        return this.mRoundID;
+        return this.mRound.getID();
     }
 
     public int getCourseHoleID() {
-        return this.mCourseHoleID;
+        return this.mCourseHole.getID();
     }
 
     public int getPlayerID() {
-        return this.mPlayerID;
+        return this.mPlayer.getID();
     }
 
     public int getScore() {

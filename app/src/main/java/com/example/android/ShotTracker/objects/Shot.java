@@ -7,15 +7,15 @@ import java.util.Vector;
  */
 public class Shot {
 
-    private int mID;
-    private int mRoundHoleID;
-    private int mClubID;
-    private Vector<Integer> mShotTypeID;
-    private float mYards;
-    private float mShotStartLat;
-    private float mShotStartLong;
-    private float mShotEndLat;
-    private float mShotEndLong;
+    private int mID = -1;
+    private RoundHole mRoundHole;
+    private Club mClub;
+    private Vector<ShotType> mShotType;
+    private float mYards = -1;
+    private float mShotStartLat = -1;
+    private float mShotStartLong = -1;
+    private float mShotEndLat = -1;
+    private float mShotEndLong = -1;
 
     //\todo Add private member for list of ShotTypes objects and setters, getters, constructors
 
@@ -23,7 +23,34 @@ public class Shot {
      * Default Constructor
      */
     public Shot() {
-        mShotTypeID = new Vector<Integer>();
+        mShotType = new Vector<ShotType>();
+    }
+
+    public Shot(int id, RoundHole roundhole, Club club,
+                Vector<ShotType> shottype, float yds, float sslat,
+                float sslong, float selat, float selong){
+        this.mID = id;
+        this.mRoundHole = roundhole;
+        this.mClub = club;
+        this.mShotType = shottype;
+        this.mYards = yds;
+        this.mShotStartLat = sslat;
+        this.mShotStartLong = sslong;
+        this.mShotEndLat = selat;
+        this.mShotEndLong = selong;
+    }
+
+    public Shot(RoundHole roundhole, Club club,
+                Vector<ShotType> shottype, float yds, float sslat,
+                float sslong, float selat, float selong){
+        this.mRoundHole = roundhole;
+        this.mClub = club;
+        this.mShotType = shottype;
+        this.mYards = yds;
+        this.mShotStartLat = sslat;
+        this.mShotStartLong = sslong;
+        this.mShotEndLat = selat;
+        this.mShotEndLong = selong;
     }
 
     /**
@@ -33,12 +60,12 @@ public class Shot {
         this.mID = id;
     }
 
-    public void setRoundHoleID(int id) {
-        this.mRoundHoleID = id;
+    public void setRoundHoleID(RoundHole roundhole) {
+        this.mRoundHole.setID(roundhole.getID());
     }
 
-    public void setClubID(int id) {
-        this.mClubID = id;
+    public void setClubID(Club club) {
+        this.mClub.setID(club.getID());
     }
 
     public void setYards(float yards) {
@@ -71,8 +98,8 @@ public class Shot {
         this.mShotEndLong = longitude;
     }
 
-    public void addShotType(int id) {
-        this.mShotTypeID.addElement(new Integer(id));
+    public void addShotType(ShotType shottype) {
+        this.mShotType.addElement(shottype);
     }
     /**
      * Getters
@@ -82,15 +109,15 @@ public class Shot {
     }
 
     public int getRoundHoleID() {
-        return this.mRoundHoleID;
+        return this.mRoundHole.getID();
     }
 
     public int getClubID() {
-        return this.mClubID;
+        return this.mClub.getID();
     }
 
-    public Vector<Integer> getShotTypeIDs() {
-        return this.mShotTypeID;
+    public Vector<ShotType> getShotTypeIDs() {
+        return this.mShotType;
     }
 
     public float getYards() {

@@ -5,9 +5,9 @@ package com.example.android.ShotTracker.objects;
  */
 public class Player {
 
-    private int mID;
-    private String mName;
-    private int mHandicap;
+    private int mID = -1;
+    private String mName = "";
+    private int mHandicap = -1;
 
     /**
      * Default constructor

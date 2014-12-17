@@ -5,10 +5,10 @@ package com.example.android.ShotTracker.objects;
  */
 public class SubCourse {
 
-    private int mID;
-    private int mCourseID;
-    private String mName;
-    private float mRating;
+    private int mID = -1;
+    private Course mCourse;
+    private String mName = "";
+    private float mRating = -1;
 
     //\todo Add private member for list of CourseHole objects and setters, getters, constructors
 
@@ -17,21 +17,21 @@ public class SubCourse {
      */
     public SubCourse() {}
 
-    public SubCourse(int id, int courseid, String name, float rating) {
+    public SubCourse(int id, Course course, String name, float rating) {
         this.mID = id;
-        this.mCourseID = courseid;
+        this.mCourse = course;
         this.mName = name;
         this.mRating = rating;
     }
 
-    public SubCourse(int courseid, String name, float rating) {
-        this.mCourseID = courseid;
+    public SubCourse(Course course, String name, float rating) {
+        this.mCourse = course;
         this.mName = name;
         this.mRating = rating;
     }
 
-    public SubCourse(int courseid, String name) {
-        this.mCourseID = courseid;
+    public SubCourse(Course course, String name) {
+        this.mCourse = course;
         this.mName = name;
     }
 
@@ -42,8 +42,8 @@ public class SubCourse {
         this.mID = id;
     }
 
-    public void setCourseID(int id) {
-        this.mCourseID = id;
+    public void setCourseID(Course course) {
+        this.mCourse.setID(course.getID());
     }
 
     public void setName(String name) {
@@ -60,7 +60,7 @@ public class SubCourse {
     }
 
     public int getCourseID() {
-        return this.mCourseID;
+        return this.mCourse.getID();
     }
 
     public String getName() {

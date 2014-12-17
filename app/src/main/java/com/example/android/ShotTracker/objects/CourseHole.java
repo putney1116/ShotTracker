@@ -5,16 +5,16 @@ package com.example.android.ShotTracker.objects;
  */
 public class CourseHole {
 
-    private int mID;
-    private int mSubCourseID;
-    private int mHoleNum;
-    private int mPar;
-    private int mWPar;
-    private int mMenHandicap;
-    private int mWomenHandicap;
-    private int mBlueYardage;
-    private int mWhiteYardage;
-    private int mRedYardage;
+    private int mID = -1;
+    private SubCourse mSubCourse;
+    private int mHoleNum = -1;
+    private int mPar = -1;
+    private int mWPar = -1;
+    private int mMenHandicap = -1;
+    private int mWomenHandicap = -1;
+    private int mBlueYardage = -1;
+    private int mWhiteYardage = -1;
+    private int mRedYardage = -1;
 
     //\todo Add private member for list of CourseHoleInfo objects and setters, getters, constructors
 
@@ -23,12 +23,12 @@ public class CourseHole {
      */
     public CourseHole() {}
 
-    public CourseHole(int id, int cid, int hnum, int par, int wpar,
+    public CourseHole(int id, SubCourse subcourse, int hnum, int par, int wpar,
                       int mhandicap, int whandicap, int blueyardage,
                       int whiteyardage, int redyardage)
     {
         this.mID = id;
-        this.mSubCourseID = cid;
+        this.mSubCourse = subcourse;
         this.mHoleNum = hnum;
         this.mPar = par;
         this.mWPar = wpar;
@@ -39,9 +39,9 @@ public class CourseHole {
         this.mRedYardage = redyardage;
     }
 
-    public CourseHole(int cid, int hnum, int par)
+    public CourseHole(SubCourse subcourse, int hnum, int par)
     {
-        this.mSubCourseID = cid;
+        this.mSubCourse = subcourse;
         this.mHoleNum = hnum;
         this.mPar = par;
     }
@@ -53,8 +53,8 @@ public class CourseHole {
         this.mID = id;
     }
 
-    public void setSubCourseID(int id) {
-        this.mSubCourseID = id;
+    public void setSubCourseID(SubCourse subcourse) {
+        this.mSubCourse.setID(subcourse.getID());
     }
 
     public void setHoleNumber(int hnum) {
@@ -97,7 +97,7 @@ public class CourseHole {
     }
 
     public int getSubCourseID() {
-        return this.mSubCourseID;
+        return this.mSubCourse.getID();
     }
 
     public int getHoleNumber() {
