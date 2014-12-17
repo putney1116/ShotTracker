@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.example.android.ShotTracker.objects.Player;
 
 /**
  * Database CRUD methods for Club objects
@@ -42,7 +43,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
      *
      * @return List of Club objects
      */
-    public List<Club> readClubs() {
+    public List<Club> readListofClubs() {
         List<Club> clubs = new ArrayList<Club>();
 
         Cursor cursor = database.query(DataBaseHelper.CLUB_TABLE,
@@ -60,19 +61,35 @@ public class ClubDAO extends ShotTrackerDBDAO {
         return clubs;
     }
 
-    //\todo Add function that fetches a club by ID
+    /**
+     * Get club information from an id value
+     * @param clubID
+     * @return
+     */
+    public Club readClub(int clubID) {
+        Cursor cursor = database.query(DataBaseHelper.CLUB_TABLE,
+                new String[] {DataBaseHelper.CLUBID_COLUMN, DataBaseHelper.CLUBNAME_COLUMN},
+                WHERE_ID_EQUALS,
+                new String[] {String.valueOf(clubID)},
+                null, null, null, null);
+
+        Club club = new Club();
+        club.setID(cursor.getInt(0));
+        club.setClub(cursor.getString(1));
+
+        return club;
+    }
 
     /**
      * Add a Club to a Players bag using PlayerID.
-     * \todo use Player object instead of playerID
      *
-     * @param playerID Player ID Club will be associated with
+     * @param player Player ID Club will be associated with
      * @param club Club to be added to players bag
      * @return
      */
-    public long createClubToBag(int playerID, Club club) {
+    public long createClubToBag(Player player, Club club) {
         ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.PLAYERID_COLUMN, playerID);
+        values.put(DataBaseHelper.PLAYERID_COLUMN, player.getID());
         values.put(DataBaseHelper.CLUBID_COLUMN, club.getID());
 
         return database.insert(DataBaseHelper.BAG_TABLE, null, values);
@@ -80,12 +97,11 @@ public class ClubDAO extends ShotTrackerDBDAO {
 
 
     /**
-     * \todo use player object instead of playerID
-     *
-     * @param playerID
+     * read all clubs in a players bag
+     * @param player
      * @return
      */
-    public List<Club> readClubsInBag(int playerID) {
+    public List<Club> readClubsInBag(Player player) {
         List<Club> clubs = new ArrayList<Club>();
 
         /// Build multi-table query using NATURAL JOIN
@@ -99,7 +115,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.CLUB_TABLE
                 + " WHERE "
                 + DataBaseHelper.PLAYERID_COLUMN
-                + "=" + playerID;
+                + "=" + player.getID();
 
         Cursor cursor = database.rawQuery(query, null);
 
@@ -114,25 +130,4 @@ public class ClubDAO extends ShotTrackerDBDAO {
         return clubs;
     }
 
-    /**
-     * For testing, add a set of clubs to the DB
-     */
-    public void loadClubs() {
-        List<Club> clubs = new ArrayList<Club>();
-        clubs.add(new Club("Driver"));
-        clubs.add(new Club("3 Wood"));
-        clubs.add(new Club("5 Wood"));
-        clubs.add(new Club("3 Iron"));
-        clubs.add(new Club("4 Iron"));
-        clubs.add(new Club("5 Iron"));
-        clubs.add(new Club("6 Iron"));
-        clubs.add(new Club("7 Iron"));
-        clubs.add(new Club("8 Iron"));
-        clubs.add(new Club("9 Iron"));
-        clubs.add(new Club("PW"));
-        clubs.add(new Club("SW"));
-
-        for (Club club : clubs) create(club);
-
-    }
 }
