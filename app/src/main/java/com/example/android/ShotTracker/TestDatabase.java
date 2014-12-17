@@ -48,6 +48,8 @@ public class TestDatabase extends Activity {
         loadPlayers();
         loadClubs();
         loadCourses();
+        // D. McGlinchey - Something about SubCourses is broken ...
+//        loadSubCourses();
 
         // make DAO objects
         PlayerDAO pd = new PlayerDAO(getApplicationContext());
@@ -160,7 +162,15 @@ public class TestDatabase extends Activity {
         CourseDAO courseDAO = new CourseDAO(getApplicationContext());
         for (Course course : courses) {
             courseDAO.createCourse(course);
+        }
+    }
 
+    public void loadSubCourses() {
+        CourseDAO courseDAO = new CourseDAO(getApplicationContext());
+
+        List<Course> courses = courseDAO.readListofCourses();
+
+        for (Course course : courses) {
             List<SubCourse> subCourses = new ArrayList<SubCourse>();
             subCourses.add(new SubCourse(course,"Front 9",course.getID()+2));
             subCourses.add(new SubCourse(course,"Back 9",course.getID()+3));
@@ -169,5 +179,6 @@ public class TestDatabase extends Activity {
                 courseDAO.createSubCourse(subCourse);
             }
         }
+
     }
 }
