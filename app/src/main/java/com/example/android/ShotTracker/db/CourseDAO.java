@@ -156,7 +156,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
         return database.update(DataBaseHelper.SUBCOURSE_TABLE,
                 values,
                 WHERE_SUBCOURSEID_EQUALS,
-                new string[] {String.valueOf(subCourse.getID())});
+                new String[] {String.valueOf(subCourse.getID())});
     }
 
     /**
@@ -184,7 +184,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
             throw new RuntimeException("Course ID not set in CourseDAO.readListofSubCourses()");
         }
 
-        List<SubCourse> subCourses = new List<SubCourse>();
+        List<SubCourse> subCourses = new ArrayList<SubCourse>();
 
         //\todo check for nulls
 
