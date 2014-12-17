@@ -12,10 +12,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.android.ShotTracker.db.DataBaseHelper;
 import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.db.ClubDAO;
+import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Player;
 
 /**
@@ -34,13 +38,16 @@ public class TestDatabase extends Activity {
 
         //db = new DatabaseHelper(getApplicationContext());
 
-        Log.d(TAG, "A comment to the log.");
+        Log.d(TAG, "Begin testing DB------");
 
+        // load stuff into the DB
+        loadPlayers();
+        loadClubs();
+
+        // Get all the players
         PlayerDAO pd = new PlayerDAO(getApplicationContext());
 
-        pd.loadPlayers();
-
-        List<Player> players = pd.readPlayers();
+        List<Player> players = pd.readListofPlayers();
 
         Log.e(TAG, "Number of Players = " + players.size());
 
@@ -48,6 +55,72 @@ public class TestDatabase extends Activity {
             Log.d(TAG, player.getName());
         }
 
+        // Get all the clubs
+        ClubDAO cd = new ClubDAO(getApplicationContext());
+
+        List<Club> clubs = cd.readListofClubs();
+
+        Log.e(TAG, "Number of Clubs = " + clubs.size());
+
+        for (Club club : clubs) {
+            Log.d(TAG, club.getClub());
+        }
+
+        // Add the first 3 clubs to the first players bag
+        Player p0 = players.get(0);
+        Log.d(TAG, "Adding clubs to " + p0.getID() + ": " + p0.getName() + "'s bag...");
+
+        for (int i = 0; i < 3; i++) {
+            cd.createClubToBag(p0, clubs.get(i));
+            Log.d(TAG, "Added " + clubs.get(i).getClub());
+        }
+
+        List<Club> clubsInBag = cd.readClubsInBag(p0);
+        Log.d(TAG, "Number of clubs in bag = " + clubsInBag.size());
+
+        for (Club club : clubsInBag) {
+            Log.d(TAG, club.getClub() + " in " + p0.getName() + "'s bag");
+        }
+
         Log.d(TAG, "Finish------");
     }
+
+
+    /**
+     * For testing, add a set of default players.
+     */
+    public void loadPlayers() {
+        List<Player> players = new ArrayList<Player>();
+        players.add(new Player("Eric Putney"));
+        players.add(new Player("Erik Jensen"));
+        players.add(new Player("Darren"));
+        players.add(new Player("Justin"));
+
+        PlayerDAO playerDAO = new PlayerDAO(getApplicationContext());
+        for (Player player : players) playerDAO.create(player);
+    }
+
+    /**
+     * For testing, add a set of clubs to the DB
+     */
+    public void loadClubs() {
+        List<Club> clubs = new ArrayList<Club>();
+        clubs.add(new Club("Driver"));
+        clubs.add(new Club("3 Wood"));
+        clubs.add(new Club("5 Wood"));
+        clubs.add(new Club("3 Iron"));
+        clubs.add(new Club("4 Iron"));
+        clubs.add(new Club("5 Iron"));
+        clubs.add(new Club("6 Iron"));
+        clubs.add(new Club("7 Iron"));
+        clubs.add(new Club("8 Iron"));
+        clubs.add(new Club("9 Iron"));
+        clubs.add(new Club("PW"));
+        clubs.add(new Club("SW"));
+
+        ClubDAO clubDAO = new ClubDAO(getApplicationContext());
+        for (Club club : clubs) clubDAO.create(club);
+
+    }
+
 }
