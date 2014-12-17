@@ -162,8 +162,8 @@ public class TestDatabase extends Activity {
             courseDAO.createCourse(course);
 
             List<SubCourse> subCourses = new ArrayList<SubCourse>();
-            subCourses.add(new SubCourse(course.getID(),"Front 9",course.getID()+2));
-            subCourses.add(new SubCourse(course.getID(),"Back 9",course.getID()+3));
+            subCourses.add(new SubCourse(course,"Front 9",course.getID()+2));
+            subCourses.add(new SubCourse(course,"Back 9",course.getID()+3));
 
             for (SubCourse subCourse : subCourses) {
                 courseDAO.createSubCourse(subCourse);
