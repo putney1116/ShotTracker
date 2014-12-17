@@ -199,7 +199,10 @@ public class CourseDAO extends ShotTrackerDBDAO {
         while (cursor.moveToNext()) {
             SubCourse subCourse = new SubCourse();
             subCourse.setID(cursor.getInt(0));
-            subCourse.setCourseID(course.getID());
+            //ewj - I have it set up to take in the course object directly
+            //check out SubCourse.java
+            //not sure if I did it "correctly", but it should work
+            subCourse.setCourseID(course);
             subCourse.setName(cursor.getString(1));
             subCourse.setRating(cursor.getFloat(2));
 
