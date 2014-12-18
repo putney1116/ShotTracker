@@ -6,7 +6,12 @@ package com.example.android.ShotTracker.objects;
 public class CourseHoleInfo {
 
     private int mID = -1;
-    private CourseHole mCourseHole;
+    // D. McGlinchey - I don't think we actually want a CourseHole object here,
+    // I think all we need is a CourseHoleID, which should only be set
+    // by passing a CourseHole object.
+    // However .. If we do want to keep this, it needs to be instantianted here or we'll have
+    // problems trying to set/get ID later.
+    private CourseHole mCourseHole = new CourseHole();
     private String mInfo = "";
     private float mLat = -1;
     private float mLong = -1;

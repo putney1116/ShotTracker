@@ -7,6 +7,7 @@ import android.provider.ContactsContract;
 
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
+import com.example.android.ShotTracker.objects.CourseHoleInfo;
 import com.example.android.ShotTracker.objects.SubCourse;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
             + "=?";
     private static final String WHERE_SUBCOURSEID_EQUALS = DataBaseHelper.SUBCOURSEID_COLUMN
             + "=?";
-    private static final String WHERE_COURSHOLEID_EQUALS = DataBaseHelper.COURSEHOLEID_COLUMN
+    private static final String WHERE_COURSEHOLEID_EQUALS = DataBaseHelper.COURSEHOLEID_COLUMN
             + "=?";
     private static final String WHERE_COURSEHOLEINFOID_EQUALS =
             DataBaseHelper.COURSEHOLEINFOID_COLUMN + "=?";
@@ -295,7 +296,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
 
         return database.update(DataBaseHelper.COURSEHOLE_TABLE,
                 values,
-                WHERE_COURSHOLEID_EQUALS,
+                WHERE_COURSEHOLEID_EQUALS,
                 new String[] {String.valueOf(courseHole.getID())});
     }
 
@@ -311,7 +312,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
         }
 
         return database.delete(DataBaseHelper.COURSEHOLE_TABLE,
-                WHERE_COURSHOLEID_EQUALS,
+                WHERE_COURSEHOLEID_EQUALS,
                 new String[] {String.valueOf(courseHole.getID())});
     }
 
@@ -358,5 +359,97 @@ public class CourseDAO extends ShotTrackerDBDAO {
         }
 
         return courseHoles;
+    }
+
+    /**
+     * Add a CourseHoleInfo to the DB
+     * @param courseHoleInfo CourseHoleInfo to be added to DB
+     * @return
+     */
+    public long createCourseHoleInfo(CourseHoleInfo courseHoleInfo) {
+        ContentValues values = new ContentValues();
+
+        //\todo check that courseHoleID is set before using
+        values.put(DataBaseHelper.COURSEHOLEID_COLUMN, courseHoleInfo.getCourseHoleID());
+        values.put(DataBaseHelper.INFO_COLUMN, courseHoleInfo.getInfo());
+        values.put(DataBaseHelper.INFOLATITUDE_COLUMN, courseHoleInfo.getLatitude());
+        values.put(DataBaseHelper.INFOLONGITUDE_COLUMN, courseHoleInfo.getLongitude());
+
+        return database.insert(DataBaseHelper.COURSEHOLEINFO_TABLE, null, values);
+    }
+
+    /**
+     * Updated CourseHoleInfo information in the DB
+     * @param courseHoleInfo Info to be updated
+     * @return
+     */
+    public long updateCourseHoleInfo(CourseHoleInfo courseHoleInfo) {
+        //make sure courseHoleInfoID is set
+        if (courseHoleInfo.getID() < 0) {
+            throw new RuntimeException("CourseHoleInfoID is not set in"
+            + " CourseDAO.updateCourseHoleInfo()");
+        }
+        ContentValues values = new ContentValues();
+
+        //\todo check that courseHoleID is set before using
+        values.put(DataBaseHelper.COURSEHOLEID_COLUMN, courseHoleInfo.getCourseHoleID());
+        values.put(DataBaseHelper.INFO_COLUMN, courseHoleInfo.getInfo());
+        values.put(DataBaseHelper.INFOLATITUDE_COLUMN, courseHoleInfo.getLatitude());
+        values.put(DataBaseHelper.INFOLONGITUDE_COLUMN, courseHoleInfo.getLongitude());
+
+        return database.update(DataBaseHelper.COURSEHOLEINFO_TABLE,
+                values,
+                WHERE_COURSEHOLEINFOID_EQUALS,
+                new String[] {String.valueOf(courseHoleInfo.getID())});
+    }
+
+    /**
+     * Delete CourseHoleInfo from the DB
+     * @param courseHoleInfo
+     * @return
+     */
+    public long deleteCourseHoleInfo(CourseHoleInfo courseHoleInfo) {
+        //make sure courseHoleInfoID is set
+        if (courseHoleInfo.getID() < 0) {
+            throw new RuntimeException("CourseHoleInfoID is not set in"
+            + " CourseDAO.deleteCourseHoleInfo()");
+        }
+
+        return database.delete(DataBaseHelper.COURSEHOLEINFO_TABLE,
+                WHERE_COURSEHOLEINFOID_EQUALS,
+                new String[] {String.valueOf(courseHoleInfo.getID())});
+    }
+    
+    
+    public List<CourseHoleInfo> readListofCourseHoleInfos(CourseHole courseHole) {
+        //make sure courseHoleID is set
+        if (courseHole.getID() < 0) {
+            throw new RuntimeException("CourseHoleID not set in"
+            + " CourseDAO.readListofCourseHoleInfos()");
+        }
+        
+        Cursor cursor = database.query(DataBaseHelper.COURSEHOLEINFO_TABLE,
+                new String[] {DataBaseHelper.COURSEHOLEINFOID_COLUMN,
+                DataBaseHelper.COURSEHOLEID_COLUMN,
+                DataBaseHelper.INFO_COLUMN,
+                DataBaseHelper.INFOLATITUDE_COLUMN,
+                DataBaseHelper.INFOLONGITUDE_COLUMN},
+                WHERE_COURSEHOLEID_EQUALS,
+                new String[] {String.valueOf(courseHole.getID())},
+                null, null, null, null);
+
+        List<CourseHoleInfo> courseHoleInfos = new ArrayList<CourseHoleInfo>();
+        while(cursor.moveToNext()) {
+            CourseHoleInfo courseHoleInfo = new CourseHoleInfo();
+            courseHoleInfo.setID(cursor.getInt(0));
+            courseHoleInfo.setCourseHoleID(courseHole);
+            courseHoleInfo.setInfo(cursor.getString(2));
+            courseHoleInfo.setLatitude(cursor.getFloat(3));
+            courseHoleInfo.setLongitude(cursor.getFloat(4));
+
+            courseHoleInfos.add(courseHoleInfo);
+        }
+
+        return courseHoleInfos;
     }
 }
