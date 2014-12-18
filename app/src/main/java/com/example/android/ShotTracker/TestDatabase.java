@@ -49,7 +49,7 @@ public class TestDatabase extends Activity {
         loadClubs();
         loadCourses();
         // D. McGlinchey - Something about SubCourses is broken ...
-//        loadSubCourses();
+        loadSubCourses();
 
         // make DAO objects
         PlayerDAO pd = new PlayerDAO(getApplicationContext());

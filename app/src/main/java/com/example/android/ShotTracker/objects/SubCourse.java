@@ -6,7 +6,7 @@ package com.example.android.ShotTracker.objects;
 public class SubCourse {
 
     private int mID = -1;
-    private Course mCourse;
+    private int mCourseID = -1;
     private String mName = "";
     private float mRating = -1;
 
@@ -19,19 +19,19 @@ public class SubCourse {
 
     public SubCourse(int id, Course course, String name, float rating) {
         this.mID = id;
-        this.mCourse = course;
+        this.mCourseID = course.getID();
         this.mName = name;
         this.mRating = rating;
     }
 
     public SubCourse(Course course, String name, float rating) {
-        this.mCourse = course;
+        this.mCourseID = course.getID();
         this.mName = name;
         this.mRating = rating;
     }
 
     public SubCourse(Course course, String name) {
-        this.mCourse = course;
+        this.mCourseID = course.getID();
         this.mName = name;
     }
 
@@ -43,7 +43,7 @@ public class SubCourse {
     }
 
     public void setCourseID(Course course) {
-        this.mCourse.setID(course.getID());
+        this.mCourseID = course.getID();
     }
 
     public void setName(String name) {
@@ -60,7 +60,7 @@ public class SubCourse {
     }
 
     public int getCourseID() {
-        return this.mCourse.getID();
+        return this.mCourseID;
     }
 
     public String getName() {
