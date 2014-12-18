@@ -6,7 +6,7 @@ package com.example.android.ShotTracker.objects;
 public class CourseHole {
 
     private int mID = -1;
-    private SubCourse mSubCourse;
+    private int mSubCourseID = -1;
     private int mHoleNum = -1;
     private int mPar = -1;
     private int mWPar = -1;
@@ -28,7 +28,7 @@ public class CourseHole {
                       int whiteyardage, int redyardage)
     {
         this.mID = id;
-        this.mSubCourse = subcourse;
+        this.mSubCourseID = subcourse.getID();
         this.mHoleNum = hnum;
         this.mPar = par;
         this.mWPar = wpar;
@@ -41,7 +41,7 @@ public class CourseHole {
 
     public CourseHole(SubCourse subcourse, int hnum, int par)
     {
-        this.mSubCourse = subcourse;
+        this.mSubCourseID = subcourse.getID();
         this.mHoleNum = hnum;
         this.mPar = par;
     }
@@ -54,7 +54,7 @@ public class CourseHole {
     }
 
     public void setSubCourseID(SubCourse subcourse) {
-        this.mSubCourse.setID(subcourse.getID());
+        this.mSubCourseID = subcourse.getID();
     }
 
     public void setHoleNumber(int hnum) {
@@ -97,7 +97,7 @@ public class CourseHole {
     }
 
     public int getSubCourseID() {
-        return this.mSubCourse.getID();
+        return this.mSubCourseID;
     }
 
     public int getHoleNumber() {
