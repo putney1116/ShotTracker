@@ -17,9 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseHoleDAO;
+import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
 import com.example.android.ShotTracker.db.DataBaseHelper;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.ClubDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
@@ -55,6 +58,9 @@ public class TestDatabase extends Activity {
         PlayerDAO pd = new PlayerDAO(getApplicationContext());
         ClubDAO cd = new ClubDAO(getApplicationContext());
         CourseDAO courseDAO = new CourseDAO(getApplicationContext());
+        SubCourseDAO subcourseDAO = new SubCourseDAO(getApplicationContext());
+        CourseHoleDAO courseholeDAO = new CourseHoleDAO(getApplicationContext());
+        CourseHoleInfoDAO courseHoleInfoDAO = new CourseHoleInfoDAO(getApplicationContext());
 
         // Get all the players
         List<Player> players = pd.readListofPlayers();
@@ -99,7 +105,7 @@ public class TestDatabase extends Activity {
             Log.d(TAG, course.getID() + ": " + course.getName() + " - " + course.getLocation());
 
             // get subcourses
-            List<SubCourse> subCourses = courseDAO.readListofSubCourses(course);
+            List<SubCourse> subCourses = subcourseDAO.readListofSubCourses(course);
             Log.d(TAG, "  Number of SubCourses = " + subCourses.size());
 
             for (SubCourse subCourse : subCourses) {
@@ -167,6 +173,7 @@ public class TestDatabase extends Activity {
 
     public void loadSubCourses() {
         CourseDAO courseDAO = new CourseDAO(getApplicationContext());
+        SubCourseDAO subCourseDAO = new SubCourseDAO(getApplicationContext());
 
         List<Course> courses = courseDAO.readListofCourses();
 
@@ -176,7 +183,7 @@ public class TestDatabase extends Activity {
             subCourses.add(new SubCourse(course,"Back 9",course.getID()+3));
 
             for (SubCourse subCourse : subCourses) {
-                courseDAO.createSubCourse(subCourse);
+                subCourseDAO.createSubCourse(subCourse);
             }
         }
 
