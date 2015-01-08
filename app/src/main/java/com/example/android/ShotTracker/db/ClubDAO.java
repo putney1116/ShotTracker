@@ -30,6 +30,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
      * @return
      */
     public long create(Club club) {
+        ///\todo check against duplicate entries in db? goes here?
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.CLUBNAME_COLUMN, club.getClub());
 
