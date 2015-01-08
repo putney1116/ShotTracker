@@ -16,6 +16,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.android.ShotTracker.db.BagDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
@@ -57,6 +58,7 @@ public class TestDatabase extends Activity {
         // make DAO objects
         PlayerDAO pd = new PlayerDAO(getApplicationContext());
         ClubDAO cd = new ClubDAO(getApplicationContext());
+        BagDAO bagDAO = new BagDAO(getApplicationContext());
         CourseDAO courseDAO = new CourseDAO(getApplicationContext());
         SubCourseDAO subcourseDAO = new SubCourseDAO(getApplicationContext());
         CourseHoleDAO courseholeDAO = new CourseHoleDAO(getApplicationContext());
@@ -85,11 +87,11 @@ public class TestDatabase extends Activity {
         Log.d(TAG, "Adding clubs to " + p0.getID() + ": " + p0.getName() + "'s bag...");
 
         for (int i = 0; i < 3; i++) {
-            cd.createClubToBag(p0, clubs.get(i));
+            bagDAO.createClubToBag(p0, clubs.get(i));
             Log.d(TAG, "Added " + clubs.get(i).getClub());
         }
 
-        List<Club> clubsInBag = cd.readClubsInBag(p0);
+        List<Club> clubsInBag = bagDAO.readClubsInBag(p0);
         Log.d(TAG, "Number of clubs in bag = " + clubsInBag.size());
 
         for (Club club : clubsInBag) {
