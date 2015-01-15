@@ -8,7 +8,7 @@ import java.util.Date;
 public class Round {
 
     private int mID = -1;
-    private SubCourse mSubCourse;
+    private int mSubCourseID = -1;
     private Date mDate;
 
     //\todo Add private member for list of RoundHole objects and setters, getters, constructors
@@ -20,12 +20,12 @@ public class Round {
 
     public Round(int id, SubCourse subcourse, Date date) {
         this.mID = id;
-        this.mSubCourse = subcourse;
+        this.mSubCourseID = subcourse.getID();
         this.mDate = date;
     }
 
     public Round(SubCourse subcourse, Date date) {
-        this.mSubCourse = subcourse;
+        this.mSubCourseID = subcourse.getID();
         this.mDate = date;
     }
 
@@ -37,7 +37,7 @@ public class Round {
     }
 
     public void setSubCourseID(SubCourse subcourse) {
-        this.mSubCourse.setID(subcourse.getID());
+        this.mSubCourseID = subcourse.getID();
     }
 
     public void setDate(Date date) {
@@ -52,7 +52,7 @@ public class Round {
     }
 
     public int getSubCourseID() {
-        return this.mSubCourse.getID();
+        return this.mSubCourseID;
     }
 
     public Date getDate() {

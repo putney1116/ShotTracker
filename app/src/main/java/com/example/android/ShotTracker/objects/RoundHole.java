@@ -6,9 +6,9 @@ package com.example.android.ShotTracker.objects;
 public class RoundHole {
 
     private int mID = -1;
-    private Round mRound;
-    private CourseHole mCourseHole;
-    private Player mPlayer;
+    private int mRoundID = -1;
+    private int mCourseHoleID =-1;
+    private int mPlayerID =-1;
     private int mScore = -1;
     private int mPutts = -1;
     private int mPenalties = -1;
@@ -24,9 +24,9 @@ public class RoundHole {
     public RoundHole(int id, Round round, CourseHole coursehole, Player player,
                      int score, int putts, int penalties, int fairways) {
         this.mID = id;
-        this.mRound = round;
-        this.mCourseHole = coursehole;
-        this.mPlayer = player;
+        this.mRoundID = round.getID();
+        this.mCourseHoleID = coursehole.getID();
+        this.mPlayerID = player.getID();
         this.mScore = score;
         this.mPutts = putts;
         this.mPenalties = penalties;
@@ -35,9 +35,9 @@ public class RoundHole {
 
     public RoundHole(Round round, CourseHole coursehole, Player player,
                      int score, int putts, int penalties, int fairways) {
-        this.mRound = round;
-        this.mCourseHole = coursehole;
-        this.mPlayer = player;
+        this.mRoundID = round.getID();
+        this.mCourseHoleID = coursehole.getID();
+        this.mPlayerID = player.getID();
         this.mScore = score;
         this.mPutts = putts;
         this.mPenalties = penalties;
@@ -52,15 +52,15 @@ public class RoundHole {
     }
 
     public void setRoundID(Round round) {
-        this.mRound.setID(round.getID());
+        this.mRoundID = round.getID();
     }
 
     public void setCourseHoleID(CourseHole coursehole) {
-        this.mCourseHole.setID(coursehole.getID());
+        this.mCourseHoleID = coursehole.getID();
     }
 
     public void setPlayerID(Player player) {
-        this.mPlayer.setID(player.getID());
+        this.mPlayerID = player.getID();
     }
 
     public void setScore(int score) {
@@ -87,15 +87,15 @@ public class RoundHole {
     }
 
     public int getRoundID() {
-        return this.mRound.getID();
+        return this.mRoundID;
     }
 
     public int getCourseHoleID() {
-        return this.mCourseHole.getID();
+        return this.mCourseHoleID;
     }
 
     public int getPlayerID() {
-        return this.mPlayer.getID();
+        return this.mPlayerID;
     }
 
     public int getScore() {
