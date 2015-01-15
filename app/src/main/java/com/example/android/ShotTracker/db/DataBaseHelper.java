@@ -143,7 +143,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + ROUND_TABLE + "("
             + ROUNDID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SUBCOURSEID_COLUMN + " INTEGER NOT NULL, "
-            + ROUNDDATE_COLUMN + " DATE"
+            + ROUNDDATE_COLUMN + " INTEGER"
             +");";
 
     private static final String CREATE_ROUNDHOLE_TABLE = "CREATE TABLE "
