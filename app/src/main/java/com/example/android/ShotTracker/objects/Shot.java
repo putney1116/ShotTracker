@@ -8,16 +8,14 @@ import java.util.Vector;
 public class Shot {
 
     private int mID = -1;
-    private RoundHole mRoundHole;
-    private Club mClub;
+    private int mRoundHoleID = -1;
+    private int mClubID = -1;
     private Vector<ShotType> mShotType;
     private float mYards = -1;
     private float mShotStartLat = -1;
     private float mShotStartLong = -1;
     private float mShotEndLat = -1;
     private float mShotEndLong = -1;
-
-    //\todo Add private member for list of ShotTypes objects and setters, getters, constructors
 
     /**
      * Default Constructor
@@ -30,8 +28,8 @@ public class Shot {
                 Vector<ShotType> shottype, float yds, float sslat,
                 float sslong, float selat, float selong){
         this.mID = id;
-        this.mRoundHole = roundhole;
-        this.mClub = club;
+        this.mRoundHoleID = roundhole.getID();
+        this.mClubID = club.getID();
         this.mShotType = shottype;
         this.mYards = yds;
         this.mShotStartLat = sslat;
@@ -43,8 +41,8 @@ public class Shot {
     public Shot(RoundHole roundhole, Club club,
                 Vector<ShotType> shottype, float yds, float sslat,
                 float sslong, float selat, float selong){
-        this.mRoundHole = roundhole;
-        this.mClub = club;
+        this.mRoundHoleID = roundhole.getID();
+        this.mClubID = club.getID();
         this.mShotType = shottype;
         this.mYards = yds;
         this.mShotStartLat = sslat;
@@ -61,11 +59,11 @@ public class Shot {
     }
 
     public void setRoundHoleID(RoundHole roundhole) {
-        this.mRoundHole.setID(roundhole.getID());
+        this.mRoundHoleID = roundhole.getID();
     }
 
     public void setClubID(Club club) {
-        this.mClub.setID(club.getID());
+        this.mClubID = club.getID();
     }
 
     public void setYards(float yards) {
@@ -109,14 +107,14 @@ public class Shot {
     }
 
     public int getRoundHoleID() {
-        return this.mRoundHole.getID();
+        return this.mRoundHoleID;
     }
 
     public int getClubID() {
-        return this.mClub.getID();
+        return this.mClubID;
     }
 
-    public Vector<ShotType> getShotTypeIDs() {
+    public Vector<ShotType> getShotTypeList() {
         return this.mShotType;
     }
 
