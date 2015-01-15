@@ -1,5 +1,8 @@
 package com.example.android.ShotTracker.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class for keeping information for a given hole in a round
  */
@@ -13,8 +16,7 @@ public class RoundHole {
     private int mPutts = -1;
     private int mPenalties = -1;
     private int mFairways = -1;
-
-    //\todo Add private member for list of Shot objects and setters, getters, constructors
+    private List<Shot> mShotList = null;
 
     /**
      * Constructors
@@ -113,5 +115,17 @@ public class RoundHole {
     public int getFairways() {
         return this.mFairways;
     }
+
+    /**
+     * List of Shot's
+     */
+    public void addShot(Shot shot) {
+        if (mShotList == null) {
+            mShotList = new ArrayList<Shot>();
+        }
+        this.mShotList.add(shot);
+    }
+
+    public List<Shot> getShotList() { return this.mShotList; }
 
 }
