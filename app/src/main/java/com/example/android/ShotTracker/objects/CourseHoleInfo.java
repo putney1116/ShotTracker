@@ -6,12 +6,7 @@ package com.example.android.ShotTracker.objects;
 public class CourseHoleInfo {
 
     private int mID = -1;
-    // D. McGlinchey - I don't think we actually want a CourseHole object here,
-    // I think all we need is a CourseHoleID, which should only be set
-    // by passing a CourseHole object.
-    // However .. If we do want to keep this, it needs to be instantianted here or we'll have
-    // problems trying to set/get ID later.
-    private CourseHole mCourseHole = new CourseHole();
+    private int mCourseHoleID = -1;
     private String mInfo = "";
     private float mLat = -1;
     private float mLong = -1;
@@ -24,7 +19,7 @@ public class CourseHoleInfo {
     public CourseHoleInfo(int id, CourseHole coursehole, String info,
                           float latitude, float longitude) {
         this.mID = id;
-        this.mCourseHole = coursehole;
+        this.mCourseHoleID = coursehole.getID();
         this.mInfo = info;
         this.mLat = latitude;
         this.mLong = longitude;
@@ -32,7 +27,7 @@ public class CourseHoleInfo {
 
     public CourseHoleInfo(CourseHole coursehole, String info,
                           float latitude, float longitude) {
-        this.mCourseHole = coursehole;
+        this.mCourseHoleID = coursehole.getID();
         this.mInfo = info;
         this.mLat = latitude;
         this.mLong = longitude;
@@ -46,7 +41,7 @@ public class CourseHoleInfo {
     }
 
     public void setCourseHoleID(CourseHole coursehole) {
-        this.mCourseHole.setID(coursehole.getID());
+        this.mCourseHoleID = coursehole.getID();
     }
 
     public void setInfo(String info) {
@@ -74,7 +69,7 @@ public class CourseHoleInfo {
     }
 
     public int getCourseHoleID() {
-        return this.mCourseHole.getID();
+        return this.mCourseHoleID;
     }
 
     public String getInfo() {

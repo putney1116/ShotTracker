@@ -1,5 +1,8 @@
 package com.example.android.ShotTracker.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class holding Course information
  */
@@ -8,8 +11,7 @@ public class Course {
     private int mID = -1;
     private String mName = "";
     private String mLocation = "";
-
-    //\todo Add private member for list of SubCourse objects and setters, getters, constructors
+    private List<SubCourse> mSubCourseList = null;
 
     /**
      * Constructors
@@ -60,4 +62,17 @@ public class Course {
     public String getLocation() {
         return this.mLocation;
     }
+
+    /**
+     * SubCourse list
+     */
+    public void addSubCourse(SubCourse subCourse) {
+        if (mSubCourseList == null) {
+            mSubCourseList = new ArrayList<SubCourse>();
+        }
+        mSubCourseList.add(subCourse);
+    }
+
+    public List<SubCourse> getSubCourseList() { return this.mSubCourseList; }
+
 }

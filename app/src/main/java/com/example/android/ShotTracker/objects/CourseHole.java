@@ -1,5 +1,8 @@
 package com.example.android.ShotTracker.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class to hold hole information for a given course
  */
@@ -15,8 +18,7 @@ public class CourseHole {
     private int mBlueYardage = -1;
     private int mWhiteYardage = -1;
     private int mRedYardage = -1;
-
-    //\todo Add private member for list of CourseHoleInfo objects and setters, getters, constructors
+    private List<CourseHoleInfo> mCourseHoleInfoList = null;
 
     /**
      * Constructors
@@ -131,4 +133,16 @@ public class CourseHole {
     public int getRedYardage() {
         return this.mRedYardage;
     }
+
+    /**
+     * List of CourseHoleInfo objects
+     */
+    public void addCourseHoleInfo(CourseHoleInfo courseHoleInfo) {
+        if (mCourseHoleInfoList == null) {
+            mCourseHoleInfoList = new ArrayList<CourseHoleInfo>();
+        }
+        mCourseHoleInfoList.add(courseHoleInfo);
+    }
+
+    public List<CourseHoleInfo> getCourseHoleInfoList() { return this.mCourseHoleInfoList; }
 }

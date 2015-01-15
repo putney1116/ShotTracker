@@ -1,5 +1,8 @@
 package com.example.android.ShotTracker.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class to hold SubCourse information
  */
@@ -9,8 +12,7 @@ public class SubCourse {
     private int mCourseID = -1;
     private String mName = "";
     private float mRating = -1;
-
-    //\todo Add private member for list of CourseHole objects and setters, getters, constructors
+    private List<CourseHole> mCourseHoleList = null;
 
     /**
      * Constructors
@@ -68,4 +70,16 @@ public class SubCourse {
     }
 
     public float getRating() { return this.mRating; }
+
+    /**
+     * List of CourseHole objects
+     */
+    public void addCourseHole(CourseHole courseHole) {
+        if (mCourseHoleList == null) {
+            mCourseHoleList = new ArrayList<CourseHole>();
+        }
+        mCourseHoleList.add(courseHole);
+    }
+
+    public List<CourseHole> getCourseHoleList() { return this.mCourseHoleList; }
 }
