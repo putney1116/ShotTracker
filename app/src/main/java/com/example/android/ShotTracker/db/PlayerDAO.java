@@ -102,6 +102,34 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return players;
     }
 
-    //\todo Add function that fetches a player by ID
+    /**
+     * Get the players name and handicap given an ID
+     * @param player Player object. ID must be filled
+     * @return player Filled Player object
+     */
+    public Player readPlayer(Player player) {
+        if (player.getID() < 0) {
+            throw new RuntimeException("Player ID not set in PlayerDAO::readPlayer()");
+        }
+
+        Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
+                new String[] { DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNAME_COLUMN,
+                        DataBaseHelper.PLAYERHANDICAP_COLUMN},
+                WHERE_ID_EQUALS,
+                new String[] {String.valueOf(player.getID())},
+                null, null, null);
+
+        if (cursor.getCount() != 1) {
+            throw new RuntimeException("DB Query returned " +
+                    cursor.getCount() +
+            ", expected 1. In PlayerDBAO::readPlayer()");
+        }
+
+        player.setName(cursor.getString(1));
+        player.setHandicap(cursor.getInt(2));
+
+        return player;
+    }
 
 }
