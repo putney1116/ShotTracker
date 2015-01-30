@@ -19,14 +19,18 @@ This is the generic class for database access operations (DAO). All DAO classes 
 
 *11/29/2014*
 Current idea for extended DAO classes:
+
 - **PlayerDAO**: Player specific DAO operations. Should use *Player* objects and deal specifically
   with the Player table.
+
 - **ClubDAO**: Club specific DAO operations. Should use *Club* objects and deal with the *Club*
   table. Also deals with adding clubs to a players "Bag" through interactions with the *Bag* table.
   Here, does it make sense to use PlayerID only, or use a Player object when filling "Bag" table?
+
 - **CourseDAO**: All Course specific DAO operations. This will be a large one, dealing with Course,
   SubCourse, CourseHole, CourseHoleInfo tables using Course, SubCourse, CourseHole, and CourseHoleInfo
   objects.
+
 - **RoundDAO**: All Round specific DAO operations. This will deal with Round, RoundHole, Shot,
   ShotType, and ShotLink DB tables using Round, RoundHole, Shot, and ShotType objects.
 - **StatisticsDAO**: Deal with complicated database queries that will be used heavily when compiling
