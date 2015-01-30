@@ -165,6 +165,7 @@ public class CourseHoleDAO extends ShotTrackerDBDAO {
 
             courseHoles.add(courseHole);
         }
+        cursor.close();
 
         return courseHoles;
     }

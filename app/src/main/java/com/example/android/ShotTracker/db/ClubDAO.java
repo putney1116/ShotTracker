@@ -77,6 +77,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
         Club club = new Club();
         club.setID(cursor.getInt(0));
         club.setClub(cursor.getString(1));
+        cursor.close();
 
         return club;
     }

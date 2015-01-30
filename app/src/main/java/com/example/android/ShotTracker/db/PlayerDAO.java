@@ -98,6 +98,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
 
             players.add(player);
         }
+        cursor.close();
 
         return players;
     }
@@ -128,6 +129,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
 
         player.setName(cursor.getString(1));
         player.setHandicap(cursor.getInt(2));
+        cursor.close();
 
         return player;
     }

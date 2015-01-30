@@ -107,6 +107,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
 
             courses.add(course);
         }
+        cursor.close();
 
         return courses;
     }

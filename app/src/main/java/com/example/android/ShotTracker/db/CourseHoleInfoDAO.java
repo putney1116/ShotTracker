@@ -110,6 +110,7 @@ public class CourseHoleInfoDAO extends ShotTrackerDBDAO {
 
             courseHoleInfos.add(courseHoleInfo);
         }
+        cursor.close();
 
         return courseHoleInfos;
     }

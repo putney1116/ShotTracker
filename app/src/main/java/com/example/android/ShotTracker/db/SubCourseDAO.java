@@ -116,6 +116,7 @@ public class SubCourseDAO extends ShotTrackerDBDAO {
 
             subCourses.add(subCourse);
         }
+         cursor.close();
 
         return subCourses;
     }

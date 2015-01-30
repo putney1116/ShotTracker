@@ -63,6 +63,7 @@ public class BagDAO extends ShotTrackerDBDAO {
 
             clubs.add(club);
         }
+        cursor.close();
 
         return clubs;
     }
