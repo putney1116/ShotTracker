@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/addCoursePageBlue"
+    android:orientation="vertical"
+    android:background="@drawable/golfgreen"
+    >
+
+    <Button  android:id="@+id/backButtonAddCourseBlue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Back"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dp"
+        />
+
+    <Button  android:id="@+id/nextButtonAddCourseBlue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="Next"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/blueTeeTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="Enter Blue Tee Yardage"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/courseNameTextAddCourseBlue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backButtonAddCourseBlue"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="40dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/blueHole1TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseNameTextAddCourseBlue"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp"
+        android:text="Hole 1"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/blueHole1EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole1TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole2TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole1EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 2"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/blueHole2EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole2TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole3TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole2EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 3"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/blueHole3EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole3TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole4TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole3EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 4"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/blueHole4EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole4TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole5TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nextButtonAddCourseBlue"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 5"/>
+
+    <EditText
+        android:id="@+id/blueHole5EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole5TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole6TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole5EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 6"/>
+
+    <EditText
+        android:id="@+id/blueHole6EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole6TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole7TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole6EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 7"/>
+
+    <EditText
+        android:id="@+id/blueHole7EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole7TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole8TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole7EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 8"/>
+
+    <EditText
+        android:id="@+id/blueHole8EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole8TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/blueHole9TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole8EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 9"/>
+
+    <EditText
+        android:id="@+id/blueHole9EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/blueHole9TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+</RelativeLayout>
