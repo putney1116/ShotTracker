@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/addCoursePageRed"
+    android:orientation="vertical"
+    android:background="@drawable/golfgreen"
+    >
+
+    <Button  android:id="@+id/backButtonAddCourseRed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Back"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dp"
+        />
+
+    <Button  android:id="@+id/nextButtonAddCourseRed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="Next"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/redTeeTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Enter Red Tee Yardage"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/courseNameTextAddCourseRed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backButtonAddCourseRed"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="40dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/redHole1TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseNameTextAddCourseRed"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="60dp"
+        android:text="Hole 1"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/redHole1EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole1TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole2EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole2TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole1EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 2"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/redHole2EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole2TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole3EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole3TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole2EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 3"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/redHole3EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole3TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole4EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole4TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole3EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 4"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/redHole4EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole4TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole5EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole5TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nextButtonAddCourseRed"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 5"/>
+
+    <EditText
+        android:id="@+id/redHole5EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole5TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole6EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole6TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole5EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 6"/>
+
+    <EditText
+        android:id="@+id/redHole6EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole6TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole7EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole7TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole6EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 7"/>
+
+    <EditText
+        android:id="@+id/redHole7EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole7TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole8EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole8TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole7EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 8"/>
+
+    <EditText
+        android:id="@+id/redHole8EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole8TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/redHole9EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/redHole9TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole8EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 9"/>
+
+    <EditText
+        android:id="@+id/redHole9EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/redHole9TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+</RelativeLayout>

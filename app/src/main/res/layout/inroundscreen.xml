@@ -26,15 +26,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     		android:background="@drawable/greenandsky"
     		>
 
-				<Button android:id="@+id/finishbutton"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text="Finish Round"
-    			android:layout_alignParentBottom="true"
-    			android:layout_alignParentRight="true"
-    			android:layout_marginRight="25dp"
-    			android:layout_marginBottom="5dp"
-    			/>
+
     			<TextView
     			android:id="@+id/coursename"
     			android:layout_width="150dp"
@@ -61,7 +53,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     			android:layout_marginBottom="10dp"
     			/>
     			<TextView  android:id="@+id/scoreentry"
-    			android:layout_width="wrap_content" 
+    			android:layout_width="wrap_content"
     			android:layout_height="wrap_content" 
     			android:text="0"
     			android:textColor="#000000"
@@ -74,23 +66,34 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     			android:layout_marginRight="10dp"
   				/>
     			<Button  android:id="@+id/minusbutton"
-   				android:layout_width="wrap_content" 
+   				android:layout_width="60dp"
     			android:layout_height="wrap_content" 
     			android:text="-"
     			android:layout_below="@id/playername"
     			android:layout_toLeftOf="@id/scoreentry"
     			android:layout_marginTop="5dp"
     			android:padding="17dp"
+                android:minWidth="0dp"
     			/>
     			<Button  android:id="@+id/plusbutton"
-    			android:layout_width="wrap_content" 
+    			android:layout_width="60dp"
     			android:layout_height="wrap_content" 
     			android:text="+"
     			android:layout_below="@id/playername"
     			android:layout_toRightOf="@id/scoreentry"
     			android:layout_marginTop="5dp"
     			android:padding="17dp"
-    			/>  
+                android:minWidth="0dp"
+    			/>
+                <Button android:id="@+id/finishbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finish Round"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="5dp"
+                />
     			<TextView android:id="@+id/holenumber"
     			android:layout_width="wrap_content"
     			android:layout_height="wrap_content"
@@ -388,6 +391,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="left|center"
 		    			android:layout_weight="4.0"
 		    			android:background="#538ED5"
+                        android:paddingLeft="10dp"
 		    			/>
 		    			<TextView  
 		    			android:layout_width="0dp" 
@@ -562,7 +566,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:text="White"
 		    			android:gravity="left|center"
 		    			android:layout_weight="4.0"
-		    			android:background="#FFFFFF"	
+		    			android:background="#FFFFFF"
+                        android:paddingLeft="10dp"
 		    			/>
 		    			<TextView  
 		    			android:layout_width="0dp" 
@@ -738,6 +743,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="left|center"
 		    			android:layout_weight="4.0"
 		    			android:background="#FFC775"
+                        android:paddingLeft="10dp"
 		    			/>
 		    			<TextView  
 		    			android:layout_width="0dp" 
@@ -914,6 +920,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="left|center"
 		    			android:layout_weight="4.0"
 		    			android:background="#92D050"
+                        android:paddingLeft="10dp"
 		    			/>
 		    			<TextView  
 		    			android:layout_width="0dp" 
@@ -1764,6 +1771,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="left|center"
 		    			android:layout_weight="4.0"
 		    			android:background="#B80000"
+                        android:paddingLeft="10dp"
 		    			/>
 						<TextView  
 		    			android:layout_width="0dp" 
@@ -1930,6 +1938,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="left|center"
 		    			android:layout_weight="4.0"
 		    			android:background="#FFC775"
+                        android:paddingLeft="10dp"
 		    			/>
 						<TextView  
 		    			android:layout_width="0dp" 

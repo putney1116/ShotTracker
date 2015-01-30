@@ -249,6 +249,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			   			android:gravity="left|center"
 			   			android:layout_weight="4.0"
 			   			android:background="#538ED5"
+                        android:paddingLeft="10dp"
 			   			/>
 			   			<TextView  
 			   			android:layout_width="0dp" 
@@ -423,7 +424,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			   			android:text="White"
 			   			android:gravity="left|center"
 			   			android:layout_weight="4.0"
-			   			android:background="#FFFFFF"	
+			   			android:background="#FFFFFF"
+                        android:paddingLeft="10dp"
 			   			/>
 			   			<TextView  
 			   			android:layout_width="0dp" 
@@ -599,6 +601,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			   			android:gravity="left|center"
 			   			android:layout_weight="4.0"
 			   			android:background="#FFC775"
+                        android:paddingLeft="10dp"
 			   			/>
 			   			<TextView  
 			   			android:layout_width="0dp" 
@@ -775,6 +778,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			   			android:gravity="left|center"
 			   			android:layout_weight="4.0"
 			   			android:background="#92D050"
+                        android:paddingLeft="10dp"
 			   			/>
 			   			<TextView  
 			   			android:layout_width="0dp" 
@@ -1625,6 +1629,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			   			android:gravity="left|center"
 			   			android:layout_weight="4.0"
 			   			android:background="#B80000"
+                        android:paddingLeft="10dp"
 			   			/>
 						<TextView  
 			   			android:layout_width="0dp" 
@@ -1791,6 +1796,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			   			android:gravity="left|center"
 			   			android:layout_weight="4.0"
 			   			android:background="#FFC775"
+                        android:paddingLeft="10dp"
 			   			/>
 						<TextView  
 			   			android:layout_width="0dp" 

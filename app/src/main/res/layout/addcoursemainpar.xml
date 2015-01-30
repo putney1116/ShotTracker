@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/addCoursePagePar"
+    android:orientation="vertical"
+    android:background="@drawable/golfgreen"
+    >
+
+    <Button  android:id="@+id/backButtonAddCoursePar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Back"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dp"
+        />
+
+    <Button  android:id="@+id/nextButtonAddCoursePar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="Next"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/parTeeTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Enter Par"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/courseNameTextAddCoursePar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backButtonAddCoursePar"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text=""
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/parHole1TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseNameTextAddCoursePar"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="40dp"
+        android:text="Hole 1"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <Button  android:id="@+id/hole1MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/parHole1TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole1EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole1TextAddCourse"
+        android:layout_toRightOf="@id/hole1MinusButtonAddCoursePar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole1PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/parHole1EditAddCourse"
+        android:layout_below="@id/parHole1TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole2TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole1EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 2"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <Button  android:id="@+id/hole2MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/parHole2TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole2EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole2TextAddCourse"
+        android:layout_toRightOf="@id/hole2MinusButtonAddCoursePar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole2PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/parHole2EditAddCourse"
+        android:layout_below="@id/parHole2TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole3TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole2EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 3"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <Button  android:id="@+id/hole3MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/parHole3TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole3EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole3TextAddCourse"
+        android:layout_toRightOf="@id/hole3MinusButtonAddCoursePar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole3PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/parHole3EditAddCourse"
+        android:layout_below="@id/parHole3TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole4TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole3EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 4"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <Button  android:id="@+id/hole4MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/parHole4TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole4EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole4TextAddCourse"
+        android:layout_toRightOf="@id/hole4MinusButtonAddCoursePar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole4PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/parHole4EditAddCourse"
+        android:layout_below="@id/parHole4TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole5TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nextButtonAddCoursePar"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 5"/>
+
+    <Button  android:id="@+id/hole5PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/parHole5TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole5EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole5TextAddCourse"
+        android:layout_toLeftOf="@id/hole5PlusButtonAddCoursePar"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole5MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toLeftOf="@id/parHole5EditAddCourse"
+        android:layout_below="@id/parHole5TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole6TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole5EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 6"/>
+
+    <Button  android:id="@+id/hole6PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/parHole6TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole6EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole6TextAddCourse"
+        android:layout_toLeftOf="@id/hole6PlusButtonAddCoursePar"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole6MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toLeftOf="@id/parHole6EditAddCourse"
+        android:layout_below="@id/parHole6TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole7TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole6EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 7"/>
+
+    <Button  android:id="@+id/hole7PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/parHole7TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole7EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole7TextAddCourse"
+        android:layout_toLeftOf="@id/hole7PlusButtonAddCoursePar"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole7MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toLeftOf="@id/parHole7EditAddCourse"
+        android:layout_below="@id/parHole7TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole8TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole7EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 8"/>
+
+    <Button  android:id="@+id/hole8PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/parHole8TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole8EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole8TextAddCourse"
+        android:layout_toLeftOf="@id/hole8PlusButtonAddCoursePar"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole8MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toLeftOf="@id/parHole8EditAddCourse"
+        android:layout_below="@id/parHole8TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="10dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole9TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole8EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 9"/>
+
+    <Button  android:id="@+id/hole9PlusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/parHole9TextAddCourse"
+        android:text="+"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="40dp"
+        android:padding="0dp"/>
+
+    <TextView
+        android:id="@+id/parHole9EditAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/parHole9TextAddCourse"
+        android:layout_toLeftOf="@id/hole9PlusButtonAddCoursePar"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:text="4"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <Button  android:id="@+id/hole9MinusButtonAddCoursePar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toLeftOf="@id/parHole9EditAddCourse"
+        android:layout_below="@id/parHole9TextAddCourse"
+        android:text="-"
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="10dp"
+        android:padding="0dp"/>
+
+</RelativeLayout>

@@ -109,25 +109,25 @@ public class ShotTracker extends Activity{
 				}
 			}
     	});
-    	
-    	//Initializes the button that calls the activity to display the course catalog
-    	Button newCourseButton = (Button)findViewById(R.id.newCourseButton);
-    	
-    	newCourseButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				//Sets the vibrate time
-				vibe.vibrate(15);
-				
-				try{
-					Intent myIntent = new Intent(v.getContext(), NewCourse.class);
-	                startActivity(myIntent);
-					
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-    	});
+
+        //Initializes the button that calls the activity to add a course
+        Button addCourseButton = (Button)findViewById(R.id.addCourseButton);
+
+        addCourseButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Sets the vibrate time
+                vibe.vibrate(15);
+
+                try{
+                    Intent myIntent = new Intent(v.getContext(), AddCourse.class);
+                    startActivity(myIntent);
+
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     	
     	//Initializes the button that calls the activity to display the settings
     	Button settingsButton = (Button)findViewById(R.id.settingsButton);

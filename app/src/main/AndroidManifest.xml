@@ -92,10 +92,11 @@
 		    
 		</activity>
 		<activity android:name=".CourseInfo"
-		    android:screenOrientation="portrait"
-        	android:configChanges="keyboardHidden|orientation|screenSize">
-		    
-		</activity>
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+
+        </activity>
+
           <activity android:name=".Settings"
               android:screenOrientation="portrait"
               android:configChanges="keyboardHidden|orientation|screenSize">
@@ -106,5 +107,11 @@
               android:configChanges="keyboardHidden|orientation|screenSize">
 
           </activity>
-    </application>
+
+          <activity android:name=".AddCourse"
+              android:screenOrientation="portrait"
+              android:configChanges="keyboardHidden|orientation|screenSize">
+
+          </activity>
+      </application>
 </manifest>

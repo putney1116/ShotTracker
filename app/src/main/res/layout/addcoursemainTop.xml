@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/addCoursePage"
+    android:orientation="vertical"
+    android:background="@drawable/golfgreen"
+    >
+
+    <Button  android:id="@+id/backButtonAddCourseTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Back"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dp"
+        />
+
+    <Button  android:id="@+id/nextButtonAddCourseTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="Next"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/courseNameTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="Course Name"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/courseNameEditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/courseNameTextAddCourse"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/zipCodeTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/courseNameEditAddCourse"
+        android:layout_marginTop="40dp"
+        android:text="Zip Code"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/zipCodeEditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/zipCodeTextAddCourse"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/numberOfNinesTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/zipCodeEditAddCourse"
+        android:layout_marginTop="40dp"
+        android:text="Number of 9 Hole Courses"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/numberOfNinesEditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/numberOfNinesTextAddCourse"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:inputType="number"/>
+
+</RelativeLayout>
