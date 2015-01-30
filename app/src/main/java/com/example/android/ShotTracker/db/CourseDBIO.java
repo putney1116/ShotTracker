@@ -88,7 +88,6 @@ public class CourseDBIO extends Activity {
 
         try {
             //Saves the official course name
-//            String courseName = bufferedreader.readLine();
             course.setName(bufferedreader.readLine());
 
             //par for each hole
