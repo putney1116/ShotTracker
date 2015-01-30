@@ -93,7 +93,7 @@ public class RoundDAO extends ShotTrackerDBDAO {
 
             rounds.add(round);
         }
-
+        cursor.close();
         return rounds;
     }
 }
