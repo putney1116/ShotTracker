@@ -1,5 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/addCoursePageHandicap"
+    android:orientation="vertical"
+    android:background="@drawable/golfgreen"
+    >
 
-</LinearLayout>
+    <Button  android:id="@+id/backButtonAddCourseHandicap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Back"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dp"
+        />
+
+    <Button  android:id="@+id/nextButtonAddCourseHandicap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="Next"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/handicapTeeTextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Enter Men's Handicap"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/courseNameTextAddCourseHandicap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backButtonAddCourseHandicap"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="40dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/handicapHole1TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/courseNameTextAddCourseHandicap"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="60dp"
+        android:text="Hole 1"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/handicapHole1EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole1TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole2EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole2TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole1EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 2"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/handicapHole2EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole2TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole3EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole3TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole2EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 3"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/handicapHole3EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole3TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole4EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole4TextAddCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole3EditAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        android:text="Hole 4"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/handicapHole4EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole4TextAddCourse"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole5EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole5TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nextButtonAddCourseHandicap"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 5"/>
+
+    <EditText
+        android:id="@+id/handicapHole5EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole5TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole6EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole6TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole5EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 6"/>
+
+    <EditText
+        android:id="@+id/handicapHole6EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole6TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole7EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole7TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole6EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 7"/>
+
+    <EditText
+        android:id="@+id/handicapHole7EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole7TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole8EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole8TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole7EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 8"/>
+
+    <EditText
+        android:id="@+id/handicapHole8EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole8TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"
+        android:nextFocusDown="@+id/handicapHole9EditAddCourse"/>
+
+    <TextView
+        android:id="@+id/handicapHole9TextAddCourse"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole8EditAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="Hole 9"/>
+
+    <EditText
+        android:id="@+id/handicapHole9EditAddCourse"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/handicapHole9TextAddCourse"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="0dp"
+        android:text=""
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:inputType="number"/>
+
+</RelativeLayout>

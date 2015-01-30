@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/addCoursePage3"
+    android:id="@+id/addCoursePageWhite"
     android:orientation="vertical"
     android:background="@drawable/golfgreen"
     >
 
-    <Button  android:id="@+id/backButtonAddCourse3"
+    <Button  android:id="@+id/backButtonAddCourseWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -17,7 +17,7 @@
         android:layout_marginLeft="10dp"
         />
 
-    <Button  android:id="@+id/nextButtonAddCourse3"
+    <Button  android:id="@+id/nextButtonAddCourseWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -32,30 +32,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="Enter white Tee Yardage"
+        android:layout_marginTop="25dp"
+        android:text="Enter White Tee Yardage"
         android:textColor="#000000"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/courseNameTextAddCourse3"
+        android:id="@+id/courseNameTextAddCourseWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/backButtonAddCourse3"
+        android:layout_below="@id/backButtonAddCourseWhite"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"
         android:textColor="#000000"
         android:textStyle="bold"
-        android:text="Sandy Burr"/>
+        android:text=""/>
 
     <TextView
         android:id="@+id/whiteHole1TextAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/courseNameTextAddCourse3"
+        android:layout_below="@id/courseNameTextAddCourseWhite"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="60dp"
         android:text="Hole 1"
         android:textColor="#000000"
@@ -67,13 +67,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole1TextAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole2EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole2TextAddCourse"
@@ -81,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole1EditAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:text="Hole 2"
         android:textColor="#000000"
@@ -93,13 +94,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole2TextAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole3EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole3TextAddCourse"
@@ -107,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole2EditAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:text="Hole 3"
         android:textColor="#000000"
@@ -119,13 +121,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole3TextAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole4EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole4TextAddCourse"
@@ -133,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole3EditAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:text="Hole 4"
         android:textColor="#000000"
@@ -145,21 +148,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole4TextAddCourse"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole5EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole5TextAddCourse"
         android:layout_width="115dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nextButtonAddCourse3"
+        android:layout_below="@id/nextButtonAddCourseWhite"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -171,13 +175,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole5TextAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole6EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole6TextAddCourse"
@@ -185,7 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole5EditAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -197,13 +202,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole6TextAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole7EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole7TextAddCourse"
@@ -211,7 +217,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole6EditAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -223,13 +229,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole7TextAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole8EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole8TextAddCourse"
@@ -237,7 +244,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole7EditAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -249,13 +256,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole8TextAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
         android:textStyle="bold"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:nextFocusDown="@+id/whiteHole9EditAddCourse"/>
 
     <TextView
         android:id="@+id/whiteHole9TextAddCourse"
@@ -263,7 +271,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole8EditAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -275,7 +283,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/whiteHole9TextAddCourse"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="0dp"
         android:text=""
         android:textColor="#000000"

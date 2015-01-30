@@ -2888,7 +2888,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	                location.getLongitude(), location.getLatitude()
 	        );
 	        Toast.makeText(StartRound.this, message,Toast.LENGTH_SHORT).show();
-	        
+
 	        String cityName = null;  
 	        Geocoder gcd = new Geocoder(getBaseContext(),   
 	          Locale.getDefault());  

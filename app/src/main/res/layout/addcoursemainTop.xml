@@ -47,6 +47,7 @@
         android:text=""
         android:textColor="#000000"
         android:gravity="center"
+        android:singleLine="true"
         android:textStyle="bold" />
 
     <TextView
@@ -74,7 +75,7 @@
         android:inputType="number"/>
 
     <TextView
-        android:id="@+id/numberOfninesTextAddCourse"
+        android:id="@+id/numberOfNinesTextAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -85,11 +86,11 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/numberOfninesEditAddCourse"
+        android:id="@+id/numberOfNinesEditAddCourse"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/numberOfninesTextAddCourse"
+        android:layout_below="@id/numberOfNinesTextAddCourse"
         android:layout_marginTop="10dp"
         android:text=""
         android:textColor="#000000"
