@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.android.ShotTracker.objects.Club;
-import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.RoundHole;
 import com.example.android.ShotTracker.objects.Shot;
 
@@ -145,11 +144,11 @@ public class ShotDAO extends ShotTrackerDBDAO {
         Club club = new Club();
         club.setID(cursor.getInt(2));
         shot.setClubID(club);
-        shot.setYards(cursor.getFloat(3));
-        shot.setShotStartLat(cursor.getFloat(4));
-        shot.setShotStartLong(cursor.getFloat(5));
-        shot.setShotEndLat(cursor.getFloat(6));
-        shot.setShotEndLong(cursor.getFloat(7));
+        shot.setYards(cursor.getInt(3));
+        shot.setShotStartLat(cursor.getDouble(4));
+        shot.setShotStartLong(cursor.getDouble(5));
+        shot.setShotEndLat(cursor.getDouble(6));
+        shot.setShotEndLong(cursor.getDouble(7));
         cursor.close();
 
         return shot;
@@ -181,11 +180,11 @@ public class ShotDAO extends ShotTrackerDBDAO {
             Club club = new Club();
             club.setID(cursor.getInt(2));
             shot.setClubID(club);
-            shot.setYards(cursor.getFloat(3));
-            shot.setShotStartLat(cursor.getFloat(4));
-            shot.setShotStartLong(cursor.getFloat(5));
-            shot.setShotEndLat(cursor.getFloat(6));
-            shot.setShotEndLong(cursor.getFloat(7));
+            shot.setYards(cursor.getInt(3));
+            shot.setShotStartLat(cursor.getDouble(4));
+            shot.setShotStartLong(cursor.getDouble(5));
+            shot.setShotEndLat(cursor.getDouble(6));
+            shot.setShotEndLong(cursor.getDouble(7));
 
             shots.add(shot);
         }
@@ -227,11 +226,11 @@ public class ShotDAO extends ShotTrackerDBDAO {
             Club club = new Club();
             club.setID(cursor.getInt(2));
             shot.setClubID(club);
-            shot.setYards(cursor.getFloat(3));
-            shot.setShotStartLat(cursor.getFloat(4));
-            shot.setShotStartLong(cursor.getFloat(5));
-            shot.setShotEndLat(cursor.getFloat(6));
-            shot.setShotEndLong(cursor.getFloat(7));
+            shot.setYards(cursor.getInt(3));
+            shot.setShotStartLat(cursor.getDouble(4));
+            shot.setShotStartLong(cursor.getDouble(5));
+            shot.setShotEndLat(cursor.getDouble(6));
+            shot.setShotEndLong(cursor.getDouble(7));
 
             shots.add(shot);
         }
@@ -273,11 +272,11 @@ public class ShotDAO extends ShotTrackerDBDAO {
             shot.setRoundHoleID(roundHole);
             //I got lazy... used the passed in roundHole for its ID
             shot.setClubID(club);
-            shot.setYards(cursor.getFloat(3));
-            shot.setShotStartLat(cursor.getFloat(4));
-            shot.setShotStartLong(cursor.getFloat(5));
-            shot.setShotEndLat(cursor.getFloat(6));
-            shot.setShotEndLong(cursor.getFloat(7));
+            shot.setYards(cursor.getInt(3));
+            shot.setShotStartLat(cursor.getDouble(4));
+            shot.setShotStartLong(cursor.getDouble(5));
+            shot.setShotEndLat(cursor.getDouble(6));
+            shot.setShotEndLong(cursor.getDouble(7));
 
             shots.add(shot);
         }

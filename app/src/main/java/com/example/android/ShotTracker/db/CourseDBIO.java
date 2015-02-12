@@ -34,7 +34,7 @@ public class CourseDBIO extends Activity {
         this.context = context;
     }
     public Course fillCourseFromFile(String fileName) {
-        Log.e("Test1", "FileName: " + fileName);
+        Log.d("TestDatabase", "CourseName: " + fileName);
         //Opens the course info file
         AssetManager assetManager = context.getAssets();
         InputStream filereader = null;
@@ -246,7 +246,9 @@ public class CourseDBIO extends Activity {
                 for (int y = 0; y < 3; y++) {
                     double zerolatlong = Double.parseDouble(bufferedreader.readLine());
                     for (int z = 0; z < 18; z++) {
-                        double latlong = Double.parseDouble(bufferedreader.readLine());
+                        String line = bufferedreader.readLine();
+
+                        double latlong = Double.parseDouble(line);
 
                         int holeNumber;
 
@@ -267,7 +269,7 @@ public class CourseDBIO extends Activity {
                                     get(holeNumber).
                                     getCourseHoleInfoList().
                                     get(y).
-                                    setLatitude((float) latlong);
+                                    setLatitude(latlong);
                         } else { // Longitude
                             course.getSubCourseList().
                                     get(sc).
@@ -275,7 +277,7 @@ public class CourseDBIO extends Activity {
                                     get(holeNumber).
                                     getCourseHoleInfoList().
                                     get(y).
-                                    setLongitude((float) latlong);
+                                    setLongitude(latlong);
                         }
                     }
                 }
@@ -306,7 +308,7 @@ public class CourseDBIO extends Activity {
                                 get(holeNumber).
                                 getCourseHoleInfoList().
                                 get(3).
-                                setLatitude((float) latlong);
+                                setLatitude(latlong);
                     } else { // Longitude
                         course.getSubCourseList().
                                 get(sc).
@@ -314,7 +316,7 @@ public class CourseDBIO extends Activity {
                                 get(holeNumber).
                                 getCourseHoleInfoList().
                                 get(3).
-                                setLongitude((float) latlong);
+                                setLongitude(latlong);
                     }
                 }
             }

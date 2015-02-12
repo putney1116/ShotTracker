@@ -11,7 +11,7 @@ public class SubCourse {
     private int mID = -1;
     private int mCourseID = -1;
     private String mName = "";
-    private float mRating = -1;
+    private double mRating = -1;
     private List<CourseHole> mCourseHoleList = null;
 
     /**
@@ -19,14 +19,14 @@ public class SubCourse {
      */
     public SubCourse() {}
 
-    public SubCourse(int id, Course course, String name, float rating) {
+    public SubCourse(int id, Course course, String name, double rating) {
         this.mID = id;
         this.mCourseID = course.getID();
         this.mName = name;
         this.mRating = rating;
     }
 
-    public SubCourse(Course course, String name, float rating) {
+    public SubCourse(Course course, String name, double rating) {
         this.mCourseID = course.getID();
         this.mName = name;
         this.mRating = rating;
@@ -52,7 +52,7 @@ public class SubCourse {
         this.mName = name;
     }
 
-    public void setRating(float rating) { this.mRating = rating; }
+    public void setRating(double rating) { this.mRating = rating; }
 
     /**
      * Getters
@@ -69,7 +69,7 @@ public class SubCourse {
         return this.mName;
     }
 
-    public float getRating() { return this.mRating; }
+    public double getRating() { return this.mRating; }
 
     /**
      * List of CourseHole objects
