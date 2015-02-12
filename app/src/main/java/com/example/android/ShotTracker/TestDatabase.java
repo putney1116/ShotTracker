@@ -2,33 +2,24 @@ package com.example.android.ShotTracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.android.ShotTracker.db.BagDAO;
+import com.example.android.ShotTracker.db.ClubDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseDBIO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
-import com.example.android.ShotTracker.db.DataBaseHelper;
 import com.example.android.ShotTracker.db.PlayerDAO;
-import com.example.android.ShotTracker.db.ClubDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.SubCourse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activity for testing the database
@@ -201,7 +192,7 @@ public class TestDatabase extends Activity {
 
     public void runCourseDBIO() {
 
-        CourseDBIO courseDBIO = new CourseDBIO();
+        CourseDBIO courseDBIO = new CourseDBIO(this);
 
         long newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("butternutfarm"));
 

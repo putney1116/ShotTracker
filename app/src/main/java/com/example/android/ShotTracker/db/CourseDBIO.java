@@ -1,10 +1,9 @@
 package com.example.android.ShotTracker.db;
 
 import android.app.Activity;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.content.res.Configuration;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
 
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
@@ -15,9 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import android.util.Log;
 
 /**
  * Created by damcglinchey on 1/14/15.
@@ -31,10 +27,16 @@ public class CourseDBIO extends Activity {
      * @param fileName
      * @return Course object
      */
+
+    private Context context;
+
+    public CourseDBIO(Context context){
+        this.context = context;
+    }
     public Course fillCourseFromFile(String fileName) {
         Log.e("Test1", "FileName: " + fileName);
         //Opens the course info file
-        AssetManager assetManager = getAssets();
+        AssetManager assetManager = context.getAssets();
         InputStream filereader = null;
         try {
             filereader = assetManager.open(fileName);
