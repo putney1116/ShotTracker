@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.Configuration;
+import android.content.Context;
 
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
 /**
  * Created by damcglinchey on 1/14/15.
@@ -30,13 +32,14 @@ public class CourseDBIO extends Activity {
      * @return Course object
      */
     public Course fillCourseFromFile(String fileName) {
-
+        Log.e("Test1", "FileName: " + fileName);
         //Opens the course info file
         AssetManager assetManager = getAssets();
         InputStream filereader = null;
         try {
             filereader = assetManager.open(fileName);
         } catch (IOException e) {
+            Log.e("Test", "can't find " + fileName);
             e.printStackTrace();
         }
         InputStreamReader inputreader = new InputStreamReader(filereader);
