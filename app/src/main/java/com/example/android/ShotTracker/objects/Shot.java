@@ -78,7 +78,7 @@ public class Shot {
         this.mShotStartLong = longitude;
     }
 
-    public void seShotEndLat(float lat) {
+    public void setShotEndLat(float lat) {
         this.mShotEndLat = lat;
     }
 
