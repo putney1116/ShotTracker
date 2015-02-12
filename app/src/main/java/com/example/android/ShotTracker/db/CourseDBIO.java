@@ -95,107 +95,176 @@ public class CourseDBIO extends Activity {
             //Saves the official course name
             course.setName(bufferedreader.readLine());
 
+            int totalpar = Integer.parseInt(bufferedreader.readLine());
+
             //par for each hole
-            for (int x = 0; x < 19; x++) {
+            for (int x = 0; x < 18; x++) {
                 int par = Integer.parseInt(bufferedreader.readLine());
 
+                int holeNumber;
+
                 int sc = -1;
-                if (x < 9) sc = 0; // Front 9
-                else sc = 1; // Back 9
+                if (x < 9) {
+                    sc = 0;
+                    holeNumber = x;// Front 9
+                }
+                else {// Back 9
+                    sc = 1;
+                    holeNumber = x - 9;
+                }
 
                 course.getSubCourseList().
                         get(sc).
                         getCourseHoleList().
-                        get(x).
+                        get(holeNumber).
                         setPar(par);
 
             }
             // blue tee yardage
-            for (int x = 0; x < 19; x++) {
+            int totalblue = Integer.parseInt(bufferedreader.readLine());
+
+            for (int x = 0; x < 18; x++) {
                 int blue = Integer.parseInt(bufferedreader.readLine());
 
+                int holeNumber;
+
                 int sc = -1;
-                if (x < 9) sc = 0; // Front 9
-                else sc = 1; // Back 9
+                if (x < 9) {
+                    sc = 0;
+                    holeNumber = x;// Front 9
+                }
+                else {// Back 9
+                    sc = 1;
+                    holeNumber = x - 9;
+                }
 
                 course.getSubCourseList().
                         get(sc).
                         getCourseHoleList().
-                        get(x).
+                        get(holeNumber).
                         setBlueYardage(blue);
             }
             // white tee yardage
-            for (int x = 0; x < 19; x++) {
+            int totalwhite = Integer.parseInt(bufferedreader.readLine());
+
+            for (int x = 0; x < 18; x++) {
                 int white = Integer.parseInt(bufferedreader.readLine());
 
+                int holeNumber;
+
                 int sc = -1;
-                if (x < 9) sc = 0; // Front 9
-                else sc = 1; // Back 9
+                if (x < 9) {
+                    sc = 0;
+                    holeNumber = x;// Front 9
+                }
+                else {// Back 9
+                    sc = 1;
+                    holeNumber = x - 9;
+                }
 
                 course.getSubCourseList().
                         get(sc).
                         getCourseHoleList().
-                        get(x).
+                        get(holeNumber).
                         setWhiteYardage(white);
             }
             // red tee yardage
-            for (int x = 0; x < 19; x++) {
+            int totalred = Integer.parseInt(bufferedreader.readLine());
+
+            for (int x = 0; x < 18; x++) {
                 int red = Integer.parseInt(bufferedreader.readLine());
 
+                int holeNumber;
+
                 int sc = -1;
-                if (x < 9) sc = 0; // Front 9
-                else sc = 1; // Back 9
+                if (x < 9) {
+                    sc = 0;
+                    holeNumber = x;// Front 9
+                }
+                else {// Back 9
+                    sc = 1;
+                    holeNumber = x - 9;
+                }
 
                 course.getSubCourseList().
                         get(sc).
                         getCourseHoleList().
-                        get(x).
+                        get(holeNumber).
                         setRedYardage(red);
             }
             // men's handicap
-            for (int x = 0; x < 19; x++) {
+            int totalmhc = Integer.parseInt(bufferedreader.readLine());
+
+            for (int x = 0; x < 18; x++) {
                 int hc = Integer.parseInt(bufferedreader.readLine());
 
+                int holeNumber;
+
                 int sc = -1;
-                if (x < 9) sc = 0; // Front 9
-                else sc = 1; // Back 9
+                if (x < 9) {
+                    sc = 0;
+                    holeNumber = x;// Front 9
+                }
+                else {// Back 9
+                    sc = 1;
+                    holeNumber = x - 9;
+                }
 
                 course.getSubCourseList().
                         get(sc).
                         getCourseHoleList().
-                        get(x).
+                        get(holeNumber).
                         setMenHandicap(hc);
             }
             // women's handicap
-            for (int x = 0; x < 19; x++) {
+            int totalwhc = Integer.parseInt(bufferedreader.readLine());
+
+            for (int x = 0; x < 18; x++) {
                 int hc = Integer.parseInt(bufferedreader.readLine());
 
+                int holeNumber;
+
                 int sc = -1;
-                if (x < 9) sc = 0; // Front 9
-                else sc = 1; // Back 9
+                if (x < 9) {
+                    sc = 0;
+                    holeNumber = x;// Front 9
+                }
+                else {// Back 9
+                    sc = 1;
+                    holeNumber = x - 9;
+                }
 
                 course.getSubCourseList().
                         get(sc).
                         getCourseHoleList().
-                        get(x).
+                        get(holeNumber).
                         setWomenHandicap(hc);
             }
 
             //Saves the gps locations of the front, middle, and back of all 18 holes
             for (int x = 0; x < 2; x++) {
                 for (int y = 0; y < 3; y++) {
-                    for (int z = 0; z < 19; z++) {
+                    double zerolatlong = Double.parseDouble(bufferedreader.readLine());
+                    for (int z = 0; z < 18; z++) {
                         double latlong = Double.parseDouble(bufferedreader.readLine());
 
+                        int holeNumber;
+
                         int sc = -1;
-                        if (z < 9) sc = 0; // Front 9
-                        else sc = 1; // Back 9
+                        if (z < 9) {
+                            sc = 0;
+                            holeNumber = z;// Front 9
+                        }
+                        else {// Back 9
+                            sc = 1;
+                            holeNumber = z - 9;
+                        }
 
                         if (x == 0) { // Latitude
                             course.getSubCourseList().
                                     get(sc).
                                     getCourseHoleList().
-                                    get(z).
+                                    get(holeNumber).
                                     getCourseHoleInfoList().
                                     get(y).
                                     setLatitude((float) latlong);
@@ -203,7 +272,7 @@ public class CourseDBIO extends Activity {
                             course.getSubCourseList().
                                     get(sc).
                                     getCourseHoleList().
-                                    get(z).
+                                    get(holeNumber).
                                     getCourseHoleInfoList().
                                     get(y).
                                     setLongitude((float) latlong);
@@ -214,18 +283,27 @@ public class CourseDBIO extends Activity {
 
             //Saves the gps locations of the tees
             for (int x = 0; x < 2; x++) {
-                for (int y = 0; y < 19; y++) {
+                double zerolatlong = Double.parseDouble(bufferedreader.readLine());
+                for (int y = 0; y < 18; y++) {
                     double latlong = Double.parseDouble(bufferedreader.readLine());
 
+                    int holeNumber;
+
                     int sc = -1;
-                    if (y < 9) sc = 0; // Front 9
-                    else sc = 1; // Back 9
+                    if (y < 9) {
+                        sc = 0;
+                        holeNumber = y;// Front 9
+                    }
+                    else {// Back 9
+                        sc = 1;
+                        holeNumber = y - 9;
+                    }
 
                     if (x == 0) { // Latitude
                         course.getSubCourseList().
                                 get(sc).
                                 getCourseHoleList().
-                                get(y).
+                                get(holeNumber).
                                 getCourseHoleInfoList().
                                 get(3).
                                 setLatitude((float) latlong);
@@ -233,7 +311,7 @@ public class CourseDBIO extends Activity {
                         course.getSubCourseList().
                                 get(sc).
                                 getCourseHoleList().
-                                get(y).
+                                get(holeNumber).
                                 getCourseHoleInfoList().
                                 get(3).
                                 setLongitude((float) latlong);
@@ -257,10 +335,10 @@ public class CourseDBIO extends Activity {
     public long createFullCourse(Course course) {
 
         //update to the DB in stages
-        CourseDAO cdao = new CourseDAO(getApplicationContext());
-        SubCourseDAO scdao = new SubCourseDAO(getApplicationContext());
-        CourseHoleDAO chdao = new CourseHoleDAO(getApplicationContext());
-        CourseHoleInfoDAO chidao = new CourseHoleInfoDAO(getApplicationContext());
+        CourseDAO cdao = new CourseDAO(context);
+        SubCourseDAO scdao = new SubCourseDAO(context);
+        CourseHoleDAO chdao = new CourseHoleDAO(context);
+        CourseHoleInfoDAO chidao = new CourseHoleInfoDAO(context);
 
         long courseID = cdao.createCourse(course);
         course.setID((int) courseID);
