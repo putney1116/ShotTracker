@@ -30,17 +30,18 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="20dp"
-        android:text="Done"
+        android:text="Confirm Location"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
-    <Button  android:id="@+id/backButtonAddCourseMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+    <Button  android:id="@+id/AddCourseMarkerBack"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:text="Back"
-        android:layout_marginTop="10dip"
+        android:layout_marginBottom="20dip"
+        android:layout_marginRight="20dip"
         />
 
 </RelativeLayout>

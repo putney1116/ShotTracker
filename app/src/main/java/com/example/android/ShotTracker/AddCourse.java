@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,6 +41,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     private Fragment frag;
 
     private AlertDialog.Builder builder;
+    private AlertDialog.Builder finishBuilder;
 
     private String courseName = "";
     private String courseZipCode = "";
@@ -52,16 +57,25 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     private int[][] handicapHole = null;
     private int[][] handicapWomanHole = null;
 
-    private String GC = "Golf Course";
+    private String GC = "golf course";
+    private String CC = "country club";
+    private String CR = "course";
+    private String GF = "golf";
+    private String LK = "links";
+
+    private TextView instr;
 
     private GoogleMap map;
-    private Marker pinMarker;
+    private Marker clubhouseMarker;
     private Marker teeBoxMarker;
     private Marker greenFrontMarker;
     private Marker greenMiddleMarker;
     private Marker greenBackMarker;
     private int click_state = 1;
     private LatLng location = null;
+    private LatLng redraw_greenMiddle = null;
+    private LatLng redraw_greenFront = null;
+    private LatLng redraw_teeBox = null;
     private CameraUpdate cam_update;
     private float firstHole_zoom = 15;
     private float teeBox_zoom = 19;
@@ -80,9 +94,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     private LatLng current_zoom_center;
     private int current_hole = 1;
     private int current_nine = 1;
-    private boolean firstClick = true;
     private Button confirmButton;
-    private int previous_state = 1;
+    private Button backButton;
+    private int previous_state = 0;
 
 
     /** Called when the activity is first created. */
@@ -92,6 +106,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         setContentView(R.layout.addcoursemaintop);
 
         buildDialog();
+        buildFinishDialog();
 
         backButtonMainInitializer();
         nextButtonMainInitializer();
@@ -176,6 +191,46 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //The dialog is closed
+
+                dialog.cancel();
+            }
+        });
+    }
+
+    private void buildFinishDialog(){
+        finishBuilder = new AlertDialog.Builder(AddCourse.this);
+        current_nine = current_nine + 1;
+        if (current_nine > numberOf9s) {
+            finishBuilder.setMessage("Done entering information for this set of nine holes?");
+        }
+        else{
+            finishBuilder.setMessage("Done entering information for this course?");
+        }
+        finishBuilder.setCancelable(true);
+
+        //If the user would like to continue exiting
+        finishBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id){
+                //Closes the present activity and returns the display to the home screen
+                previous_state = 0;
+                click_state = 1;
+                current_hole = 1;
+                if (current_nine > numberOf9s) {
+                    save_course_data();
+                }
+                else{
+                    next_nine();
+                }
+            }
+        });
+
+        //If the user does not want to exit the add course screen
+        finishBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //The dialog is closed
+                current_hole = current_hole - 1;
+                greenBackMarker.remove();
+                greenMiddleMarker.showInfoWindow();
                 dialog.cancel();
             }
         });
@@ -941,11 +996,21 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
 
 
-                    //Initializes the map
-                    mapInitializer();
+                    //Initializes the map if network is available and connected
+                    if(isNetworkAvailable()) {
+                        mapInitializer();
+                        confirm_button_initializer();
+                        back_button_initializer();
+                    }
+                    else
+                    {
+                        Toast toast = Toast.makeText(getApplicationContext(),"No Internet connection. Please connect to the Internet and try again.", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
 
                     //Initializes the confirm button
-                    confirm_button_initializer();
+
 
                 }catch(Exception e) {
                     System.out.println(e);
@@ -2028,6 +2093,262 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         });
     }
 
+    private void back_button_initializer(){
+        backButton = (Button)findViewById(R.id.AddCourseMarkerBack);
+        backButton.setVisibility(View.VISIBLE);
+
+        backButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (previous_state){
+                    case 0:
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        click_state = 1;
+
+                        setContentView(R.layout.addcoursehandicapwomen);
+                        nextButtonHandicapWomanInitializer();
+                        backButtonHandicapWomanInitializer();
+
+                        inputText = (TextView)findViewById(R.id.courseNameTextAddCourseHandicapWoman);
+                        inputText.setText(courseName);
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole1EditAddCourse);
+                        if(handicapWomanHole[0][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[0][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole2EditAddCourse);
+                        if(handicapWomanHole[1][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[1][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole3EditAddCourse);
+                        if(handicapWomanHole[2][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[2][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole4EditAddCourse);
+                        if(handicapWomanHole[3][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[3][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole5EditAddCourse);
+                        if(handicapWomanHole[4][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[4][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole6EditAddCourse);
+                        if(handicapWomanHole[5][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[5][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole7EditAddCourse);
+                        if(handicapWomanHole[6][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[6][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole8EditAddCourse);
+                        if(handicapWomanHole[7][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[7][current_nine-1]));
+
+                        input = (EditText)findViewById(R.id.handicapWomanHole9EditAddCourse);
+                        if(handicapWomanHole[8][current_nine-1] == 0)
+                            input.setText("");
+                        else
+                            input.setText(Integer.toString(handicapWomanHole[8][current_nine-1]));
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.remove(frag);
+                        ft.commit();
+
+                        break;
+                    case 1:
+                        //re-draw clubhouse marker
+                        map.clear();
+                        cam_update = CameraUpdateFactory.newLatLngZoom(location, firstHole_zoom);
+                        map.moveCamera(cam_update);
+                        draw_clubHouseMarker(location);
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        previous_state = 0;
+
+                        break;
+                    case 2:
+                        map.clear();
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        teeBoxMarker.remove();
+                        redraw_greenMiddle = new LatLng(greenMiddle_location[0][current_hole-2][current_nine-1], greenMiddle_location[1][current_hole-2][current_nine-1]);
+                        cam_update = CameraUpdateFactory.newLatLngZoom(redraw_greenMiddle,move_zoom);
+                        map.animateCamera(cam_update);
+                        previous_state = 7;
+
+                        //TEXT: Re-find Nth tee box
+                        break;
+                    case 3:
+                        map.clear();
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        redraw_teeBox = new LatLng(teeBox_location[0][current_hole-1][current_nine-1], teeBox_location[1][current_hole-1][current_nine-1]);
+                        draw_teeBoxMarker(redraw_teeBox);
+                        cam_update = CameraUpdateFactory.newLatLngZoom(redraw_teeBox, hazard_zoom);
+                        map.animateCamera(cam_update);
+                        previous_state = 4;
+
+                        break;
+                    case 4:
+                        map.clear();
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        redraw_teeBox = new LatLng(teeBox_location[0][current_hole-1][current_nine-1], teeBox_location[1][current_hole-1][current_nine-1]);
+                        cam_update = CameraUpdateFactory.newLatLngZoom(redraw_teeBox,teeBox_zoom);
+                        map.animateCamera(cam_update);
+                        if(current_hole == 1){
+                            previous_state = 1;
+                        }
+                        else {
+                            previous_state = 2;
+                        }
+                        break;
+                    case 5:
+                        //clear and re-zoom to green middle location
+                        map.clear();
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        greenFrontMarker.remove();
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        previous_state = 3;
+
+                        break;
+                    case 6:
+                        //clear, re-draw front marker, re-zoom to middle location
+                        map.clear();
+                        redraw_greenFront = new LatLng(greenFront_location[0][current_hole-1][current_nine-1], greenFront_location[1][current_hole-1][current_nine-1]);
+                        draw_greenFrontMarker(redraw_greenFront);
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        greenMiddleMarker.remove();
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        previous_state = 5;
+
+                        break;
+                    case 7:
+                        map.clear();
+                        current_hole = current_hole - 1;
+                        redraw_greenMiddle = new LatLng(greenMiddle_location[0][current_hole-1][current_nine-1], greenMiddle_location[1][current_hole-1][current_nine-1]);
+                        cam_update = CameraUpdateFactory.newLatLngZoom(redraw_greenMiddle, green_zoom);
+                        redraw_greenFront = new LatLng(greenFront_location[0][current_hole-1][current_nine-1], greenFront_location[1][current_hole-1][current_nine-1]);
+                        draw_greenFrontMarker(redraw_greenFront);
+                        draw_greenMiddleMarker(redraw_greenMiddle);
+                        map.animateCamera(cam_update);
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        click_state = previous_state;
+                        update_text_instructions(click_state);
+                        previous_state = 6;
+
+                        break;
+                }
+
+            }
+        });
+    }
+    private void draw_greenFrontMarker(LatLng greenFrontLocation){
+        greenFrontMarker = map.addMarker(new MarkerOptions()
+                .position(greenFrontLocation)
+                .title("Green Front")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.greenfrontmarker))
+                .anchor((float)0.37, (float)1.0));
+
+        greenFrontMarker.showInfoWindow();
+    }
+
+    private void draw_greenMiddleMarker(LatLng greenMiddleLocation){
+        greenMiddleMarker = map.addMarker(new MarkerOptions()
+                .position(greenMiddleLocation)
+                .title("Green Middle")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.greenmiddlemarker))
+                .anchor((float)0.37, (float)1.0));
+
+        greenMiddleMarker.showInfoWindow();
+    }
+
+    private void draw_greenBackMarker(LatLng greenBackLocation){
+        greenBackMarker = map.addMarker(new MarkerOptions()
+                .position(greenBackLocation)
+                .title("Green Back")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.greenbackmarker))
+                .anchor((float)0.37, (float)1.0));
+
+        greenBackMarker.showInfoWindow();
+    }
+
+    private void draw_teeBoxMarker(LatLng teeBoxLocation){
+        teeBoxMarker = map.addMarker(new MarkerOptions()
+                .position(teeBoxLocation)
+                .title("Tee Box")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.teeboxmarker))
+                .anchor((float)0.37, (float)1.0));
+
+        teeBoxMarker.showInfoWindow();
+    }
+
+    private void draw_clubHouseMarker(LatLng clubhouseLocation){
+        clubhouseMarker = map.addMarker(new MarkerOptions()
+                .position(clubhouseLocation)
+                .title("Clubhouse")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.clubhousemarker))
+                .anchor((float)0.37, (float)1.0));
+
+        clubhouseMarker.showInfoWindow();
+    }
+
+    private void update_text_instructions(int state){
+        instr = (TextView) findViewById(R.id.helloTextAddCourseMap);
+        switch(state){
+            case 1:
+                instr.setText("Select the location of first tee box.");
+                break;
+            case 2:
+                instr.setText("Select the location of the tee box for hole " + current_hole + ".");
+                break;
+            case 3:
+                instr.setText("Select the green for hole "+ current_hole + ".");
+                break;
+            case 4:
+                instr.setText("Locate the back of the furthest tee box from the green for hole "+ current_hole + ".");
+                break;
+            case 5:
+                instr.setText("Locate the front edge of the green for hole "+ current_hole + ".");
+                break;
+            case 6:
+                instr.setText("Locate the middle of the green for hole "+ current_hole + ".");
+                break;
+            case 7:
+                instr.setText("Locate the back edge of the green for hole "+ current_hole + ".");
+                break;
+
+        }
+
+    }
+
     private void confirm_button_initializer(){
         confirmButton = (Button)findViewById(R.id.AddCourseMarkersConfirm);
         confirmButton.setVisibility(View.INVISIBLE);
@@ -2036,22 +2357,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
             @Override
             public void onClick(View v){
                 switch (click_state){
-                    case 1:
-
-                        break;
-
-                    case 2:
-
-                        break;
-
-                    case 3:
-
-                        break;
-
                     case 4:
-                        Log.e("TESTING", "hole:" + current_hole);
-                        Log.e("TESTING", "nine:" + current_nine);
-                        Log.e("NINES", "Nines: " + numberOf9s);
                         previous_state = click_state;
                         teeBox_location[0][current_hole-1][current_nine-1] = current_zoom_center.latitude;
                         teeBox_location[1][current_hole-1][current_nine-1] = current_zoom_center.longitude;
@@ -2060,6 +2366,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         teeBoxMarker.remove();
                         confirmButton.setVisibility(View.INVISIBLE);
                         click_state = 3;
+                        update_text_instructions(click_state);
                         break;
 
                     case 5:
@@ -2070,6 +2377,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         //create new, smaller marker that won't be removed to show green front
 
                         greenFrontMarker.hideInfoWindow();
+                        current_zoom_center = null;
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        update_text_instructions(click_state);
                         break;
 
                     case 6:
@@ -2080,31 +2390,29 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         click_state = 7;
 
                         greenMiddleMarker.hideInfoWindow();
+                        current_zoom_center = null;
+                        confirmButton.setVisibility(View.INVISIBLE);
+                        update_text_instructions(click_state);
                         //create new, smaller marker that won't be removed to show green middle
                         break;
 
                     case 7:
-                        previous_state = click_state;
                         greenBack_location[0][current_hole-1][current_nine-1] = current_zoom_center.latitude;
                         greenBack_location[1][current_hole-1][current_nine-1] = current_zoom_center.longitude;
-                        click_state = 2;
-                        map.clear();
-                        cam_update = CameraUpdateFactory.newLatLngZoom(current_zoom_center, move_zoom);
-                        map.animateCamera(cam_update);
                         current_hole += 1;
                         confirmButton.setVisibility(View.INVISIBLE);
 
 
                         if (current_hole > 9){
-                            current_hole = 1;
-                            current_nine += 1;
-                            if (current_nine > numberOf9s){
-                                save_course_data();
-                                break;
-                            }
-        
-                            click_state = 1;
-                            next_nine();
+                            finishBuilder.show();
+                        }
+                        else{
+                            previous_state = click_state;
+                            click_state = 2;
+                            map.clear();
+                            cam_update = CameraUpdateFactory.newLatLngZoom(current_zoom_center, move_zoom);
+                            map.animateCamera(cam_update);
+                            update_text_instructions(click_state);
                         }
                         break;
 
@@ -2120,9 +2428,14 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         try {
             //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.addcoursemap);
+            if (courseName.toLowerCase().contains(CC) || courseName.toLowerCase().contains(CR) || courseName.toLowerCase().contains(GF) || courseName.toLowerCase().contains(LK)){
+                strAddress = courseName + ", " + courseZipCode;
+            }
+            else{
+                strAddress = courseName + " " + GC + ", " + courseZipCode;
+            }
 
-            strAddress = courseName + " " + GC + ", " + courseZipCode;
-            //strAddress = courseName + ", " + courseZipCode;
+
 
 
             map = ((MapFragment) getFragmentManager().findFragmentById(R.id.addCourseMap))
@@ -2137,18 +2450,27 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         /* map is already there, just return view as it is */
         }
 
-        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-
-        map.setOnMapClickListener(this);
-
         coder = new Geocoder(this);
 
         try {
             address = coder.getFromLocationName(strAddress,5);
         }
         catch (IOException e) {
+            Toast toast = Toast.makeText(getApplicationContext(),"No course found with that name and area code. Please try again.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            //Go back to course name screen
+            setContentView(R.layout.addcoursemaintop);
+            backButtonMainInitializer();
+            nextButtonMainInitializer();
             e.printStackTrace();
         }
+
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+        map.setOnMapClickListener(this);
+
+        coder = new Geocoder(this);
 
         Address location_temp = address.get(0);
         double temp1 = location_temp.getLatitude();
@@ -2158,15 +2480,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
         cam_update = CameraUpdateFactory.newLatLngZoom(location, firstHole_zoom);
         map.moveCamera(cam_update);
+        update_text_instructions(click_state);
 
-        pinMarker = map.addMarker(new MarkerOptions()
-                .position(location)
-                .title("Clubhouse")
-                .icon(BitmapDescriptorFactory
-                        .fromResource(R.drawable.pinmarker))
-                .anchor((float)0.37, (float)1.0));
-
-        pinMarker.showInfoWindow();
+        draw_clubHouseMarker(location);
 
     }
 
@@ -2174,18 +2490,23 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     public void onClick(View arg0) {
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     @Override
     public void onMapClick(LatLng mark) {
-
-
         switch (click_state){
             case 1:
                 previous_state = click_state;
                 cam_update = CameraUpdateFactory.newLatLngZoom(mark, teeBox_zoom);
                 map.animateCamera(cam_update);
                 click_state = 4;
-                confirmButton.setVisibility(View.VISIBLE);
+                update_text_instructions(click_state);
+
                 break;
 
             case 2:
@@ -2193,7 +2514,8 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                 cam_update = CameraUpdateFactory.newLatLngZoom(mark, teeBox_zoom);
                 map.animateCamera(cam_update);
                 click_state = 4;
-                confirmButton.setVisibility(View.VISIBLE);
+                update_text_instructions(click_state);
+
                 break;
 
             case 3:
@@ -2201,78 +2523,63 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                 cam_update = CameraUpdateFactory.newLatLngZoom(mark, green_zoom);
                 map.animateCamera(cam_update);
                 click_state = 5;
-                confirmButton.setVisibility(View.VISIBLE);
+                update_text_instructions(click_state);
+
                 break;
 
             case 4:
-                previous_state = click_state;
+
                 if(teeBoxMarker != null) {
                     teeBoxMarker.remove();
                 }
-                teeBoxMarker = map.addMarker(new MarkerOptions()
-                        .position(mark)
-                        .title("Tee Box")
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.pinmarker))
-                        .anchor((float)0.37, (float)1.0));
-
-                teeBoxMarker.showInfoWindow();
+                draw_teeBoxMarker(mark);
                 current_zoom_center = mark;
+                if(current_zoom_center != null){
+                    confirmButton.setVisibility(View.VISIBLE);
+                }
                 break;
 
             case 5:
-                previous_state = click_state;
+
                 if(greenFrontMarker != null) {
                     greenFrontMarker.remove();
                 }
-                greenFrontMarker = map.addMarker(new MarkerOptions()
-                        .position(mark)
-                        .title("Green Front")
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.pinmarker))
-                        .anchor((float)0.37, (float)1.0));
-
-                greenFrontMarker.showInfoWindow();
+                draw_greenFrontMarker(mark);
                 current_zoom_center = mark;
+                if(current_zoom_center != null){
+                    confirmButton.setVisibility(View.VISIBLE);
+                }
 
                 break;
 
             case 6:
-                previous_state = click_state;
+
 
                 if (greenMiddleMarker != null) {
                     greenMiddleMarker.remove();
                 }
 
-                greenMiddleMarker = map.addMarker(new MarkerOptions()
-                        .position(mark)
-                        .title("Green Middle")
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.pinmarker))
-                        .anchor((float)0.37, (float)1.0));
-
-                greenMiddleMarker.showInfoWindow();
+                draw_greenMiddleMarker(mark);
                 current_zoom_center = mark;
+                if(current_zoom_center != null){
+                    confirmButton.setVisibility(View.VISIBLE);
+                }
 
 
                 break;
 
             case 7:
-                previous_state = click_state;
+
 
                 if (greenBackMarker != null) {
                     greenBackMarker.remove();
                 }
 
-                greenBackMarker = map.addMarker(new MarkerOptions()
-                        .position(mark)
-                        .title("Green Back")
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.pinmarker))
-                        .anchor((float)0.37, (float)1.0));
-
-                greenBackMarker.showInfoWindow();
+                draw_greenBackMarker(mark);
                 current_zoom_center = mark;
+                if(current_zoom_center != null){
+                    confirmButton.setVisibility(View.VISIBLE);
+                }
 
                 break;
 
@@ -2370,5 +2677,6 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.remove(frag);
         ft.commit();
+        previous_state = 0;
     }
 }
