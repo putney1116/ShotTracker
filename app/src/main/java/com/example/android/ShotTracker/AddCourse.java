@@ -2597,7 +2597,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     }
 
     public void save_course_data(){
-        Toast.makeText(AddCourse.this, "Finished", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(getApplicationContext(),"Finished.", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
         for(int x = 0; x<9;x++){
             for(int y = 0;y<2;y++){
                 for(int z = 0;z<numberOf9s;z++){
