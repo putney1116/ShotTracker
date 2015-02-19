@@ -22,6 +22,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseHoleDAO;
+import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
+import com.example.android.ShotTracker.objects.Course;
+import com.example.android.ShotTracker.objects.CourseHole;
+import com.example.android.ShotTracker.objects.CourseHoleInfo;
+import com.example.android.ShotTracker.objects.SubCourse;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,6 +47,20 @@ import java.util.List;
 public class AddCourse extends Activity implements OnClickListener, OnMapClickListener{
 
     private Fragment frag;
+    private CourseDAO savedCourseDAO = new CourseDAO(this);
+    private SubCourseDAO savedSubCourseDAO = new SubCourseDAO(this);
+    private CourseHoleDAO savedCourseHoleDAO = new CourseHoleDAO(this);
+    private CourseHoleInfoDAO savedCourseHoleInfoDAO = new CourseHoleInfoDAO(this);
+    private Course savedCourse = null;
+    private SubCourse savedSubCourse = null;
+    private CourseHole savedCourseHole = null;
+    private CourseHoleInfo savedCourseHoleInfo = null;
+    private long courseID;
+    private long subCourseID;
+    private long courseHoleID;
+    private long courseHoleInfoID;
+
+
 
     private AlertDialog.Builder builder;
     private AlertDialog.Builder finishBuilder;
@@ -56,12 +78,16 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     private int[][] parHole = null;
     private int[][] handicapHole = null;
     private int[][] handicapWomanHole = null;
+    private int[][] parWomanHole = null;
 
     private String GC = "golf course";
     private String CC = "country club";
     private String CR = "course";
     private String GF = "golf";
     private String LK = "links";
+
+    private String[] locationInfo = new String[] {"GF","GM","GB","TB"};
+    private String[] subCourseName;
 
     private TextView instr;
 
@@ -111,6 +137,8 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         backButtonMainInitializer();
         nextButtonMainInitializer();
 
+        coder = new Geocoder(this);
+
     }
 
     private void arrayInitializer(){
@@ -121,6 +149,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         parHole = new int[9][numberOf9s];
         handicapHole = new int[9][numberOf9s];
         handicapWomanHole = new int[9][numberOf9s];
+        parWomanHole = new int[9][numberOf9s];
 
         for(int x = 0;x < 9; x++) {
             for(int y = 0;y < numberOf9s; y++) {
@@ -130,6 +159,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                 parHole[x][y] = 4;
                 handicapHole[x][y] = 0;
                 handicapWomanHole[x][y] = 0;
+                parWomanHole[x][y] = 0;
             }
         }
 
@@ -250,11 +280,17 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                     input = (EditText)findViewById(R.id.zipCodeEditAddCourse);
                     courseZipCode = input.getText().toString();
 
+                    //\todo Re-insert selectable number of nines - delete hardcoding below comment block
+                    numberOf9s = 2;
+                    /*
                     input = (EditText)findViewById(R.id.numberOfNinesEditAddCourse);
                     if(input.getText().toString().equals(""))
                         numberOf9s = 0;
                     else
                         numberOf9s = Integer.parseInt(input.getText().toString());
+                    */
+
+
 
                     if(courseName.equals("") || courseZipCode.equals("") || numberOf9s == 0){
                         Toast.makeText(AddCourse.this, "Please enter a Name, Zip Code, and Number of 9's", Toast.LENGTH_LONG).show();
@@ -263,6 +299,45 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         if(courseZipCode.length()!=5)
                             Toast.makeText(AddCourse.this, "Zip Code must by 5 characters", Toast.LENGTH_LONG).show();
                         else {
+                            if (!isNetworkAvailable()){
+                                Toast toast = Toast.makeText(getApplicationContext(),"No Internet connection. Please connect to the Internet and try again.", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.CENTER, 0, 0);
+                                toast.show();
+                                return;
+                            }
+                            else{
+                                if (courseName.toLowerCase().contains(CC) || courseName.toLowerCase().contains(CR) || courseName.toLowerCase().contains(GF) || courseName.toLowerCase().contains(LK)){
+                                    strAddress = courseName + ", " + courseZipCode;
+                                }
+                                else{
+                                    strAddress = courseName + " " + GC + ", " + courseZipCode;
+                                }
+
+
+
+                                try {
+                                    address = coder.getFromLocationName(strAddress,5);
+                                }
+                                catch (IOException e) {
+                                    Toast toast = Toast.makeText(getApplicationContext(),"No course found with that name and area code. Please try again.", Toast.LENGTH_LONG);
+                                    toast.setGravity(Gravity.CENTER, 0, 0);
+                                    toast.show();
+
+                                    return;
+
+                                }
+                                Address location_temp = address.get(0);
+                                double temp1 = location_temp.getLatitude();
+                                double temp2 = location_temp.getLongitude();
+
+                                location = new LatLng(temp1,temp2);
+                            }
+                            //\todo Make sure subcourse names are entered here - will need additional layout stuff
+                            //\todo Set subCourseName[] here or in array initializer, remove hardcoding below
+                            subCourseName = new String[] {"Front 9","Back 9"};
+
+
+
                             arrayInitializer();
 
                             setContentView(R.layout.addcoursemainblue);
@@ -994,23 +1069,10 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                     else
                         handicapWomanHole[8][current_nine-1] = Integer.parseInt(input.getText().toString());
 
-
-
-                    //Initializes the map if network is available and connected
-                    if(isNetworkAvailable()) {
-                        mapInitializer();
-                        confirm_button_initializer();
-                        back_button_initializer();
-                    }
-                    else
-                    {
-                        Toast toast = Toast.makeText(getApplicationContext(),"No Internet connection. Please connect to the Internet and try again.", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-                    }
-
-                    //Initializes the confirm button
-
+                    //Initializes map view
+                    mapInitializer();
+                    confirm_button_initializer();
+                    back_button_initializer();
 
                 }catch(Exception e) {
                     System.out.println(e);
@@ -2428,15 +2490,6 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         try {
             //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.addcoursemap);
-            if (courseName.toLowerCase().contains(CC) || courseName.toLowerCase().contains(CR) || courseName.toLowerCase().contains(GF) || courseName.toLowerCase().contains(LK)){
-                strAddress = courseName + ", " + courseZipCode;
-            }
-            else{
-                strAddress = courseName + " " + GC + ", " + courseZipCode;
-            }
-
-
-
 
             map = ((MapFragment) getFragmentManager().findFragmentById(R.id.addCourseMap))
                     .getMap();
@@ -2450,33 +2503,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         /* map is already there, just return view as it is */
         }
 
-        coder = new Geocoder(this);
-
-        try {
-            address = coder.getFromLocationName(strAddress,5);
-        }
-        catch (IOException e) {
-            Toast toast = Toast.makeText(getApplicationContext(),"No course found with that name and area code. Please try again.", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            //Go back to course name screen
-            setContentView(R.layout.addcoursemaintop);
-            backButtonMainInitializer();
-            nextButtonMainInitializer();
-            e.printStackTrace();
-        }
-
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         map.setOnMapClickListener(this);
-
-        coder = new Geocoder(this);
-
-        Address location_temp = address.get(0);
-        double temp1 = location_temp.getLatitude();
-        double temp2 = location_temp.getLongitude();
-
-        location = new LatLng(temp1,temp2);
 
         cam_update = CameraUpdateFactory.newLatLngZoom(location, firstHole_zoom);
         map.moveCamera(cam_update);
@@ -2600,6 +2629,43 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         Toast toast = Toast.makeText(getApplicationContext(),"Finished.", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+        savedCourse = new Course(courseName,strAddress);
+        courseID = savedCourseDAO.createCourse(savedCourse);
+        savedCourse.setID((int) courseID);
+        for (int x = 0; x < numberOf9s; x++){
+            savedSubCourse = new SubCourse(savedCourse,subCourseName[x]);
+            subCourseID = savedSubCourseDAO.createSubCourse(savedSubCourse);
+            savedSubCourse.setID((int) subCourseID);
+            for (int y = 0; y < 9; y++){
+                savedCourseHole = new CourseHole(savedSubCourse,y+1,parHole[y][x],parWomanHole[y][x],handicapHole[y][x],handicapWomanHole[y][x],blueHole[y][x],whiteHole[y][x],redHole[y][x]);
+                courseHoleID = savedCourseHoleDAO.createCourseHole(savedCourseHole);
+                savedCourseHole.setID((int) courseHoleID);
+                for (int z = 0; z < 4; z++){
+                    switch (z) {
+                        case 0:
+                            savedCourseHoleInfo = new CourseHoleInfo(savedCourseHole,locationInfo[z],greenFront_location[0][y][x],greenFront_location[1][y][x]);
+                            savedCourseHoleInfoDAO.createCourseHoleInfo(savedCourseHoleInfo);
+                            break;
+                        case 1:
+                            savedCourseHoleInfo = new CourseHoleInfo(savedCourseHole,locationInfo[z],greenMiddle_location[0][y][x],greenMiddle_location[1][y][x]);
+                            savedCourseHoleInfoDAO.createCourseHoleInfo(savedCourseHoleInfo);
+                            break;
+                        case 2:
+                            savedCourseHoleInfo = new CourseHoleInfo(savedCourseHole,locationInfo[z],greenBack_location[0][y][x],greenBack_location[1][y][x]);
+                            savedCourseHoleInfoDAO.createCourseHoleInfo(savedCourseHoleInfo);
+                            break;
+                        case 3:
+                            savedCourseHoleInfo = new CourseHoleInfo(savedCourseHole,locationInfo[z],teeBox_location[0][y][x],teeBox_location[1][y][x]);
+                            savedCourseHoleInfoDAO.createCourseHoleInfo(savedCourseHoleInfo);
+                            break;
+
+                    }
+
+                }
+
+            }
+        }
+
         for(int x = 0; x<9;x++){
             for(int y = 0;y<2;y++){
                 for(int z = 0;z<numberOf9s;z++){

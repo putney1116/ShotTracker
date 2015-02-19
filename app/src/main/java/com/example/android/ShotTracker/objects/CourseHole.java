@@ -41,6 +41,21 @@ public class CourseHole {
         this.mRedYardage = redyardage;
     }
 
+    public CourseHole(SubCourse subcourse, int hnum, int par, int wpar,
+                      int mhandicap, int whandicap, int blueyardage,
+                      int whiteyardage, int redyardage)
+    {
+        this.mSubCourseID = subcourse.getID();
+        this.mHoleNum = hnum;
+        this.mPar = par;
+        this.mWPar = wpar;
+        this.mMenHandicap = mhandicap;
+        this.mWomenHandicap = whandicap;
+        this.mBlueYardage = blueyardage;
+        this.mWhiteYardage = whiteyardage;
+        this.mRedYardage = redyardage;
+    }
+
     public CourseHole(SubCourse subcourse, int hnum, int par)
     {
         this.mSubCourseID = subcourse.getID();
