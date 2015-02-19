@@ -8,8 +8,8 @@ public class CourseHoleInfo {
     private int mID = -1;
     private int mCourseHoleID = -1;
     private String mInfo = "";
-    private float mLat = -1;
-    private float mLong = -1;
+    private double mLat = -1;
+    private double mLong = -1;
 
     /**
      * Constructors
@@ -17,7 +17,7 @@ public class CourseHoleInfo {
     public CourseHoleInfo () {}
 
     public CourseHoleInfo(int id, CourseHole coursehole, String info,
-                          float latitude, float longitude) {
+                          double latitude, double longitude) {
         this.mID = id;
         this.mCourseHoleID = coursehole.getID();
         this.mInfo = info;
@@ -26,7 +26,7 @@ public class CourseHoleInfo {
     }
 
     public CourseHoleInfo(CourseHole coursehole, String info,
-                          float latitude, float longitude) {
+                          double latitude, double longitude) {
         this.mCourseHoleID = coursehole.getID();
         this.mInfo = info;
         this.mLat = latitude;
@@ -48,15 +48,15 @@ public class CourseHoleInfo {
         this.mInfo = info;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.mLat = latitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.mLong = longitude;
     }
 
-    public void setLatLong(float latitude, float longitude) {
+    public void setLatLong(double latitude, double longitude) {
         this.mLat = latitude;
         this.mLong = longitude;
     }
@@ -76,11 +76,11 @@ public class CourseHoleInfo {
         return this.mInfo;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return this.mLat;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return this.mLong;
     }
 

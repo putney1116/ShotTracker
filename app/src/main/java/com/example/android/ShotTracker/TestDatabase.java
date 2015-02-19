@@ -2,32 +2,24 @@ package com.example.android.ShotTracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.android.ShotTracker.db.BagDAO;
+import com.example.android.ShotTracker.db.ClubDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseDBIO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
-import com.example.android.ShotTracker.db.DataBaseHelper;
 import com.example.android.ShotTracker.db.PlayerDAO;
-import com.example.android.ShotTracker.db.ClubDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.SubCourse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activity for testing the database
@@ -49,73 +41,17 @@ public class TestDatabase extends Activity {
         Log.d(TAG, "Begin testing DB------");
 
         // load stuff into the DB
-        loadPlayers();
-        loadClubs();
-        loadCourses();
+        //loadPlayers();
+        //loadClubs();
+        //loadCourses();
         // D. McGlinchey - Something about SubCourses is broken ...
-        loadSubCourses();
+        //loadSubCourses();
 
-        // make DAO objects
-        PlayerDAO pd = new PlayerDAO(getApplicationContext());
-        ClubDAO cd = new ClubDAO(getApplicationContext());
-        BagDAO bagDAO = new BagDAO(getApplicationContext());
-        CourseDAO courseDAO = new CourseDAO(getApplicationContext());
-        SubCourseDAO subcourseDAO = new SubCourseDAO(getApplicationContext());
-        CourseHoleDAO courseholeDAO = new CourseHoleDAO(getApplicationContext());
-        CourseHoleInfoDAO courseHoleInfoDAO = new CourseHoleInfoDAO(getApplicationContext());
+        //print DB
+        //printDB();
 
-        // Get all the players
-        List<Player> players = pd.readListofPlayers();
-
-        Log.e(TAG, "Number of Players = " + players.size());
-
-        for (Player player : players){
-            Log.d(TAG, player.getName());
-        }
-
-        // Get all the clubs
-        List<Club> clubs = cd.readListofClubs();
-
-        Log.e(TAG, "Number of Clubs = " + clubs.size());
-
-        for (Club club : clubs) {
-            Log.d(TAG, club.getClub());
-        }
-
-        // Add the first 3 clubs to the first players bag
-        Player p0 = players.get(0);
-        Log.d(TAG, "Adding clubs to " + p0.getID() + ": " + p0.getName() + "'s bag...");
-
-        for (int i = 0; i < 3; i++) {
-            bagDAO.createClubToBag(p0, clubs.get(i));
-            Log.d(TAG, "Added " + clubs.get(i).getClub());
-        }
-
-        List<Club> clubsInBag = bagDAO.readClubsInBag(p0);
-        Log.d(TAG, "Number of clubs in bag = " + clubsInBag.size());
-
-        for (Club club : clubsInBag) {
-            Log.d(TAG, club.getClub() + " in " + p0.getName() + "'s bag");
-        }
-
-        // Get all the courses
-        List<Course> courses = courseDAO.readListofCourses();
-
-        Log.d(TAG, "Number of Courses = " + courses.size());
-
-        for (Course course : courses) {
-            Log.d(TAG, course.getID() + ": " + course.getName() + " - " + course.getLocation());
-
-            // get subcourses
-            List<SubCourse> subCourses = subcourseDAO.readListofSubCourses(course);
-            Log.d(TAG, "  Number of SubCourses = " + subCourses.size());
-
-            for (SubCourse subCourse : subCourses) {
-                Log.d(TAG, "   " + subCourse.getID() + ": "
-                + subCourse.getName() + " - Rating = " + subCourse.getRating());
-            }
-        }
-
+        //test DBIO
+        runCourseDBIO();
 
         Log.d(TAG, "Finish------");
     }
@@ -189,5 +125,77 @@ public class TestDatabase extends Activity {
             }
         }
 
+    }
+
+    public void printDB() {
+        // make DAO objects
+        PlayerDAO pd = new PlayerDAO(getApplicationContext());
+        ClubDAO cd = new ClubDAO(getApplicationContext());
+        BagDAO bagDAO = new BagDAO(getApplicationContext());
+        CourseDAO courseDAO = new CourseDAO(getApplicationContext());
+        SubCourseDAO subcourseDAO = new SubCourseDAO(getApplicationContext());
+        CourseHoleDAO courseholeDAO = new CourseHoleDAO(getApplicationContext());
+        CourseHoleInfoDAO courseHoleInfoDAO = new CourseHoleInfoDAO(getApplicationContext());
+
+        // Get all the players
+        List<Player> players = pd.readListofPlayers();
+
+        Log.e(TAG, "Number of Players = " + players.size());
+
+        for (Player player : players){
+            Log.d(TAG, player.getName());
+        }
+
+        // Get all the clubs
+        List<Club> clubs = cd.readListofClubs();
+
+        Log.e(TAG, "Number of Clubs = " + clubs.size());
+
+        for (Club club : clubs) {
+            Log.d(TAG, club.getClub());
+        }
+
+        // Add the first 3 clubs to the first players bag
+        Player p0 = players.get(0);
+        Log.d(TAG, "Adding clubs to " + p0.getID() + ": " + p0.getName() + "'s bag...");
+
+        for (int i = 0; i < 3; i++) {
+            bagDAO.createClubToBag(p0, clubs.get(i));
+            Log.d(TAG, "Added " + clubs.get(i).getClub());
+        }
+
+        List<Club> clubsInBag = bagDAO.readClubsInBag(p0);
+        Log.d(TAG, "Number of clubs in bag = " + clubsInBag.size());
+
+        for (Club club : clubsInBag) {
+            Log.d(TAG, club.getClub() + " in " + p0.getName() + "'s bag");
+        }
+
+        // Get all the courses
+        List<Course> courses = courseDAO.readListofCourses();
+
+        Log.d(TAG, "Number of Courses = " + courses.size());
+
+        for (Course course : courses) {
+            Log.d(TAG, course.getID() + ": " + course.getName() + " - " + course.getLocation());
+
+            // get subcourses
+            List<SubCourse> subCourses = subcourseDAO.readListofSubCourses(course);
+            Log.d(TAG, "  Number of SubCourses = " + subCourses.size());
+
+            for (SubCourse subCourse : subCourses) {
+                Log.d(TAG, "   " + subCourse.getID() + ": "
+                        + subCourse.getName() + " - Rating = " + subCourse.getRating());
+            }
+        }
+    }
+
+    public void runCourseDBIO() {
+
+        CourseDBIO courseDBIO = new CourseDBIO(this);
+
+        long newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("butternutfarm"));
+
+        Log.d(TAG, "New CourseID is " + newCourseID);
     }
 }

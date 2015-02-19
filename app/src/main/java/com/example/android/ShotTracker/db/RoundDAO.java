@@ -24,6 +24,9 @@ public class RoundDAO extends ShotTrackerDBDAO {
     private static final String WHERE_ROUNDID_EQUALS = DataBaseHelper.ROUNDID_COLUMN
             + "=?";
 
+    private static final String WHERE_SUBCOURSEID_EQUALS = DataBaseHelper.SUBCOURSEID_COLUMN
+            + "=?";
+
     public RoundDAO(Context context) { super(context); }
 
     /**
@@ -64,6 +67,11 @@ public class RoundDAO extends ShotTrackerDBDAO {
                 new String[]{String.valueOf(round.getID())});
     }
 
+    /**
+     *
+     * @param round
+     * @return
+     */
     public long deleteRound(Round round){
         if (round.getID() < 0) {
             throw new RuntimeException("Round ID not set in RoundDAO.deleteRound()");
@@ -74,6 +82,10 @@ public class RoundDAO extends ShotTrackerDBDAO {
                 new String[]{String.valueOf(round.getID())});
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Round> readListofRounds() {
         List<Round> rounds = new ArrayList<Round>();
 
@@ -95,6 +107,57 @@ public class RoundDAO extends ShotTrackerDBDAO {
         }
         cursor.close();
         return rounds;
+    }
+
+    /**
+     *
+     * @param round
+     * @return
+     */
+    public Round readRound(Round round){
+        if (round.getID() < 0 ){
+            throw new RuntimeException("Round ID not set in RoundDAO::readRound()");
+        }
+
+        Cursor cursor = database.query(DataBaseHelper.ROUND_TABLE,
+                new String[] {DataBaseHelper.ROUNDID_COLUMN,
+                              DataBaseHelper.SUBCOURSEID_COLUMN,
+                              DataBaseHelper.ROUNDDATE_COLUMN},
+                WHERE_ROUNDID_EQUALS,
+                new String[] {String.valueOf(round.getID())},
+                null,null,null);
+
+        SubCourse subCourse = new SubCourse();
+        subCourse.setID(cursor.getInt(1));
+        round.setSubCourseID(subCourse);
+        round.setDate(new Date(cursor.getLong(2)));
+        cursor.close();
+
+        return round;
+    }
+
+    public Round readRoundSubCourse (SubCourse subCourse){
+        if (subCourse.getID() < 0 ){
+            throw new RuntimeException("SubCourse ID not set in RoundDAO::readRoundSubCourse()");
+        }
+
+        Cursor cursor = database.query(DataBaseHelper.ROUND_TABLE,
+                new String[] {DataBaseHelper.ROUNDID_COLUMN,
+                DataBaseHelper.SUBCOURSEID_COLUMN,
+                DataBaseHelper.ROUNDDATE_COLUMN},
+                WHERE_SUBCOURSEID_EQUALS,
+                new String[]{String.valueOf(subCourse.getID())},
+                null,null,null);
+
+        Round round = new Round();
+        round.setID(cursor.getInt(0));
+        //currently set to use the passed in SubCourse to assign the id to the returned round
+        //could change to use what is spit out of the database. Probably should?
+        round.setSubCourseID(subCourse);
+        round.setDate(new Date(cursor.getLong(2)));
+        cursor.close();
+
+        return round;
     }
 }
 

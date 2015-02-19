@@ -38,7 +38,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Course, SubCourse, CourseHole, CourseHoleInfo Columns
      */
     public static final String COURSEID_COLUMN = "CourseID";
-    public static final String COURSENAME_COLUMN = "CourseHame";
+    public static final String COURSENAME_COLUMN = "CourseName";
     public static final String COURSELOCATION_COLUMN = "CourseLocation";
 
     public static final String SUBCOURSEID_COLUMN = "SubCourseID";
@@ -114,7 +114,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SUBCOURSEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COURSEID_COLUMN + " INTEGER NOT NULL, "
             + SUBCOURSENAME_COLUMN + " TEXT NOT NULL, "
-            + SUBCOURSERATING_COLUMN + " NUMERIC"
+            + SUBCOURSERATING_COLUMN + " DOUBLE PRECISION"
             + ");";
 
     private static final String CREATE_COURSEHOLE_TABLE = "CREATE TABLE "
@@ -134,9 +134,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_COURSEHOLEINFO_TABLE = " CREATE TABLE "
             + COURSEHOLEINFO_TABLE + "("
             + COURSEHOLEINFOID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COURSEHOLEID_COLUMN + " INTEGER NOT NULL, "
             + INFO_COLUMN + " TEXT NOT NULL, "
-            + INFOLATITUDE_COLUMN + " NUMERIC NOT NULL, "
-            + INFOLONGITUDE_COLUMN + " NUMERIC NOT NULL"
+            + INFOLATITUDE_COLUMN + " DOUBLE PRECISION NULL, "
+            + INFOLONGITUDE_COLUMN + " DOUBLE PRECISION NOT NULL"
             + ");";
 
     private static final String CREATE_ROUND_TABLE = "CREATE TABLE "
@@ -162,11 +163,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SHOTID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + ROUNDHOLEID_COLUMN + " INTEGER NOT NULL, "
             + CLUBID_COLUMN + " INTEGER, "
-            + YARDS_COLUMN + " NUMERIC, "
-            + SHOTSTARTLAT_COLUMN + " NUMERIC, "
-            + SHOTSTARTLONG_COLUMN + " NUMERIC, "
-            + SHOTENDLAT_COLUMN + " NUMERIC, "
-            + SHOTENDLONG_COLUMN + " NUMERIC"
+            + YARDS_COLUMN + " INTEGER, "
+            + SHOTSTARTLAT_COLUMN + " DOUBLE PRECISION, "
+            + SHOTSTARTLONG_COLUMN + " DOUBLE PRECISION, "
+            + SHOTENDLAT_COLUMN + " DOUBLE PRECISION, "
+            + SHOTENDLONG_COLUMN + " DOUBLE PRECISION"
             + ");";
 
     private static final String CREATE_SHOTTYPE_TABLE = "CREATE TABLE "

@@ -52,6 +52,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         if (roundhole.getPutts() > 0) {
             values.put(DataBaseHelper.PUTTS_COLUMN, roundhole.getPutts());
         }
+        //\todo change score_column to penalties
         if (roundhole.getPenalties() > 0) {
             values.put(DataBaseHelper.SCORE_COLUMN, roundhole.getPenalties());
         }

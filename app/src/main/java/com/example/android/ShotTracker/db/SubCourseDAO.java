@@ -112,7 +112,7 @@ public class SubCourseDAO extends ShotTrackerDBDAO {
             //not sure if I did it "correctly", but it should work
             subCourse.setCourseID(course);
             subCourse.setName(cursor.getString(1));
-            subCourse.setRating(cursor.getFloat(2));
+            subCourse.setRating(cursor.getDouble(2));
 
             subCourses.add(subCourse);
         }

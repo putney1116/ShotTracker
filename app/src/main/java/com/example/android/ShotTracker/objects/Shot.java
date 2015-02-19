@@ -11,11 +11,11 @@ public class Shot {
     private int mRoundHoleID = -1;
     private int mClubID = -1;
     private Vector<ShotType> mShotType;
-    private float mYards = -1;
-    private float mShotStartLat = -1;
-    private float mShotStartLong = -1;
-    private float mShotEndLat = -1;
-    private float mShotEndLong = -1;
+    private int mYards = -1;
+    private double mShotStartLat = -1;
+    private double mShotStartLong = -1;
+    private double mShotEndLat = -1;
+    private double mShotEndLong = -1;
 
     /**
      * Default Constructor
@@ -25,8 +25,8 @@ public class Shot {
     }
 
     public Shot(int id, RoundHole roundhole, Club club,
-                Vector<ShotType> shottype, float yds, float sslat,
-                float sslong, float selat, float selong){
+                Vector<ShotType> shottype, int yds, double sslat,
+                double sslong, double selat, double selong){
         this.mID = id;
         this.mRoundHoleID = roundhole.getID();
         this.mClubID = club.getID();
@@ -39,8 +39,8 @@ public class Shot {
     }
 
     public Shot(RoundHole roundhole, Club club,
-                Vector<ShotType> shottype, float yds, float sslat,
-                float sslong, float selat, float selong){
+                Vector<ShotType> shottype, int yds, double sslat,
+                double sslong, double selat, double selong){
         this.mRoundHoleID = roundhole.getID();
         this.mClubID = club.getID();
         this.mShotType = shottype;
@@ -66,32 +66,32 @@ public class Shot {
         this.mClubID = club.getID();
     }
 
-    public void setYards(float yards) {
+    public void setYards(int yards) {
         this.mYards = yards;
     }
 
-    public void setShotStartLat(float lat) {
+    public void setShotStartLat(double lat) {
         this.mShotStartLat = lat;
     }
 
-    public void setShotStartLong(float longitude) {
+    public void setShotStartLong(double longitude) {
         this.mShotStartLong = longitude;
     }
 
-    public void seShotEndLat(float lat) {
+    public void setShotEndLat(double lat) {
         this.mShotEndLat = lat;
     }
 
-    public void setShotEndLong(float longitude) {
+    public void setShotEndLong(double longitude) {
         this.mShotEndLong = longitude;
     }
 
-    public void setShotStartLatLong(float latitude, float longitude) {
+    public void setShotStartLatLong(double latitude, double longitude) {
         this.mShotStartLat = latitude;
         this.mShotStartLong = longitude;
     }
 
-    public void setShotEndLatLong(float latitude, float longitude) {
+    public void setShotEndLatLong(double latitude, double longitude) {
         this.mShotEndLat = latitude;
         this.mShotEndLong = longitude;
     }
@@ -118,23 +118,23 @@ public class Shot {
         return this.mShotType;
     }
 
-    public float getYards() {
+    public int getYards() {
         return this.mYards;
     }
 
-    public float getShotStartLat() {
+    public double getShotStartLat() {
         return this.mShotStartLat;
     }
 
-    public float getShotStartLong() {
+    public double getShotStartLong() {
         return this.mShotStartLong;
     }
 
-    public float getShotEndLat() {
+    public double getShotEndLat() {
         return this.mShotEndLat;
     }
 
-    public float getShotEndLong() {
+    public double getShotEndLong() {
         return this.mShotEndLong;
     }
 
