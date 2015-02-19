@@ -74,8 +74,6 @@
         android:textStyle="bold"
         android:inputType="number"/>
 
-    <!--\todo Re-insert code to build slectable number of nines!-->
-    <!--
     <TextView
         android:id="@+id/numberOfNinesTextAddCourse"
         android:layout_width="wrap_content"
@@ -99,6 +97,5 @@
         android:textStyle="bold"
         android:gravity="center"
         android:inputType="number"/>
-        !-->
 <!--something!-->
 </RelativeLayout>

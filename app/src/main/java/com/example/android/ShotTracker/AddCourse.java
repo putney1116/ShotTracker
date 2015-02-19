@@ -47,10 +47,11 @@ import java.util.List;
 public class AddCourse extends Activity implements OnClickListener, OnMapClickListener{
 
     private Fragment frag;
-    private CourseDAO savedCourseDAO = new CourseDAO(this);
-    private SubCourseDAO savedSubCourseDAO = new SubCourseDAO(this);
-    private CourseHoleDAO savedCourseHoleDAO = new CourseHoleDAO(this);
-    private CourseHoleInfoDAO savedCourseHoleInfoDAO = new CourseHoleInfoDAO(this);
+    private CourseDAO savedCourseDAO = null;
+    private SubCourseDAO savedSubCourseDAO = null;
+    private CourseHoleDAO savedCourseHoleDAO = null;
+    private CourseHoleInfoDAO savedCourseHoleInfoDAO = null;
+
     private Course savedCourse = null;
     private SubCourse savedSubCourse = null;
     private CourseHole savedCourseHole = null;
@@ -62,8 +63,10 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
 
 
+
     private AlertDialog.Builder builder;
     private AlertDialog.Builder finishBuilder;
+    private AlertDialog.Builder nextNineBuilder;
 
     private String courseName = "";
     private String courseZipCode = "";
@@ -133,11 +136,17 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
         buildDialog();
         buildFinishDialog();
+        buildNextNineDialog();
 
         backButtonMainInitializer();
         nextButtonMainInitializer();
 
         coder = new Geocoder(this);
+
+        savedCourseHoleInfoDAO = new CourseHoleInfoDAO(this);
+        savedCourseHoleDAO = new CourseHoleDAO(this);
+        savedSubCourseDAO = new SubCourseDAO(this);
+        savedCourseDAO = new CourseDAO(this);
 
     }
 
@@ -229,13 +238,10 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
     private void buildFinishDialog(){
         finishBuilder = new AlertDialog.Builder(AddCourse.this);
-        current_nine = current_nine + 1;
-        if (current_nine > numberOf9s) {
-            finishBuilder.setMessage("Done entering information for this set of nine holes?");
-        }
-        else{
-            finishBuilder.setMessage("Done entering information for this course?");
-        }
+
+
+        finishBuilder.setMessage("Done entering information for this course?");
+
         finishBuilder.setCancelable(true);
 
         //If the user would like to continue exiting
@@ -245,12 +251,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                 previous_state = 0;
                 click_state = 1;
                 current_hole = 1;
-                if (current_nine > numberOf9s) {
-                    save_course_data();
-                }
-                else{
-                    next_nine();
-                }
+                save_course_data();
             }
         });
 
@@ -259,6 +260,35 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
             public void onClick(DialogInterface dialog, int id) {
                 //The dialog is closed
                 current_hole = current_hole - 1;
+                current_nine = current_nine - 1;
+                greenBackMarker.remove();
+                greenMiddleMarker.showInfoWindow();
+                dialog.cancel();
+            }
+        });
+    }
+
+    private void buildNextNineDialog(){
+        nextNineBuilder = new AlertDialog.Builder(AddCourse.this);
+        nextNineBuilder.setMessage("Done entering information for this set of nine holes?");
+
+        nextNineBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id){
+                //Closes the present activity and returns the display to the home screen
+                previous_state = 0;
+                click_state = 1;
+                current_hole = 1;
+                next_nine();
+
+            }
+        });
+
+        //If the user does not want to exit the add course screen
+        nextNineBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //The dialog is closed
+                current_hole = current_hole - 1;
+                current_nine = current_nine - 1;
                 greenBackMarker.remove();
                 greenMiddleMarker.showInfoWindow();
                 dialog.cancel();
@@ -280,16 +310,16 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                     input = (EditText)findViewById(R.id.zipCodeEditAddCourse);
                     courseZipCode = input.getText().toString();
 
-                    //\todo Re-insert selectable number of nines - delete hardcoding below comment block
-                    numberOf9s = 2;
-                    /*
+
+
                     input = (EditText)findViewById(R.id.numberOfNinesEditAddCourse);
                     if(input.getText().toString().equals(""))
                         numberOf9s = 0;
                     else
                         numberOf9s = Integer.parseInt(input.getText().toString());
-                    */
 
+                    //\todo Delete hardcoding below
+                    numberOf9s = 2;
 
 
                     if(courseName.equals("") || courseZipCode.equals("") || numberOf9s == 0){
@@ -2156,6 +2186,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     }
 
     private void back_button_initializer(){
+        //\todo Move back button such that it is not covering the zoom in and out buttons
         backButton = (Button)findViewById(R.id.AddCourseMarkerBack);
         backButton.setVisibility(View.VISIBLE);
 
@@ -2164,6 +2195,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
             public void onClick(View v) {
                 switch (previous_state){
                     case 0:
+
                         confirmButton.setVisibility(View.INVISIBLE);
                         click_state = 1;
 
@@ -2233,8 +2265,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         ft.commit();
 
                         break;
+
                     case 1:
-                        //re-draw clubhouse marker
+
                         map.clear();
                         cam_update = CameraUpdateFactory.newLatLngZoom(location, firstHole_zoom);
                         map.moveCamera(cam_update);
@@ -2245,7 +2278,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         previous_state = 0;
 
                         break;
+
                     case 2:
+
                         map.clear();
                         confirmButton.setVisibility(View.INVISIBLE);
                         click_state = previous_state;
@@ -2256,7 +2291,6 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                         map.animateCamera(cam_update);
                         previous_state = 7;
 
-                        //TEXT: Re-find Nth tee box
                         break;
                     case 3:
                         map.clear();
@@ -2383,6 +2417,8 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     }
 
     private void update_text_instructions(int state){
+        //\todo Add course and subcourse name as title text
+        //\todo Center and format text instructions to be readable
         instr = (TextView) findViewById(R.id.helloTextAddCourseMap);
         switch(state){
             case 1:
@@ -2466,7 +2502,14 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
 
                         if (current_hole > 9){
-                            finishBuilder.show();
+                            current_nine = current_nine + 1;
+                            if (current_nine > numberOf9s){
+                                finishBuilder.show();
+                            }
+                            else{
+                                nextNineBuilder.show();
+                            }
+
                         }
                         else{
                             previous_state = click_state;
@@ -2526,6 +2569,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    //\todo Recenter on green clicks such that selection cannot get buried behind a button? - Can still scroll around and re-select - stylistic choice
     @Override
     public void onMapClick(LatLng mark) {
         switch (click_state){
@@ -2583,7 +2627,6 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
             case 6:
 
-
                 if (greenMiddleMarker != null) {
                     greenMiddleMarker.remove();
                 }
@@ -2594,11 +2637,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                     confirmButton.setVisibility(View.VISIBLE);
                 }
 
-
                 break;
 
             case 7:
-
 
                 if (greenBackMarker != null) {
                     greenBackMarker.remove();
@@ -2613,19 +2654,10 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                 break;
 
         }
-        //What to do on clicks
-        //Store latlng in a variable, write after finishing
-        //Append text field based on state (tee/hazard/green(front/back/middle))
-        //Drop marker
-        //Redraw old markers as smaller points
-        //If click is on a marker or point, remove it
-
-        //Hiding the button:
-        //confirmButton.setVisibility(View.INVISIBLE);
-
     }
 
     public void save_course_data(){
+        //\todo Test to make sure all fields save correctly
         Toast toast = Toast.makeText(getApplicationContext(),"Finished.", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
@@ -2665,19 +2697,12 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
             }
         }
+        //\todo create finish method that returns to main page of app
+        finish();
+    }
 
-        for(int x = 0; x<9;x++){
-            for(int y = 0;y<2;y++){
-                for(int z = 0;z<numberOf9s;z++){
-                    System.out.println(teeBox_location[y][x][z]);
-                    System.out.println(greenFront_location[y][x][z]);
-                    System.out.println(greenMiddle_location[y][x][z]);
-                    System.out.println(greenBack_location[y][x][z]);
-                }
-            }
-        }
+    public void finish(){
 
-        //finish();
     }
 
     public void next_nine(){
