@@ -195,7 +195,11 @@ public class TestDatabase extends Activity {
         CourseDBIO courseDBIO = new CourseDBIO(this);
 
         long newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("butternutfarm"));
+        newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("sandyburr"));
+        newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("stowacres-north"));
+        newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("stowacres-south"));
+        newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("bluehills-challenger"));
+        newCourseID = courseDBIO.createFullCourse(courseDBIO.fillCourseFromFile("bluehills-championship"));
 
-        Log.d(TAG, "New CourseID is " + newCourseID);
     }
 }
