@@ -106,6 +106,10 @@ public class CourseHole {
         this.mRedYardage = redyardage;
     }
 
+    public void setCourseHoleInfoList(List<CourseHoleInfo> courseHoleInfos){
+        this.mCourseHoleInfoList = courseHoleInfos;
+    }
+
     /**
      * Getters
      */

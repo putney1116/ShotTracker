@@ -9,6 +9,7 @@ import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.CourseHoleInfo;
 import com.example.android.ShotTracker.objects.SubCourse;
+import com.google.android.gms.fitness.request.DataReadRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +85,49 @@ public class CourseDAO extends ShotTrackerDBDAO {
                 new String[]{String.valueOf(course.getID())});
     }
 
+
+    public Course readCoursefromID(int courseID){
+
+        Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
+                new String[] {DataBaseHelper.COURSEID_COLUMN,
+                              DataBaseHelper.COURSENAME_COLUMN,
+                              DataBaseHelper.COURSELOCATION_COLUMN},
+                WHERE_COURSEID_EQUALS,
+                new String[] {Integer.toString(courseID)},
+                null,null,null);
+
+        Course course = new Course();
+        while (cursor.moveToNext()) {
+            course.setID(cursor.getInt(0));
+            course.setName(cursor.getString(1));
+            course.setLocation(cursor.getString(2));
+        }
+        cursor.close();
+
+        return course;
+    }
+
+    /**
+     * Get a course name given an course ID
+     * @param courseID
+     * @return
+     */
+    public String readCourseNamefromID(int courseID){
+        String courseName = null;
+
+        Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
+                new String[] {DataBaseHelper.COURSENAME_COLUMN,},
+                WHERE_COURSEID_EQUALS,
+                new String[] {Integer.toString(courseID)},
+                null,null,null);
+
+        while (cursor.moveToNext()) {
+            courseName = cursor.getString(0);
+        }
+        cursor.close();
+
+        return courseName;
+    }
     /**
      * Get a list of all Course's in the DB
      * @return A list of Course objects

@@ -43,6 +43,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
+
+import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseHoleDAO;
+import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
+import com.example.android.ShotTracker.objects.Course;
+import com.example.android.ShotTracker.objects.CourseHole;
+import com.example.android.ShotTracker.objects.CourseHoleInfo;
+import com.example.android.ShotTracker.objects.SubCourse;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -113,7 +122,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private Vibrator vibe;
 	
 	private String courseName = "";
-	private String fileName = "";
+	private int courseID = -1;
 	private int par[] = new int[19];
 	private int blueYardage[] = new int[19];
 	private int whiteYardage[] = new int[19];
@@ -127,6 +136,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	
 	//teelocations[lat,long][holenumber]
 	private double teeLocations[][] = new double[2][19];
+
+    //DAOs
+    private CourseDAO courseDAO = null;
+    private SubCourseDAO subCourseDAO = null;
+    private CourseHoleDAO courseHoleDAO = null;
+    private CourseHoleInfoDAO courseHoleInfoDAO = null;
     
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
@@ -168,10 +183,16 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	
 	//Loads the player names and course information
 	private void loadCourseInfo(){
+
+        courseDAO = new CourseDAO(this);
+        subCourseDAO = new SubCourseDAO(this);
+        courseHoleDAO = new CourseHoleDAO(this);
+        courseHoleInfoDAO = new CourseHoleInfoDAO(this);
+
 		Intent myIntent = getIntent();
 		
 		//Loads the course name from the previous activity
-		fileName = myIntent.getStringExtra("File Name");
+		courseID = myIntent.getIntExtra("Course ID", -1);
 		
 		numberOfPlayers = myIntent.getIntExtra("Players", 0);
 		
@@ -179,60 +200,46 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		for(int x=1;x<=numberOfPlayers;x++){
 			playerName[x] = myIntent.getStringExtra("Player"+(x-1));
 		}
-		
-		//Opens the course info file
-		AssetManager assetManager = getAssets();
-		InputStream filereader = null;
-		try {
-			filereader = assetManager.open(fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}						
-	    InputStreamReader inputreader = new InputStreamReader(filereader);
-	    BufferedReader bufferedreader = new BufferedReader(inputreader);
 	    
-	    try {
-	    	//Saves the official course name
-			courseName = bufferedreader.readLine();
-	    
-			//Saves the scorecard info for the course
-			for(int x=0;x<19;x++){
-				par[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				blueYardage[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				whiteYardage[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				redYardage[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				menHandicap[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				womenHandicap[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			
-			//Saves the gps locations of the front, middle, and back of all 18 holes
-			for(int x=0;x<2;x++){
-				for(int y=0;y<3;y++){
-					for(int z=0;z<19;z++){		
-						greenLocations[x][y][z] = Double.parseDouble(bufferedreader.readLine());
-					}
-				}
-			}
-			
-			//Saves the gps locations of the tees
-			for(int x=0;x<2;x++){
-				for(int y=0;y<19;y++){
-					teeLocations[x][y] = Double.parseDouble(bufferedreader.readLine());
-				}
-			}
-	    } catch (IOException e) {
-			e.printStackTrace();
-		}
+
+        //Saves the official course name
+        Course course = courseDAO.readCoursefromID(courseID);
+        courseName = course.getName();
+
+        List<SubCourse> subCourses = subCourseDAO.readListofSubCourses(course);
+
+        for (SubCourse subCourse : subCourses){
+            List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
+
+            for (CourseHole courseHole : courseHoles){
+                List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
+                courseHole.setCourseHoleInfoList(courseHoleInfos);
+
+                par[courseHole.getHoleNumber()] = courseHole.getPar();
+                blueYardage[courseHole.getHoleNumber()] = courseHole.getBlueYardage();
+                whiteYardage[courseHole.getHoleNumber()] = courseHole.getWhiteYardage();
+                redYardage[courseHole.getHoleNumber()] = courseHole.getRedYardage();
+                menHandicap[courseHole.getHoleNumber()] = courseHole.getMenHandicap();
+                womenHandicap[courseHole.getHoleNumber()] = courseHole.getWomenHandicap();
+
+                for(CourseHoleInfo courseHoleInfo : courseHoleInfos){
+
+                    if (courseHoleInfo.getInfo().equals("Green Front")){
+                        greenLocations[0][0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        greenLocations[1][0][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }else if (courseHoleInfo.getInfo().equals("Green Middle")) {
+                        greenLocations[0][1][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        greenLocations[1][1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }else if (courseHoleInfo.getInfo().equals("Green Back")) {
+                        greenLocations[0][2][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        greenLocations[1][2][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }else if (courseHoleInfo.getInfo().equals("Tee")) {
+                        teeLocations[0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        teeLocations[1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }
+                }
+            }
+        }
 	}
 
 	//Called when the front9 space is selected on the scorecard tab
@@ -2807,6 +2814,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    	        	BufferedWriter out = new BufferedWriter(inputreader);
 	
 	    	        	//Writes the course name to the file
+                        String fileName = "poop";
 	    	        	out.write(fileName);
 		           		out.newLine();
 		           		

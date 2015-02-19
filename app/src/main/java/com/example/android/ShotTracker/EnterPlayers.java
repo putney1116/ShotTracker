@@ -14,6 +14,7 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,18 +24,23 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.ShotTracker.db.CourseDAO;
+
 public class EnterPlayers extends Activity{
 	
 	private TextView[] playerNameText = new TextView[4];
 	private EditText[] playerNameField = new EditText[4];;
 	
 	private Button startRoundButton;
-	
-	private String fileName;
+
+    //\todo change to long
+	private int courseID;
 	
 	private int radioButtonNumber;
 	
 	private Vibrator vibe;
+
+    private CourseDAO courseDAO = null;
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +49,9 @@ public class EnterPlayers extends Activity{
 				
 		//Loads the file name from the previous activity
 		Intent myIntent = getIntent();
-		fileName = myIntent.getStringExtra("File Name");
+		courseID = myIntent.getIntExtra("Course ID",-1);
+
+        Log.e("Test", "course ID = " + courseID);
 		
 		//Initialize Vibrate
     	vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -81,25 +89,9 @@ public class EnterPlayers extends Activity{
 	
 	//Displays the course name at the top of the screen
 	private void setCourseName(){
-		String courseName = "";
-		
-		//Opens the course info file
-		AssetManager assetManager = getAssets();
-		InputStream filereader = null;
-		try {
-			filereader = assetManager.open(fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}						
-	    InputStreamReader inputreader = new InputStreamReader(filereader);
-	    BufferedReader bufferedreader = new BufferedReader(inputreader);
-	    
-	    //Saves the course name
-		try {
-			courseName = bufferedreader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		courseDAO = new CourseDAO(this);
+
+        String courseName = courseDAO.readCourseNamefromID(courseID);
 		
 		//Displays the course name at the top of the screen
 		TextView courseNameText = (TextView)findViewById(R.id.coursename);
@@ -120,7 +112,7 @@ public class EnterPlayers extends Activity{
 					//Calls the activity that is the main screen during play
 					//The course file name and number of players are passed along
 					Intent myIntent = new Intent(v.getContext(), StartRound.class);
-					myIntent.putExtra("File Name", fileName);
+					myIntent.putExtra("Course ID", courseID);
 					myIntent.putExtra("Players", radioButtonNumber);
 					
 					List<String> playerList = new ArrayList<String>();

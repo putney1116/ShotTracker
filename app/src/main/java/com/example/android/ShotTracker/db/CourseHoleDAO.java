@@ -156,12 +156,13 @@ public class CourseHoleDAO extends ShotTrackerDBDAO {
             courseHole.setID(cursor.getInt(0));
             courseHole.setSubCourseID(subCourse);
             courseHole.setHoleNumber(cursor.getInt(2));
-            courseHole.setWPar(cursor.getInt(3));
-            courseHole.setMenHandicap(cursor.getInt(4));
-            courseHole.setWomenHandicap(cursor.getInt(5));
-            courseHole.setBlueYardage(cursor.getInt(6));
-            courseHole.setWhiteYardage(cursor.getInt(7));
-            courseHole.setRedYardage(cursor.getInt(8));
+            courseHole.setPar(cursor.getInt(3));
+            courseHole.setWPar(cursor.getInt(4));
+            courseHole.setMenHandicap(cursor.getInt(5));
+            courseHole.setWomenHandicap(cursor.getInt(6));
+            courseHole.setBlueYardage(cursor.getInt(7));
+            courseHole.setWhiteYardage(cursor.getInt(8));
+            courseHole.setRedYardage(cursor.getInt(9));
 
             courseHoles.add(courseHole);
         }

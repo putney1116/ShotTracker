@@ -5,16 +5,8 @@
     android:layout_height="fill_parent">
         <TextView android:id="@+id/startitem1"
         	android:layout_height="wrap_content"
-        	android:layout_width="wrap_content"
-        	android:width="175dip"
+        	android:layout_width="fill_parent"
         	android:textColor="#000000"
         	android:gravity="center"
-        />
-        <TextView android:id="@+id/startitem2"
-	        android:layout_height="wrap_content"
-	        android:layout_width="wrap_content"
-	        android:width="75dip"
-	        android:textColor="#000000"
-	        android:gravity="center"
 	    />
 </LinearLayout>

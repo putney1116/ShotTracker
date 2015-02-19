@@ -10,6 +10,7 @@ import android.database.SQLException;
  */
 public class ShotTrackerDBDAO {
 
+    //\todo change every ID to long in every DB object and in the DataBaseHelper (table creation statements)
     protected SQLiteDatabase database;
     private DataBaseHelper dbHelper;
     private Context mContext;
