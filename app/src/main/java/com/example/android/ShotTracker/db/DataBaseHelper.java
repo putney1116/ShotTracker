@@ -136,7 +136,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + COURSEHOLEINFOID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COURSEHOLEID_COLUMN + " INTEGER NOT NULL, "
             + INFO_COLUMN + " TEXT NOT NULL, "
-            + INFOLATITUDE_COLUMN + " DOUBLE PRECISION NULL, "
+            + INFOLATITUDE_COLUMN + " DOUBLE PRECISION NOT NULL, "
             + INFOLONGITUDE_COLUMN + " DOUBLE PRECISION NOT NULL"
             + ");";
 
@@ -183,6 +183,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SHOTTYPEID_COLUMN + " INTEGER NOT NULL"
             + ");";
 
+    //\todo Make PLAYERNAME_COLUMN Unique
     private static final String CREATE_PLAYER_TABLE = "CREATE TABLE "
             + PLAYER_TABLE + "("
             + PLAYERID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
