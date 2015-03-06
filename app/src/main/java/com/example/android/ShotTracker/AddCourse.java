@@ -2663,15 +2663,15 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         toast.show();
         savedCourse = new Course(courseName,strAddress);
         courseID = savedCourseDAO.createCourse(savedCourse);
-        savedCourse.setID((int) courseID);
+        savedCourse.setID(courseID);
         for (int x = 0; x < numberOf9s; x++){
             savedSubCourse = new SubCourse(savedCourse,subCourseName[x]);
             subCourseID = savedSubCourseDAO.createSubCourse(savedSubCourse);
-            savedSubCourse.setID((int) subCourseID);
+            savedSubCourse.setID(subCourseID);
             for (int y = 0; y < 9; y++){
                 savedCourseHole = new CourseHole(savedSubCourse,y+1,parHole[y][x],parWomanHole[y][x],handicapHole[y][x],handicapWomanHole[y][x],blueHole[y][x],whiteHole[y][x],redHole[y][x]);
                 courseHoleID = savedCourseHoleDAO.createCourseHole(savedCourseHole);
-                savedCourseHole.setID((int) courseHoleID);
+                savedCourseHole.setID(courseHoleID);
                 for (int z = 0; z < 4; z++){
                     switch (z) {
                         case 0:
