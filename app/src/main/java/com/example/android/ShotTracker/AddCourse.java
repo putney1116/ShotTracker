@@ -89,7 +89,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     private String GF = "golf";
     private String LK = "links";
 
-    private String[] locationInfo = new String[] {"GF","GM","GB","TB"};
+    private String[] locationInfo = new String[] {"Green Front","Green Middle","Green Back","Tee"};
     private String[] subCourseName;
 
     private TextView instr;
@@ -2657,7 +2657,6 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     }
 
     public void save_course_data(){
-        //\todo Test to make sure all fields save correctly
         Toast toast = Toast.makeText(getApplicationContext(),"Finished.", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
@@ -2697,12 +2696,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
             }
         }
-        //\todo create finish method that returns to main page of app
         finish();
-    }
-
-    public void finish(){
-
     }
 
     public void next_nine(){
