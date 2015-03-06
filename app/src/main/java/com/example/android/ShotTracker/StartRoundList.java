@@ -120,11 +120,10 @@ public class StartRoundList extends ListActivity{
 	}
 	
 	//Loads the file name for the course selected
-    //\todo loadCourseID() needs to return a long after we change all the IDs to longs
-	private int loadCourseID(int position){
+	private long loadCourseID(int position){
 		//Opens the list of courses
 
-	    int id = (int) courses.get(position).getID();//currently casted to int
+	    long id = courses.get(position).getID();//currently casted to int
 
 	    //Returns the file name
 		return id;

@@ -122,7 +122,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private Vibrator vibe;
 	
 	private String courseName = "";
-	private int courseID = -1;
+	private long courseID = -1;
 	private int par[] = new int[19];
 	private int blueYardage[] = new int[19];
 	private int whiteYardage[] = new int[19];
@@ -192,7 +192,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		Intent myIntent = getIntent();
 		
 		//Loads the course name from the previous activity
-		courseID = myIntent.getIntExtra("Course ID", -1);
+		courseID = myIntent.getLongExtra("Course ID", -1);
 		
 		numberOfPlayers = myIntent.getIntExtra("Players", 0);
 		

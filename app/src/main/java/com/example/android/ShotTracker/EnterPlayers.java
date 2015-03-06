@@ -33,8 +33,7 @@ public class EnterPlayers extends Activity{
 	
 	private Button startRoundButton;
 
-    //\todo change to long
-	private int courseID;
+	private long courseID;
 	
 	private int radioButtonNumber;
 	
@@ -49,7 +48,7 @@ public class EnterPlayers extends Activity{
 				
 		//Loads the file name from the previous activity
 		Intent myIntent = getIntent();
-		courseID = myIntent.getIntExtra("Course ID",-1);
+		courseID = myIntent.getLongExtra("Course ID",-1);
 
         Log.e("Test", "course ID = " + courseID);
 		

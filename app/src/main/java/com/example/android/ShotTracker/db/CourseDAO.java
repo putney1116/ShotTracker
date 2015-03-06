@@ -86,14 +86,14 @@ public class CourseDAO extends ShotTrackerDBDAO {
     }
 
 
-    public Course readCoursefromID(int courseID){
+    public Course readCoursefromID(long courseID){
 
         Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
                 new String[] {DataBaseHelper.COURSEID_COLUMN,
                               DataBaseHelper.COURSENAME_COLUMN,
                               DataBaseHelper.COURSELOCATION_COLUMN},
                 WHERE_COURSEID_EQUALS,
-                new String[] {Integer.toString(courseID)},
+                new String[] {Long.toString(courseID)},
                 null,null,null);
 
         Course course = new Course();
@@ -112,13 +112,13 @@ public class CourseDAO extends ShotTrackerDBDAO {
      * @param courseID
      * @return
      */
-    public String readCourseNamefromID(int courseID){
+    public String readCourseNamefromID(long courseID){
         String courseName = null;
 
         Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
                 new String[] {DataBaseHelper.COURSENAME_COLUMN,},
                 WHERE_COURSEID_EQUALS,
-                new String[] {Integer.toString(courseID)},
+                new String[] {Long.toString(courseID)},
                 null,null,null);
 
         while (cursor.moveToNext()) {
