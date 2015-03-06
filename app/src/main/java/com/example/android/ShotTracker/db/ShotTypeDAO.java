@@ -107,7 +107,7 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
 
         while (cursor.moveToNext()){
             ShotType shotType = new ShotType();
-            shotType.setID(cursor.getInt(0));
+            shotType.setID(cursor.getLong(0));
             shotType.setType(cursor.getString(1));
 
             shotTypes.add(shotType);

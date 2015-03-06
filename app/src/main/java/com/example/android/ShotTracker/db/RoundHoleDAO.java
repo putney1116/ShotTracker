@@ -136,15 +136,15 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         List<RoundHole> roundHoles = new ArrayList<RoundHole>();
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
-            roundHole.setID(cursor.getInt(0));
+            roundHole.setID(cursor.getLong(0));
             Round round = new Round();
-            round.setID(cursor.getInt(1));
+            round.setID(cursor.getLong(1));
             roundHole.setRoundID(round);
             CourseHole courseHole = new CourseHole();
-            courseHole.setID(cursor.getInt(2));
+            courseHole.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHole);
             Player playernew = new Player();
-            playernew.setID(cursor.getInt(3));
+            playernew.setID(cursor.getLong(3));
             roundHole.setPlayerID(playernew);
             roundHole.setScore(cursor.getInt(4));
             roundHole.setPutts(cursor.getInt(5));
@@ -183,15 +183,15 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         List<RoundHole> roundHoles = new ArrayList<RoundHole>();
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
-            roundHole.setID(cursor.getInt(0));
+            roundHole.setID(cursor.getLong(0));
             Round roundnew = new Round();
-            roundnew.setID(cursor.getInt(1));
+            roundnew.setID(cursor.getLong(1));
             roundHole.setRoundID(roundnew);
             CourseHole courseHole = new CourseHole();
-            courseHole.setID(cursor.getInt(2));
+            courseHole.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHole);
             Player player = new Player();
-            player.setID(cursor.getInt(3));
+            player.setID(cursor.getLong(3));
             roundHole.setPlayerID(player);
             roundHole.setScore(cursor.getInt(4));
             roundHole.setPutts(cursor.getInt(5));
@@ -230,15 +230,15 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         List<RoundHole> roundHoles = new ArrayList<RoundHole>();
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
-            roundHole.setID(cursor.getInt(0));
+            roundHole.setID(cursor.getLong(0));
             Round round = new Round();
-            round.setID(cursor.getInt(1));
+            round.setID(cursor.getLong(1));
             roundHole.setRoundID(round);
             CourseHole courseHolenew = new CourseHole();
-            courseHolenew.setID(cursor.getInt(2));
+            courseHolenew.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHolenew);
             Player player = new Player();
-            player.setID(cursor.getInt(3));
+            player.setID(cursor.getLong(3));
             roundHole.setPlayerID(player);
             roundHole.setScore(cursor.getInt(4));
             roundHole.setPutts(cursor.getInt(5));
@@ -278,15 +278,15 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         List<RoundHole> roundHoles = new ArrayList<RoundHole>();
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
-            roundHole.setID(cursor.getInt(0));
+            roundHole.setID(cursor.getLong(0));
             Round roundnew = new Round();
-            roundnew.setID(cursor.getInt(1));
+            roundnew.setID(cursor.getLong(1));
             roundHole.setRoundID(roundnew);
             CourseHole courseHole = new CourseHole();
-            courseHole.setID(cursor.getInt(2));
+            courseHole.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHole);
             Player playernew = new Player();
-            playernew.setID(cursor.getInt(3));
+            playernew.setID(cursor.getLong(3));
             roundHole.setPlayerID(playernew);
             roundHole.setScore(cursor.getInt(4));
             roundHole.setPutts(cursor.getInt(5));

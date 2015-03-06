@@ -153,7 +153,7 @@ public class CourseHoleDAO extends ShotTrackerDBDAO {
         List<CourseHole> courseHoles = new ArrayList<CourseHole>();
         while (cursor.moveToNext()) {
             CourseHole courseHole = new CourseHole();
-            courseHole.setID(cursor.getInt(0));
+            courseHole.setID(cursor.getLong(0));
             courseHole.setSubCourseID(subCourse);
             courseHole.setHoleNumber(cursor.getInt(2));
             courseHole.setPar(cursor.getInt(3));

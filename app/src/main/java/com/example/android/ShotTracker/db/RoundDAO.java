@@ -97,9 +97,9 @@ public class RoundDAO extends ShotTrackerDBDAO {
 
         while (cursor.moveToNext()) {
             Round round = new Round();
-            round.setID(cursor.getInt(0));
+            round.setID(cursor.getLong(0));
             SubCourse subCourse = new SubCourse();
-            subCourse.setID(cursor.getInt(1));
+            subCourse.setID(cursor.getLong(1));
             round.setSubCourseID(subCourse);
             round.setDate(new Date(cursor.getLong(2)));
 
@@ -129,7 +129,7 @@ public class RoundDAO extends ShotTrackerDBDAO {
 
         //\todo need to add the while (cursor.movetonext()) or else doesn't work
         SubCourse subCourse = new SubCourse();
-        subCourse.setID(cursor.getInt(1));
+        subCourse.setID(cursor.getLong(1));
         round.setSubCourseID(subCourse);
         round.setDate(new Date(cursor.getLong(2)));
         cursor.close();
@@ -151,7 +151,7 @@ public class RoundDAO extends ShotTrackerDBDAO {
                 null,null,null);
 
         Round round = new Round();
-        round.setID(cursor.getInt(0));
+        round.setID(cursor.getLong(0));
         //currently set to use the passed in SubCourse to assign the id to the returned round
         //could change to use what is spit out of the database. Probably should?
         round.setSubCourseID(subCourse);

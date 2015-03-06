@@ -139,10 +139,10 @@ public class ShotDAO extends ShotTrackerDBDAO {
                 null,null,null);
 
         RoundHole roundHole = new RoundHole();
-        roundHole.setID(cursor.getInt(1));
+        roundHole.setID(cursor.getLong(1));
         shot.setRoundHoleID(roundHole);
         Club club = new Club();
-        club.setID(cursor.getInt(2));
+        club.setID(cursor.getLong(2));
         shot.setClubID(club);
         shot.setYards(cursor.getInt(3));
         shot.setShotStartLat(cursor.getDouble(4));
@@ -175,10 +175,10 @@ public class ShotDAO extends ShotTrackerDBDAO {
         while (cursor.moveToNext()){
             Shot shot = new Shot();
             RoundHole roundHole = new RoundHole();
-            roundHole.setID(cursor.getInt(1));
+            roundHole.setID(cursor.getLong(1));
             shot.setRoundHoleID(roundHole);
             Club club = new Club();
-            club.setID(cursor.getInt(2));
+            club.setID(cursor.getLong(2));
             shot.setClubID(club);
             shot.setYards(cursor.getInt(3));
             shot.setShotStartLat(cursor.getDouble(4));
@@ -220,11 +220,11 @@ public class ShotDAO extends ShotTrackerDBDAO {
 
         while (cursor.moveToNext()){
             Shot shot = new Shot();
-            shot.setID(cursor.getInt(0));
+            shot.setID(cursor.getLong(0));
             //I got lazy... used the passed in roundHole for its ID
             shot.setRoundHoleID(roundHole);
             Club club = new Club();
-            club.setID(cursor.getInt(2));
+            club.setID(cursor.getLong(2));
             shot.setClubID(club);
             shot.setYards(cursor.getInt(3));
             shot.setShotStartLat(cursor.getDouble(4));
@@ -266,9 +266,9 @@ public class ShotDAO extends ShotTrackerDBDAO {
 
         while (cursor.moveToNext()){
             Shot shot = new Shot();
-            shot.setID(cursor.getInt(0));
+            shot.setID(cursor.getLong(0));
             RoundHole roundHole = new RoundHole();
-            roundHole.setID(cursor.getInt(1));
+            roundHole.setID(cursor.getLong(1));
             shot.setRoundHoleID(roundHole);
             //I got lazy... used the passed in roundHole for its ID
             shot.setClubID(club);

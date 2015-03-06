@@ -105,7 +105,7 @@ public class CourseHoleInfoDAO extends ShotTrackerDBDAO {
         List<CourseHoleInfo> courseHoleInfos = new ArrayList<CourseHoleInfo>();
         while(cursor.moveToNext()) {
             CourseHoleInfo courseHoleInfo = new CourseHoleInfo();
-            courseHoleInfo.setID(cursor.getInt(0));
+            courseHoleInfo.setID(cursor.getLong(0));
             courseHoleInfo.setCourseHoleID(courseHole);
             courseHoleInfo.setInfo(cursor.getString(2));
             courseHoleInfo.setLatitude(cursor.getDouble(3));

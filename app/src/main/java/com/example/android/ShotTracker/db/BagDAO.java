@@ -58,7 +58,7 @@ public class BagDAO extends ShotTrackerDBDAO {
 
         while ( cursor.moveToNext() ) {
             Club club = new Club();
-            club.setID(cursor.getInt(0));
+            club.setID(cursor.getLong(0));
             club.setClub(cursor.getString(1));
 
             clubs.add(club);

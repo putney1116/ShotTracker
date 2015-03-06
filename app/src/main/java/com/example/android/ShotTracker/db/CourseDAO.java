@@ -98,7 +98,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
 
         Course course = new Course();
         while (cursor.moveToNext()) {
-            course.setID(cursor.getInt(0));
+            course.setID(cursor.getLong(0));
             course.setName(cursor.getString(1));
             course.setLocation(cursor.getString(2));
         }
@@ -145,7 +145,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
 
         while (cursor.moveToNext()) {
             Course course = new Course();
-            course.setID(cursor.getInt(0));
+            course.setID(cursor.getLong(0));
             course.setName(cursor.getString(1));
             course.setLocation(cursor.getString(2));
 

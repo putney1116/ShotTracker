@@ -92,7 +92,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
 
         while ( cursor.moveToNext() ) {
             Player player = new Player();
-            player.setID(cursor.getInt(0));
+            player.setID(cursor.getLong(0));
             player.setName(cursor.getString(1));
             player.setHandicap(cursor.getInt(2));
 

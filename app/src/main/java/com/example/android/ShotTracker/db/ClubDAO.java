@@ -53,7 +53,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
 
         while ( cursor.moveToNext() ) {
             Club club = new Club();
-            club.setID(cursor.getInt(0));
+            club.setID(cursor.getLong(0));
             club.setClub(cursor.getString(1));
 
             clubs.add(club);
@@ -75,7 +75,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
                 null, null, null, null);
 
         Club club = new Club();
-        club.setID(cursor.getInt(0));
+        club.setID(cursor.getLong(0));
         club.setClub(cursor.getString(1));
         cursor.close();
 
