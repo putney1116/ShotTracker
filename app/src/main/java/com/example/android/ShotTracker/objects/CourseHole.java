@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class CourseHole {
 
-    private int mID = -1;
-    private int mSubCourseID = -1;
+    private long mID = -1;
+    private long mSubCourseID = -1;
     private int mHoleNum = -1;
     private int mPar = -1;
     private int mWPar = -1;
@@ -25,7 +25,7 @@ public class CourseHole {
      */
     public CourseHole() {}
 
-    public CourseHole(int id, SubCourse subcourse, int hnum, int par, int wpar,
+    public CourseHole(long id, SubCourse subcourse, int hnum, int par, int wpar,
                       int mhandicap, int whandicap, int blueyardage,
                       int whiteyardage, int redyardage)
     {
@@ -66,7 +66,7 @@ public class CourseHole {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -113,11 +113,11 @@ public class CourseHole {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
-    public int getSubCourseID() {
+    public long getSubCourseID() {
         return this.mSubCourseID;
     }
 

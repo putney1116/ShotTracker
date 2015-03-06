@@ -7,9 +7,9 @@ import java.util.Vector;
  */
 public class Shot {
 
-    private int mID = -1;
-    private int mRoundHoleID = -1;
-    private int mClubID = -1;
+    private long mID = -1;
+    private long mRoundHoleID = -1;
+    private long mClubID = -1;
     private Vector<ShotType> mShotType;
     private int mYards = -1;
     private double mShotStartLat = -1;
@@ -24,7 +24,7 @@ public class Shot {
         mShotType = new Vector<ShotType>();
     }
 
-    public Shot(int id, RoundHole roundhole, Club club,
+    public Shot(long id, RoundHole roundhole, Club club,
                 Vector<ShotType> shottype, int yds, double sslat,
                 double sslong, double selat, double selong){
         this.mID = id;
@@ -54,7 +54,7 @@ public class Shot {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -102,15 +102,15 @@ public class Shot {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
-    public int getRoundHoleID() {
+    public long getRoundHoleID() {
         return this.mRoundHoleID;
     }
 
-    public int getClubID() {
+    public long getClubID() {
         return this.mClubID;
     }
 

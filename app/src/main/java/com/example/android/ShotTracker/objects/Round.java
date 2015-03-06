@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class Round {
 
-    private int mID = -1;
-    private int mSubCourseID = -1;
+    private long mID = -1;
+    private long mSubCourseID = -1;
     private Date mDate;
     private List<RoundHole> mRoundHoleList = null;
 
@@ -19,7 +19,7 @@ public class Round {
      */
     public Round() {}
 
-    public Round(int id, SubCourse subcourse, Date date) {
+    public Round(long id, SubCourse subcourse, Date date) {
         this.mID = id;
         this.mSubCourseID = subcourse.getID();
         this.mDate = date;
@@ -33,7 +33,7 @@ public class Round {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -48,11 +48,11 @@ public class Round {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
-    public int getSubCourseID() {
+    public long getSubCourseID() {
         return this.mSubCourseID;
     }
 

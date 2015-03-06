@@ -8,10 +8,10 @@ import java.util.List;
  */
 public class RoundHole {
 
-    private int mID = -1;
-    private int mRoundID = -1;
-    private int mCourseHoleID =-1;
-    private int mPlayerID =-1;
+    private long mID = -1;
+    private long mRoundID = -1;
+    private long mCourseHoleID =-1;
+    private long mPlayerID =-1;
     private int mScore = -1;
     private int mPutts = -1;
     private int mPenalties = -1;
@@ -23,7 +23,7 @@ public class RoundHole {
      */
     public RoundHole() {}
 
-    public RoundHole(int id, Round round, CourseHole coursehole, Player player,
+    public RoundHole(long id, Round round, CourseHole coursehole, Player player,
                      int score, int putts, int penalties, int fairways) {
         this.mID = id;
         this.mRoundID = round.getID();
@@ -49,7 +49,7 @@ public class RoundHole {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -84,19 +84,19 @@ public class RoundHole {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
-    public int getRoundID() {
+    public long getRoundID() {
         return this.mRoundID;
     }
 
-    public int getCourseHoleID() {
+    public long getCourseHoleID() {
         return this.mCourseHoleID;
     }
 
-    public int getPlayerID() {
+    public long getPlayerID() {
         return this.mPlayerID;
     }
 

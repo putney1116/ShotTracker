@@ -5,8 +5,8 @@ package com.example.android.ShotTracker.objects;
  */
 public class CourseHoleInfo {
 
-    private int mID = -1;
-    private int mCourseHoleID = -1;
+    private long mID = -1;
+    private long mCourseHoleID = -1;
     private String mInfo = "";
     private double mLat = -1;
     private double mLong = -1;
@@ -16,7 +16,7 @@ public class CourseHoleInfo {
      */
     public CourseHoleInfo () {}
 
-    public CourseHoleInfo(int id, CourseHole coursehole, String info,
+    public CourseHoleInfo(long id, CourseHole coursehole, String info,
                           double latitude, double longitude) {
         this.mID = id;
         this.mCourseHoleID = coursehole.getID();
@@ -36,7 +36,7 @@ public class CourseHoleInfo {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -64,11 +64,11 @@ public class CourseHoleInfo {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
-    public int getCourseHoleID() {
+    public long getCourseHoleID() {
         return this.mCourseHoleID;
     }
 

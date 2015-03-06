@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class SubCourse {
 
-    private int mID = -1;
-    private int mCourseID = -1;
+    private long mID = -1;
+    private long mCourseID = -1;
     private String mName = "";
     private double mRating = -1;
     private List<CourseHole> mCourseHoleList = null;
@@ -19,7 +19,7 @@ public class SubCourse {
      */
     public SubCourse() {}
 
-    public SubCourse(int id, Course course, String name, double rating) {
+    public SubCourse(long id, Course course, String name, double rating) {
         this.mID = id;
         this.mCourseID = course.getID();
         this.mName = name;
@@ -40,7 +40,7 @@ public class SubCourse {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -57,11 +57,11 @@ public class SubCourse {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
-    public int getCourseID() {
+    public long getCourseID() {
         return this.mCourseID;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Course {
 
-    private int mID = -1;
+    private long mID = -1;
     private String mName = "";
     private String mLocation = "";
     private List<SubCourse> mSubCourseList = null;
@@ -18,7 +18,7 @@ public class Course {
      */
     public Course() {}
 
-    public Course(int id, String name, String location) {
+    public Course(long id, String name, String location) {
         this.mID = id;
         this.mName = name;
         this.mLocation = location;
@@ -36,7 +36,7 @@ public class Course {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -51,7 +51,7 @@ public class Course {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 

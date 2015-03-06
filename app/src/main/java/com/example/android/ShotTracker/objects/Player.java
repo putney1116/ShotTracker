@@ -5,7 +5,7 @@ package com.example.android.ShotTracker.objects;
  */
 public class Player {
 
-    private int mID = -1;
+    private long mID = -1;
     private String mName = "";
     private int mHandicap = -1;
 
@@ -23,7 +23,7 @@ public class Player {
      * @param name Player Name
      * @param handicap Player Handicap
      */
-    public Player(int id, String name, int handicap) {
+    public Player(long id, String name, int handicap) {
         this.mID = id;
         this.mName = name;
         this.mHandicap = handicap;
@@ -52,7 +52,7 @@ public class Player {
     /**
      * Set Methods
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -67,7 +67,7 @@ public class Player {
     /**
      * Get Methods
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 

@@ -5,7 +5,7 @@ package com.example.android.ShotTracker.objects;
  */
 public class Club {
 
-    private int mID = -1;
+    private long mID = -1;
     private String mClub = "";
 
     /**
@@ -19,7 +19,7 @@ public class Club {
      * @param id Unique Club ID
      * @param club Club name
      */
-    public Club(int id, String club) {
+    public Club(long id, String club) {
         this.mID = id;
         this.mClub = club;
     }
@@ -36,7 +36,7 @@ public class Club {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -47,7 +47,7 @@ public class Club {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 

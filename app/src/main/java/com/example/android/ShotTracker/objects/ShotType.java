@@ -5,7 +5,7 @@ package com.example.android.ShotTracker.objects;
  */
 public class ShotType {
 
-    private int mID = -1;
+    private long mID = -1;
     private String mType = "";
 
     /**
@@ -19,7 +19,7 @@ public class ShotType {
      * @param id Unique ShotType ID
      * @param type ShotType explanation
      */
-    public ShotType(int id, String type) {
+    public ShotType(long id, String type) {
         this.mID = id;
         this.mType = type;
     }
@@ -36,7 +36,7 @@ public class ShotType {
     /**
      * Setters
      */
-    public void setID(int id) {
+    public void setID(long id) {
         this.mID = id;
     }
 
@@ -47,7 +47,7 @@ public class ShotType {
     /**
      * Getters
      */
-    public int getID() {
+    public long getID() {
         return this.mID;
     }
 
