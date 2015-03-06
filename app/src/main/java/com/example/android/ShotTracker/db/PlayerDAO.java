@@ -87,7 +87,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         ///\todo Check nulls
         Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
                 new String[] { DataBaseHelper.PLAYERID_COLUMN,
-                DataBaseHelper.PLAYERNAME_COLUMN, DataBaseHelper.PLAYERHANDICAP_COLUMN},
+                        DataBaseHelper.PLAYERNAME_COLUMN, DataBaseHelper.PLAYERHANDICAP_COLUMN},
                 null, null, null, null, null);
 
         while ( cursor.moveToNext() ) {
@@ -97,6 +97,26 @@ public class PlayerDAO extends ShotTrackerDBDAO {
             player.setHandicap(cursor.getInt(2));
 
             players.add(player);
+        }
+        cursor.close();
+
+        return players;
+    }
+
+    /**
+     * Get a list of all Player names in the DB
+     * @return
+     */
+    public List<String> readListofPlayerNames() {
+        List<String> players = new ArrayList<String>();
+
+        ///\todo Check nulls
+        Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
+                new String[] {DataBaseHelper.PLAYERNAME_COLUMN},
+                null, null, null, null, null);
+
+        while ( cursor.moveToNext() ) {
+            players.add(cursor.getString(0));
         }
         cursor.close();
 
