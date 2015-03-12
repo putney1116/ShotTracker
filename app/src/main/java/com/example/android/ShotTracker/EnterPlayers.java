@@ -1,16 +1,9 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -25,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.ShotTracker.db.CourseDAO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnterPlayers extends Activity{
 	
@@ -66,6 +62,7 @@ public class EnterPlayers extends Activity{
 		
 		//Sets the hints in the editable text boxes
 		setHints();
+        //\todo Make the player selection a dropdown list with the ability to add a new player
 	}
 	
 	private void setHints(){

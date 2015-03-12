@@ -152,6 +152,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + ROUNDHOLEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + ROUNDID_COLUMN + " INTEGER NOT NULL, "
             + PLAYERID_COLUMN + " INTEGER NOT NULL, "
+            + COURSEHOLEID_COLUMN + " INTEGER NOT NULL, "
             + SCORE_COLUMN + " INT NOT NULL, "
             + PUTTS_COLUMN + " INT, "
             + PENALTIES_COLUMN + " INT, "

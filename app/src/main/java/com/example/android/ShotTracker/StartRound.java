@@ -1,23 +1,10 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -28,34 +15,43 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.db.RoundDAO;
+import com.example.android.ShotTracker.db.RoundHoleDAO;
+import com.example.android.ShotTracker.db.ShotDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.CourseHoleInfo;
+import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.Round;
+import com.example.android.ShotTracker.objects.RoundHole;
 import com.example.android.ShotTracker.objects.SubCourse;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -67,7 +63,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class StartRound extends com.google.android.maps.MapActivity implements OnClickListener, OnMapClickListener{
 	
@@ -142,6 +142,13 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     private SubCourseDAO subCourseDAO = null;
     private CourseHoleDAO courseHoleDAO = null;
     private CourseHoleInfoDAO courseHoleInfoDAO = null;
+    private PlayerDAO playerDAO = null;
+    private RoundDAO roundDAO = null;
+    private RoundHoleDAO roundHoleDAO = null;
+    private ShotDAO shotDAO = null;
+
+    private Course course = null;
+    private List<SubCourse> subCourses = null;
     
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
@@ -203,10 +210,10 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    
 
         //Saves the official course name
-        Course course = courseDAO.readCoursefromID(courseID);
+        course = courseDAO.readCoursefromID(courseID);
         courseName = course.getName();
 
-        List<SubCourse> subCourses = subCourseDAO.readListofSubCourses(course);
+        subCourses = subCourseDAO.readListofSubCourses(course);
 
         for (SubCourse subCourse : subCourses){
             List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
@@ -2796,66 +2803,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				
 				//Stops the gps module
     			locationManager.removeUpdates(gpsClass);
-    			
-    			int fileNumber = 0;
-    	              	        	   
-    	        try {
-    	        	try {
-    	        		//Finds the last file
-    	        		while(true){
-    	        			openFileInput("pastround"+fileNumber+".txt");
-    	        			fileNumber++;
-    	        		}
-    	        	
-    	        	} catch (FileNotFoundException e) {
-    	        		//Creates a new round file one past the last file
-	    	        	OutputStream  filereader = openFileOutput("pastround"+fileNumber+".txt",0);
-	    	        	OutputStreamWriter inputreader = new OutputStreamWriter(filereader);
-	    	        	BufferedWriter out = new BufferedWriter(inputreader);
-	
-	    	        	//Writes the course name to the file
-                        String fileName = "poop";
-	    	        	out.write(fileName);
-		           		out.newLine();
-		           		
-		           		int scoreTotal = 0;
-		           		
-		           		//Writes the total score to the file
-		           		for(int x=1;x<=18;x++){
-		           			scoreTotal += holeScore[1][x];
-		           		}
-		           		out.write(String.valueOf(scoreTotal));
-		           		out.newLine();
-		           		
-		           		//Writes the date of the round to the file
-		           		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
-		           		Calendar cal = Calendar.getInstance();
-		           		out.write(dateFormat.format(cal.getTime()));
-	   	           		out.newLine();
-	   	           		
-	   	           		//Writes the number of players to the file
-		   	           	out.write(String.valueOf(numberOfPlayers));
-		   	           	out.newLine();
-	   	           			
-		   	           	//Writes the players' scores to the file
-		   	           	for(int x=1;x<=numberOfPlayers;x++){
-		   	           		for(int y=1;y<19;y++){
-		   	           			out.write(String.valueOf(holeScore[x][y]));
-		   	           			out.newLine();
-		   	           		}
-		   	           	}
-		   	           	
-		   	           	//Writes the players' names to the file
-		   	           	for(int x=1;x<=numberOfPlayers;x++){
-		   	           		out.write(playerName[x]);
-		   	           		out.newLine();
-    	        		}
-		
-		   	           	out.close();
-    	        	}
-	    	    } catch (java.io.IOException e) {
-	    	    	e.printStackTrace();
-	    	    }
+
+                saveRound();
 	
 	    	    //Closes the activity and returns the display to the home screen
 	    	    finish();
@@ -2883,6 +2832,64 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	    }
     	});
 	}
+
+    private void saveRound(){
+
+        playerDAO = new PlayerDAO(this);
+        roundDAO = new RoundDAO(this);
+        roundHoleDAO = new RoundHoleDAO(this);
+        shotDAO = new ShotDAO(this);
+
+        //Writes the date of the round to the file
+        Calendar cal = Calendar.getInstance();
+
+        Round round = null;
+        RoundHole roundHole = null;
+        Player player = null;
+        List<CourseHole> courseHoles = null;
+
+        for (int subCourseNumber = 0; subCourseNumber < 2; subCourseNumber++) {
+
+            boolean totalScoreNull = true;
+
+            courseHoles = courseHoleDAO.readListofCourseHoles(subCourses.get(subCourseNumber));
+
+            round = new Round();
+
+            round.setSubCourseID(subCourses.get(subCourseNumber));
+            round.setDate(cal.getTime());
+
+            round.setID(roundDAO.createRound(round));
+
+            for (int x = 1; x <= numberOfPlayers; x++) {
+                player = new Player();
+
+                Log.d("test", playerName[x]);
+
+                player.setID(playerDAO.readIDFromName(playerName[x]));
+
+                for (int y = 1; y < 10; y++) {
+                    int playerScore = holeScore[x][9*(subCourseNumber) + y];
+
+                    if (playerScore > 0) {
+                        totalScoreNull = false;
+
+                        roundHole = new RoundHole();
+
+                        roundHole.setScore(playerScore);
+                        roundHole.setRoundID(round);
+                        roundHole.setPlayerID(player);
+                        roundHole.setCourseHoleID(courseHoles.get(y - 1));
+
+                        roundHole.setID(roundHoleDAO.createRoundHole(roundHole));
+                    }
+                }
+            }
+
+            if (totalScoreNull)
+                roundDAO.deleteRound(round);
+        }
+    }
     
 	//Shows the gps coordinates and the current city of the current location
     protected void showCurrentLocation() {

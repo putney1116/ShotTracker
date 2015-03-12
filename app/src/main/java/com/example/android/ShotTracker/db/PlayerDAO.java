@@ -1,14 +1,13 @@
 package com.example.android.ShotTracker.db;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.Throwable;
-
-import com.example.android.ShotTracker.objects.Player;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+
+import com.example.android.ShotTracker.objects.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -17,6 +16,9 @@ import android.database.Cursor;
 public class PlayerDAO extends ShotTrackerDBDAO {
 
     private static final String WHERE_ID_EQUALS = DataBaseHelper.PLAYERID_COLUMN
+            + " =?";
+
+    private static final String WHERE_NAME_EQUALS = DataBaseHelper.PLAYERNAME_COLUMN
             + " =?";
 
     public PlayerDAO(Context context) {
@@ -152,6 +154,35 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         cursor.close();
 
         return player;
+    }
+
+    /**
+     * Get the players ID given the name
+     * @param player_name name
+     * @return player ID
+     */
+    public long readIDFromName(String player_name) {
+        Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
+                new String[] { DataBaseHelper.PLAYERID_COLUMN},
+                WHERE_NAME_EQUALS,
+                new String[] {player_name},
+                null, null, null);
+
+        /*if (cursor.getCount() != 1) {
+            throw new RuntimeException("DB Query returned " +
+                    cursor.getCount() +
+                    ", expected 1. In PlayerDBAO::readPlayer()");
+        }*/
+
+        long playerID = -1;
+
+        while ( cursor.moveToNext() ) {
+            playerID = cursor.getLong(0);
+
+        }
+
+        cursor.close();
+        return playerID;
     }
 
 }

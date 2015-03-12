@@ -1,17 +1,8 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
@@ -23,6 +14,10 @@ import android.widget.SimpleAdapter;
 
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.objects.Course;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class StartRoundList extends ListActivity{
 	
@@ -65,21 +60,6 @@ public class StartRoundList extends ListActivity{
 		try {
 
             fillMaps = new ArrayList<HashMap<String, String>>();
-		
-/*				//Opens the file that contains the list of courses
-				AssetManager assetManager = getAssets();
-				InputStream filereader = null;
-				try {
-					filereader = assetManager.open("enumlist");
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}										
-		    	InputStreamReader inputreader = new InputStreamReader(filereader);
-		        BufferedReader bufferedreader = new BufferedReader(inputreader);
-		        
-		        InputStream filereader2 = null;
-		        InputStreamReader inputreader2 = null;
-		        BufferedReader bufferedreader2 = null;*/
 
             //Reads all the course names from the file
 

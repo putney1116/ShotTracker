@@ -41,13 +41,13 @@ public class TestDatabase extends Activity {
         Log.d(TAG, "Begin testing DB------");
 
         // load stuff into the DB
-        //loadPlayers();
-        //loadClubs();
+        loadPlayers();
+        loadClubs();
         //loadCourses();
         // D. McGlinchey - Something about SubCourses is broken ...
         //loadSubCourses();
 
-        //print DB
+        printDB();
         //printDB();
 
         //test DBIO
