@@ -18,6 +18,7 @@ import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.SubCourse;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +43,12 @@ public class TestDatabase extends Activity {
 
         // load stuff into the DB
         loadPlayers();
-        loadClubs();
+        //loadClubs();
         //loadCourses();
         // D. McGlinchey - Something about SubCourses is broken ...
         //loadSubCourses();
 
-        printDB();
+        //print DB
         //printDB();
 
         //test DBIO
@@ -67,8 +68,14 @@ public class TestDatabase extends Activity {
         players.add(new Player("Darren"));
         players.add(new Player("Justin"));
 
-        PlayerDAO playerDAO = new PlayerDAO(getApplicationContext());
-        for (Player player : players) playerDAO.create(player);
+        PlayerDAO playerDAO = new PlayerDAO(this);
+        for (Player player : players) {
+            try {
+                playerDAO.create(player);
+            } catch (SQLException e) {
+
+            }
+        }
     }
 
     /**
