@@ -25,12 +25,16 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.example.android.ShotTracker.db.RoundDAO;
+
 public class PastRoundList extends ListActivity{
 	
 	private AlertDialog.Builder builder;
 	
 	private int longClickPosition = 0;
 	private int listLength = 0;
+
+    private RoundDAO roundDAO = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,29 +71,29 @@ public class PastRoundList extends ListActivity{
 				return false;
 			}
 		});
-			
+
 		String line;
-		
+
 		int fileNumber = 0;
 			
 		//Displays the past rounds by using a list of hash maps
 		List<HashMap<String, String>> fillMaps = null;
 			
-		String[] from = new String[] {"col_1", "col_2", "col_3"};
-		int[] to = new int[] {R.id.item1, R.id.item2, R.id.item3};
+		String[] from = new String[] {"col_1", "col_2"};
+		int[] to = new int[] {R.id.item1, R.id.item2};
 			
 		try {
 			try {
 				fillMaps = new ArrayList<HashMap<String, String>>();
-				
-				InputStream  filereader = null;							
+
+				InputStream  filereader = null;
 		   		InputStreamReader inputreader = null;
 		        BufferedReader bufferedreader = null;
-		           
-		        InputStream  filereader2 = null;							
+
+		        InputStream  filereader2 = null;
 		  		InputStreamReader inputreader2 = null;
 		        BufferedReader bufferedreader2 = null;
-		            
+
 		        AssetManager assetManager;
 				
 		        //Runs through all the past round files
