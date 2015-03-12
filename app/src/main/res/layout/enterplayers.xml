@@ -118,24 +118,23 @@
 	   	    android:layout_height="wrap_content"
 	   	    android:layout_below="@id/player3text"
 	   	    android:layout_gravity="center"
-	   	    android:text="Player 4 Name: "
+            android:text="Player 4 Name: "
 	   	    android:paddingTop="10dp"
 	   	    android:layout_marginTop="40dp"
 	   	    android:visibility="gone"
 	   	    android:textColor="#FFFFFF"
 	   	/>
-	   	<EditText
+	   	<Spinner
 	   	    android:id="@+id/player1"
 	   	    android:layout_width="110dp"
 	   	    android:layout_height="wrap_content"
 	   	    android:layout_alignParentTop="true"
 	   	    android:layout_toRightOf="@id/player1text"
 	   	    android:layout_gravity="center"
-			android:layout_marginTop="20dp"
+			android:layout_marginTop="35dp"
 			android:maxLength="15"
-			android:inputType="textCapWords"
 		/>
-	   	<EditText
+	   	<Spinner
 	   	    android:id="@+id/player2"
 	   	    android:layout_width="110dp"
 	   	    android:layout_height="wrap_content"
@@ -143,12 +142,11 @@
 	   	    android:layout_toRightOf="@id/player2text"
 	   	    android:layout_gravity="center"
 	   	    android:paddingTop="10dp" 
-	   	    android:layout_marginTop="20dp"
+	   	    android:layout_marginTop="40dp"
 	   	    android:maxLength="15"
 	   	    android:visibility="gone"
-	   	    android:inputType="textCapWords"
 	   	/>
-	   	<EditText
+	   	<Spinner
 	   	    android:id="@+id/player3"
 	   	    android:layout_width="110dp"
 	   	    android:layout_height="wrap_content"
@@ -156,12 +154,11 @@
 	   	    android:layout_toRightOf="@id/player3text"
 	   	    android:layout_gravity="center"
 	   	    android:paddingTop="10dp" 
-	   	    android:layout_marginTop="20dp"
+	   	    android:layout_marginTop="40dp"
 	   	    android:maxLength="15"
 	   	    android:visibility="gone"
-	   	    android:inputType="textCapWords"
 	   	/>
-	   	<EditText
+	   	<Spinner
 	   	    android:id="@+id/player4"
 	   	    android:layout_width="110dp"
 	   	    android:layout_height="wrap_content"
@@ -169,13 +166,43 @@
 	   	    android:layout_toRightOf="@id/player4text"
 	   	    android:layout_gravity="center"
 	   	    android:paddingTop="10dp"
-	   	    android:layout_marginTop="20dp"
+	   	    android:layout_marginTop="40dp"
 	   	    android:maxLength="15"
 	   	    android:visibility="gone"
-	   	    android:inputType="textCapWords"
 	   	/>
 	</RelativeLayout>
-	<Button  android:id="@+id/startroundactivitybutton"
+    <RelativeLayout
+        android:id="@+id/addplayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playernames"
+        android:gravity="center"
+        >
+        <Button
+            android:id="@+id/addplayerbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:text="Add Player Name: "
+            android:layout_marginTop="35dp"
+            android:textColor="#FFFFFF"
+            />
+        <EditText
+            android:id="@+id/addplayername"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/addplayerbutton"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:maxLength="15"
+            android:inputType="textCapWords"
+            />
+
+    </RelativeLayout>
+
+    <Button  android:id="@+id/startroundactivitybutton"
     			android:layout_width="wrap_content" 
     			android:layout_height="wrap_content" 
     			android:text="Start Round"

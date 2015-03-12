@@ -1,9 +1,19 @@
 package com.example.android.ShotTracker;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -11,22 +21,26 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.ShotTracker.db.CourseDAO;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.objects.Player;
 
 public class EnterPlayers extends Activity{
-	
-	private TextView[] playerNameText = new TextView[4];
-	private EditText[] playerNameField = new EditText[4];;
-	
+
+    private TextView[] playerNameText = new TextView[4];
+    private Spinner[] playerNameSpinner = new Spinner[4];
+	private String[] playerNames = new String[4];
+
 	private Button startRoundButton;
 
 	private long courseID;
@@ -36,15 +50,17 @@ public class EnterPlayers extends Activity{
 	private Vibrator vibe;
 
     private CourseDAO courseDAO = null;
-		
-	@Override
+
+    private AlertDialog.Builder builder;
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.enterplayers);
 				
 		//Loads the file name from the previous activity
 		Intent myIntent = getIntent();
-		courseID = myIntent.getLongExtra("Course ID",-1);
+		courseID = myIntent.getLongExtra("Course ID", -1);
 
         Log.e("Test", "course ID = " + courseID);
 		
@@ -53,36 +69,132 @@ public class EnterPlayers extends Activity{
 		
 		//Initializes the radio buttons which select the number of players
 		selectNumberOfPlayers();
-		
+
+        //Set up adding a new player
+        addPlayer();
+
+        //Sets the spinners for the drop down players
+        setPlayerSpinners();
+
+        //Displays the course name at the top of the screen
+        setCourseName();
+
 		//Initializes the button that starts the round
 		startRound();
 		
-		//Displays the course name at the top of the screen
-		setCourseName();
-		
-		//Sets the hints in the editable text boxes
-		setHints();
-        //\todo Make the player selection a dropdown list with the ability to add a new player
+
 	}
-	
-	private void setHints(){
-		//Opens the shared preferences file with the saved settings
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
-		//Sets the hints to the defaults set by the settings page
-		EditText playerName = (EditText)findViewById(R.id.player1);
-		playerName.setHint(preferences.getString("Player 1 Name", "Me"));
-		
-		playerName = (EditText)findViewById(R.id.player2);
-		playerName.setHint(preferences.getString("Player 2 Name", "Player 2"));
-		
-		playerName = (EditText)findViewById(R.id.player3);
-		playerName.setHint(preferences.getString("Player 3 Name", "Player 3"));
-		
-		playerName = (EditText)findViewById(R.id.player4);
-		playerName.setHint(preferences.getString("Player 4 Name", "Player 4"));
-	}
-	
+
+    private void setPlayerSpinners(){
+        PlayerDAO playerDAO = new PlayerDAO(this);
+        final List<String> players = playerDAO.readListofPlayerNames();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(EnterPlayers.this, android.R.layout.simple_spinner_item, players);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //player 1
+        Spinner spinner1 = (Spinner) findViewById(R.id.player1);
+        spinner1.setAdapter(adapter);
+
+        //Sets the map location to the correct hole when the hole number is changed
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                playerNames[0] = players.get(pos);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+        //player 2
+        Spinner spinner2 = (Spinner) findViewById(R.id.player2);
+        spinner2.setAdapter(adapter);
+
+        //Sets the map location to the correct hole when the hole number is changed
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                playerNames[1] = players.get(pos);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+        //player 3
+        Spinner spinner3 = (Spinner) findViewById(R.id.player3);
+        spinner3.setAdapter(adapter);
+
+        //Sets the map location to the correct hole when the hole number is changed
+        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                playerNames[2] = players.get(pos);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+        //player 4
+        Spinner spinner4 = (Spinner) findViewById(R.id.player4);
+        spinner4.setAdapter(adapter);
+
+        //Sets the map location to the correct hole when the hole number is changed
+        spinner4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                playerNames[3] = players.get(pos);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+    }
+
+    private void addPlayer(){
+        Button savePlayerButton = (Button)findViewById(R.id.addplayerbutton);
+
+        savePlayerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    EditText input = (EditText)findViewById(R.id.addplayername);
+                    //Make sure there is text in the field
+                    if(input.getText().toString().equals("")){
+                        //pop up text box
+                        CharSequence text = "Please enter a name.";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(EnterPlayers.this, text, duration);
+                        toast.show();
+
+                    } else {
+                        Player player = new Player();
+                        player.setName(input.getText().toString());
+
+                        //Try uploading to the DB
+                        PlayerDAO playerDAO = new PlayerDAO(EnterPlayers.this);
+                        try {
+                            playerDAO.create(player);
+                            input.setText("");
+                            //\todo Read current selections from spinners and pass back
+                            setPlayerSpinners();
+
+                        } catch (Exception e) {
+                            CharSequence text = "Name already exists. Please enter a unique name.";
+                            int duration = Toast.LENGTH_SHORT;
+
+                            Toast toast = Toast.makeText(EnterPlayers.this, text, duration);
+                            toast.show();
+
+                            input.setText("");
+
+                        }
+                    }
+                } catch (Exception e) {
+                }
+            }
+        });
+    }
+
 	//Displays the course name at the top of the screen
 	private void setCourseName(){
 		courseDAO = new CourseDAO(this);
@@ -116,24 +228,14 @@ public class EnterPlayers extends Activity{
 					//The player names are added to the player list
 					//They are either what the user entered or the default player names if left blank
 					for(int x=0;x<radioButtonNumber;x++){
-						if(playerNameField[x].getText().toString().equals("")){
 							//Checks to make sure there are no duplicate names
-							if(playerList.contains(playerNameField[x].getHint().toString())){
+							if(playerList.contains(playerNames[x])){
 								Toast.makeText(getBaseContext(), "Cannot have duplicate names", Toast.LENGTH_LONG).show();
 								break;
 							}
 							else
-								playerList.add(playerNameField[x].getHint().toString());
-						}
-						else{
-							//Checks to make sure there are no duplicate names
-							if(playerList.contains(playerNameField[x].getText().toString())){
-								Toast.makeText(getBaseContext(), "Cannot have duplicate names", Toast.LENGTH_LONG).show();
-								break;
-							}
-							else
-								playerList.add(playerNameField[x].getText().toString());
-						}
+								playerList.add(playerNames[x]);
+
 					}
 					
 					//The player names are passed to the next activity.
@@ -156,13 +258,13 @@ public class EnterPlayers extends Activity{
 		RadioGroup radiogroup = (RadioGroup)findViewById(R.id.radiobuttons);
 		
 		playerNameText[0] = (TextView)findViewById(R.id.player1text);
-		playerNameField[0] = (EditText)findViewById(R.id.player1);
+		playerNameSpinner[0] = (Spinner)findViewById(R.id.player1);
 		playerNameText[1] = (TextView)findViewById(R.id.player2text);
-		playerNameField[1] = (EditText)findViewById(R.id.player2);
+		playerNameSpinner[1] = (Spinner)findViewById(R.id.player2);
 		playerNameText[2] = (TextView)findViewById(R.id.player3text);
-		playerNameField[2] = (EditText)findViewById(R.id.player3);
+		playerNameSpinner[2] = (Spinner)findViewById(R.id.player3);
 		playerNameText[3] = (TextView)findViewById(R.id.player4text);
-		playerNameField[3] = (EditText)findViewById(R.id.player4);
+		playerNameSpinner[3] = (Spinner)findViewById(R.id.player4);
 		radioButtonNumber = 1;
 		
 		//Called when a radio button is selected
@@ -177,35 +279,35 @@ public class EnterPlayers extends Activity{
 				if (checkedRadioButtonId == R.id.radioButton1) {
 					for(int x=1;x<=3;x++){
 						playerNameText[x].setVisibility(View.GONE);
-						playerNameField[x].setVisibility(View.GONE);
+						playerNameSpinner[x].setVisibility(View.GONE);
 					}
 					radioButtonNumber = 1;
 				} else if (checkedRadioButtonId == R.id.radioButton2) {
 					playerNameText[1].setVisibility(View.VISIBLE);
-					playerNameField[1].setVisibility(View.VISIBLE);
+					playerNameSpinner[1].setVisibility(View.VISIBLE);
 					for(int x=2;x<=3;x++){
 						playerNameText[x].setVisibility(View.GONE);
-						playerNameField[x].setVisibility(View.GONE);
+						playerNameSpinner[x].setVisibility(View.GONE);
 					}
 					radioButtonNumber = 2;
 				} else if (checkedRadioButtonId == R.id.radioButton3) {
 					for(int x=1;x<=2;x++){
 						playerNameText[x].setVisibility(View.VISIBLE);
-						playerNameField[x].setVisibility(View.VISIBLE);
+						playerNameSpinner[x].setVisibility(View.VISIBLE);
 					}
 					playerNameText[3].setVisibility(View.GONE);
-					playerNameField[3].setVisibility(View.GONE);
+					playerNameSpinner[3].setVisibility(View.GONE);
 					radioButtonNumber = 3;
 				} else if (checkedRadioButtonId == R.id.radioButton4) {
 					for(int x=1;x<=3;x++){
 						playerNameText[x].setVisibility(View.VISIBLE);
-						playerNameField[x].setVisibility(View.VISIBLE);
+						playerNameSpinner[x].setVisibility(View.VISIBLE);
 					}
 					radioButtonNumber = 4;
 				} else {
 					for(int x=0;x<=3;x++){
 						playerNameText[x].setVisibility(View.GONE);
-						playerNameField[x].setVisibility(View.GONE);
+						playerNameSpinner[x].setVisibility(View.GONE);
 					}
 					radioButtonNumber = 0;
 				}
