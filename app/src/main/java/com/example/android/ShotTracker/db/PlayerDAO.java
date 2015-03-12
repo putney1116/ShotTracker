@@ -1,13 +1,15 @@
 package com.example.android.ShotTracker.db;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+import java.lang.Throwable;
 
 import com.example.android.ShotTracker.objects.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 
 
 /**
@@ -30,7 +32,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
      * @param player Player object to insert into DB
      * @return
      */
-    public long create(Player player) {
+    public long create(Player player) throws SQLException {
         ContentValues values = new ContentValues();
 
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
@@ -38,7 +40,9 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         if (player.getHandicap() > 0)
             values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
 
-        return database.insert(DataBaseHelper.PLAYER_TABLE, null, values);
+        long id = database.insertOrThrow(DataBaseHelper.PLAYER_TABLE, null, values);
+
+        return id;
     }
 
     /**
