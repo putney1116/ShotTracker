@@ -30,17 +30,8 @@ android:background="@drawable/golfgreen"
 			>
 				<TextView android:id="@+id/coursecatalogheaderitem1"
 				android:layout_height="fill_parent"
-				android:layout_width="wrap_content"
+				android:layout_width="fill_parent"
 				android:text="Course"
-				android:width="175dip"
-				android:textStyle="bold"
-				android:gravity="center"
-				/>
-				<TextView android:id="@+id/coursecatalogheaderitem2"
-				android:layout_height="fill_parent"
-				android:layout_width="wrap_content"
-				android:text="Par"
-				android:width="75dip"
 				android:textStyle="bold"
 				android:gravity="center"
 				/>
