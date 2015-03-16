@@ -40,6 +40,7 @@ import com.example.android.ShotTracker.db.RoundDAO;
 import com.example.android.ShotTracker.db.RoundHoleDAO;
 import com.example.android.ShotTracker.db.ShotDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
+import com.example.android.ShotTracker.db.SubRoundDAO;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.CourseHoleInfo;
@@ -144,6 +145,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     private CourseHoleInfoDAO courseHoleInfoDAO = null;
     private PlayerDAO playerDAO = null;
     private RoundDAO roundDAO = null;
+    private SubRoundDAO subRoundDAO = null;
     private RoundHoleDAO roundHoleDAO = null;
     private ShotDAO shotDAO = null;
 
@@ -2837,11 +2839,14 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
         playerDAO = new PlayerDAO(this);
         roundDAO = new RoundDAO(this);
+        subRoundDAO = new SubRoundDAO(this);
         roundHoleDAO = new RoundHoleDAO(this);
         shotDAO = new ShotDAO(this);
 
         //Writes the date of the round to the file
         Calendar cal = Calendar.getInstance();
+
+        //\todo HEY! FIX ME!
 
         Round round = null;
         RoundHole roundHole = null;

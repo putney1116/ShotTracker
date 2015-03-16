@@ -10,23 +10,20 @@ import java.util.List;
 public class Round {
 
     private long mID = -1;
-    private long mSubCourseID = -1;
     private Date mDate;
-    private List<RoundHole> mRoundHoleList = null;
+    private List<SubRound> mSubRoundList = null;
 
     /**
      * Constructors
      */
     public Round() {}
 
-    public Round(long id, SubCourse subcourse, Date date) {
+    public Round(long id, Date date) {
         this.mID = id;
-        this.mSubCourseID = subcourse.getID();
         this.mDate = date;
     }
 
-    public Round(SubCourse subcourse, Date date) {
-        this.mSubCourseID = subcourse.getID();
+    public Round(Date date) {
         this.mDate = date;
     }
 
@@ -35,10 +32,6 @@ public class Round {
      */
     public void setID(long id) {
         this.mID = id;
-    }
-
-    public void setSubCourseID(SubCourse subcourse) {
-        this.mSubCourseID = subcourse.getID();
     }
 
     public void setDate(Date date) {
@@ -52,10 +45,6 @@ public class Round {
         return this.mID;
     }
 
-    public long getSubCourseID() {
-        return this.mSubCourseID;
-    }
-
     public Date getDate() {
         return this.mDate;
     }
@@ -63,12 +52,12 @@ public class Round {
     /**
      * List of RoundHoles
      */
-    public void addRoundHole(RoundHole roundHole) {
-        if (mRoundHoleList == null) {
-            mRoundHoleList = new ArrayList<RoundHole>();
+    public void addSubRound(SubRound subRound) {
+        if (mSubRoundList == null) {
+            mSubRoundList = new ArrayList<SubRound>();
         }
-        mRoundHoleList.add(roundHole);
+        mSubRoundList.add(subRound);
     }
 
-    public List<RoundHole> getRoundHoleList() { return this.mRoundHoleList; }
+    public List<SubRound> getSubRoundList() { return this.mSubRoundList; }
 }

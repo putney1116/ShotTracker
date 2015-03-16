@@ -23,6 +23,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COURSEHOLEINFO_TABLE = "CourseHoleInfo";
 
     public static final String ROUND_TABLE = "Round";
+    public static final String SUBROUND_TABLE = "SubRound";
     public static final String ROUNDHOLE_TABLE = "RoundHole";
     public static final String SHOT_TABLE = "Shot";
     public static final String SHOTTYPE_TABLE = "ShotType";
@@ -61,10 +62,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String INFOLONGITUDE_COLUMN = "InfoLongitude";
 
     /**
-     * Round, RoundHole, Shot, ShotType, ShotLink Columns
+     * Subround, RoundHole, Shot, ShotType, ShotLink Columns
      */
     public static final String ROUNDID_COLUMN = "RoundID";
     public static final String ROUNDDATE_COLUMN = "RoundDate";
+
+    public static final String SUBROUNDID_COLUMN = "SubRoundID";
 
     public static final String ROUNDHOLEID_COLUMN = "RoundHoleID";
     public static final String SCORE_COLUMN = "Score";
@@ -143,8 +146,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_ROUND_TABLE = "CREATE TABLE "
             + ROUND_TABLE + "("
             + ROUNDID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + ROUNDDATE_COLUMN + " DOUBLE PRECISION, "
+            + ");";
+
+    private static final String CREATE_SUBROUND_TABLE = "CREATE TABLE "
+            + SUBROUND_TABLE + "("
+            + SUBROUNDID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SUBCOURSEID_COLUMN + " INTEGER NOT NULL, "
-            + ROUNDDATE_COLUMN + " INTEGER"
+            + ROUNDID_COLUMN + " INTEGER NOT NULL, "
             +");";
 
     private static final String CREATE_ROUNDHOLE_TABLE = "CREATE TABLE "
