@@ -6,8 +6,8 @@ import android.database.Cursor;
 
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.Player;
-import com.example.android.ShotTracker.objects.Round;
 import com.example.android.ShotTracker.objects.RoundHole;
+import com.example.android.ShotTracker.objects.SubRound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
     private static final String WHERE_PLAYERID_EQUALS = DataBaseHelper.PLAYERID_COLUMN
             + "=?";
 
-    private static final String WHERE_ROUNDID_EQUALS = DataBaseHelper.ROUNDID_COLUMN
+    private static final String WHERE_SUBROUNDID_EQUALS = DataBaseHelper.SUBROUNDID_COLUMN
             + "=?";
 
     private static final String WHERE_COURSEHOLEID_EQUALS = DataBaseHelper.COURSEHOLEID_COLUMN
@@ -42,7 +42,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
     public long createRoundHole(RoundHole roundhole) {
         ContentValues values = new ContentValues();
 
-        values.put(DataBaseHelper.ROUNDID_COLUMN, roundhole.getRoundID());
+        values.put(DataBaseHelper.SUBROUNDID_COLUMN, roundhole.getSubRoundID());
         values.put(DataBaseHelper.COURSEHOLEID_COLUMN, roundhole.getCourseHoleID());
         values.put(DataBaseHelper.PLAYERID_COLUMN, roundhole.getPlayerID());
 
@@ -74,7 +74,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
 
         ContentValues values = new ContentValues();
 
-        values.put(DataBaseHelper.ROUNDID_COLUMN, roundhole.getRoundID());
+        values.put(DataBaseHelper.SUBROUNDID_COLUMN, roundhole.getSubRoundID());
         values.put(DataBaseHelper.COURSEHOLEID_COLUMN, roundhole.getCourseHoleID());
         values.put(DataBaseHelper.PLAYERID_COLUMN, roundhole.getPlayerID());
 
@@ -122,7 +122,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
 
         Cursor cursor = database.query(DataBaseHelper.ROUNDHOLE_TABLE,
                 new String[]{DataBaseHelper.ROUNDHOLEID_COLUMN,
-                        DataBaseHelper.ROUNDID_COLUMN,
+                        DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
@@ -137,9 +137,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
             roundHole.setID(cursor.getLong(0));
-            Round round = new Round();
-            round.setID(cursor.getLong(1));
-            roundHole.setRoundID(round);
+            SubRound subRound = new SubRound();
+            subRound.setID(cursor.getLong(1));
+            roundHole.setSubRoundID(subRound);
             CourseHole courseHole = new CourseHole();
             courseHole.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHole);
@@ -159,34 +159,33 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
 
     /**
      *
-     * @param round
-     * @return
+     * @param subRound
      */
-    public List<RoundHole> readListofRoundHoleRound(Round round) {
-        if (round.getID() < 0) {
+    public List<RoundHole> readListofRoundHoleRound(SubRound subRound) {
+        if (subRound.getID() < 0) {
             throw new RuntimeException("RoundID not set in RoundHoleDAO.readPlayerRounds()");
         }
 
         Cursor cursor = database.query(DataBaseHelper.ROUNDHOLE_TABLE,
                 new String[]{DataBaseHelper.ROUNDHOLEID_COLUMN,
-                        DataBaseHelper.ROUNDID_COLUMN,
+                        DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
                         DataBaseHelper.FAIRWAYS_COLUMN},
-                WHERE_ROUNDID_EQUALS,
-                new String[]{String.valueOf(round.getID())},
+                WHERE_SUBROUNDID_EQUALS,
+                new String[]{String.valueOf(subRound.getID())},
                 null, null, null, null);
 
         List<RoundHole> roundHoles = new ArrayList<RoundHole>();
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
             roundHole.setID(cursor.getLong(0));
-            Round roundnew = new Round();
+            SubRound roundnew = new SubRound();
             roundnew.setID(cursor.getLong(1));
-            roundHole.setRoundID(roundnew);
+            roundHole.setSubRoundID(roundnew);
             CourseHole courseHole = new CourseHole();
             courseHole.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHole);
@@ -216,7 +215,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
 
         Cursor cursor = database.query(DataBaseHelper.ROUNDHOLE_TABLE,
                 new String[]{DataBaseHelper.ROUNDHOLEID_COLUMN,
-                        DataBaseHelper.ROUNDID_COLUMN,
+                        DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
@@ -231,9 +230,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
             roundHole.setID(cursor.getLong(0));
-            Round round = new Round();
-            round.setID(cursor.getLong(1));
-            roundHole.setRoundID(round);
+            SubRound subRound = new SubRound();
+            subRound.setID(cursor.getLong(1));
+            roundHole.setSubRoundID(subRound);
             CourseHole courseHolenew = new CourseHole();
             courseHolenew.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHolenew);
@@ -253,35 +252,35 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
 
     /**
      *
-     * @param round
+     * @param subRound
      * @param player
      * @return
      */
-    public List<RoundHole> readListofRoundHoleRoundPlayer(Round round, Player player){
-        if (round.getID() < 0 || player.getID() < 0){
+    public List<RoundHole> readListofRoundHoleRoundPlayer(SubRound subRound, Player player){
+        if (subRound.getID() < 0 || player.getID() < 0){
             throw new RuntimeException("RoundID or playerID not set in readListofRoundHoleRoundPlayer()");
         }
 
         Cursor cursor = database.query(DataBaseHelper.ROUND_TABLE,
                 new String[]{DataBaseHelper.ROUNDHOLEID_COLUMN,
-                        DataBaseHelper.ROUNDID_COLUMN,
+                        DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
                         DataBaseHelper.FAIRWAYS_COLUMN},
-                WHERE_ROUNDID_EQUALS + " AND " + WHERE_PLAYERID_EQUALS,
-                new String[]{String.valueOf(round.getID()),String.valueOf(player.getID())},
+                WHERE_SUBROUNDID_EQUALS + " AND " + WHERE_PLAYERID_EQUALS,
+                new String[]{String.valueOf(subRound.getID()),String.valueOf(player.getID())},
                 null, null, null, null);
 
         List<RoundHole> roundHoles = new ArrayList<RoundHole>();
         while (cursor.moveToNext()) {
             RoundHole roundHole = new RoundHole();
             roundHole.setID(cursor.getLong(0));
-            Round roundnew = new Round();
+            SubRound roundnew = new SubRound();
             roundnew.setID(cursor.getLong(1));
-            roundHole.setRoundID(roundnew);
+            roundHole.setSubRoundID(roundnew);
             CourseHole courseHole = new CourseHole();
             courseHole.setID(cursor.getLong(2));
             roundHole.setCourseHoleID(courseHole);

@@ -3,18 +3,12 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 
 import com.example.android.ShotTracker.objects.Round;
-import com.example.android.ShotTracker.objects.RoundHole;
-import com.example.android.ShotTracker.objects.Shot;
-import com.example.android.ShotTracker.objects.ShotType;
 import com.example.android.ShotTracker.objects.SubCourse;
 import com.example.android.ShotTracker.objects.SubRound;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,7 +29,7 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
      * @param subRound
      * @return
      */
-    public long createRound(SubRound subRound) {
+    public long createSubRound(SubRound subRound) {
         ContentValues values = new ContentValues();
 
         values.put(DataBaseHelper.SUBCOURSEID_COLUMN, subRound.getSubCourseID());
@@ -50,7 +44,7 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
      * @param subRound
      * @return
      */
-    public long updateRound(SubRound subRound) {
+    public long updateSubRound(SubRound subRound) {
         ContentValues values = new ContentValues();
 
         //make sure that we have an id to update
@@ -73,7 +67,7 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
      * @param subRound
      * @return
      */
-    public long deleteRound(SubRound subRound){
+    public long deleteSubRound(SubRound subRound){
         if (subRound.getID() < 0) {
             throw new RuntimeException("Round ID not set in RoundDAO.deleteRound()");
         }

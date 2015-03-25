@@ -48,6 +48,7 @@ import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
 import com.example.android.ShotTracker.objects.RoundHole;
 import com.example.android.ShotTracker.objects.SubCourse;
+import com.example.android.ShotTracker.objects.SubRound;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -2846,12 +2847,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         //Writes the date of the round to the file
         Calendar cal = Calendar.getInstance();
 
-        //\todo HEY! FIX ME!
-
         Round round = null;
+        SubRound subRound = null;
         RoundHole roundHole = null;
         Player player = null;
         List<CourseHole> courseHoles = null;
+
+        round = new Round();
+
+        round.setDate(cal.getTime());
+
+        round.setID(roundDAO.createRound(round));
+
+        boolean totalRoundNull = true;
 
         for (int subCourseNumber = 0; subCourseNumber < 2; subCourseNumber++) {
 
@@ -2859,12 +2867,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
             courseHoles = courseHoleDAO.readListofCourseHoles(subCourses.get(subCourseNumber));
 
-            round = new Round();
+            subRound = new SubRound();
 
-            round.setSubCourseID(subCourses.get(subCourseNumber));
-            round.setDate(cal.getTime());
+            subRound.setSubCourseID(subCourses.get(subCourseNumber));
+            subRound.setRoundID(round);
 
-            round.setID(roundDAO.createRound(round));
+            subRound.setID(subRoundDAO.createSubRound(subRound));
 
             for (int x = 1; x <= numberOfPlayers; x++) {
                 player = new Player();
@@ -2878,11 +2886,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
                     if (playerScore > 0) {
                         totalScoreNull = false;
+                        totalRoundNull = false;
 
                         roundHole = new RoundHole();
 
                         roundHole.setScore(playerScore);
-                        roundHole.setRoundID(round);
+                        roundHole.setSubRoundID(subRound);
                         roundHole.setPlayerID(player);
                         roundHole.setCourseHoleID(courseHoles.get(y - 1));
 
@@ -2892,8 +2901,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
             }
 
             if (totalScoreNull)
-                roundDAO.deleteRound(round);
+                subRoundDAO.deleteSubRound(subRound);
         }
+
+        if (totalRoundNull)
+            roundDAO.deleteRound(round);
     }
     
 	//Shows the gps coordinates and the current city of the current location

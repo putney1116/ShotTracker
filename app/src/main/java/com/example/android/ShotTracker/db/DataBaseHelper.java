@@ -146,20 +146,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_ROUND_TABLE = "CREATE TABLE "
             + ROUND_TABLE + "("
             + ROUNDID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + ROUNDDATE_COLUMN + " DOUBLE PRECISION, "
+            + ROUNDDATE_COLUMN + " DOUBLE PRECISION"
             + ");";
 
     private static final String CREATE_SUBROUND_TABLE = "CREATE TABLE "
             + SUBROUND_TABLE + "("
             + SUBROUNDID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SUBCOURSEID_COLUMN + " INTEGER NOT NULL, "
-            + ROUNDID_COLUMN + " INTEGER NOT NULL, "
-            +");";
+            + ROUNDID_COLUMN + " INTEGER NOT NULL"
+            + ");";
 
     private static final String CREATE_ROUNDHOLE_TABLE = "CREATE TABLE "
             + ROUNDHOLE_TABLE + "("
             + ROUNDHOLEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + ROUNDID_COLUMN + " INTEGER NOT NULL, "
+            + SUBROUNDID_COLUMN + " INTEGER NOT NULL, "
             + PLAYERID_COLUMN + " INTEGER NOT NULL, "
             + COURSEHOLEID_COLUMN + " INTEGER NOT NULL, "
             + SCORE_COLUMN + " INT NOT NULL, "
@@ -257,6 +257,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_COURSEHOLE_TABLE);
         db.execSQL(CREATE_COURSEHOLEINFO_TABLE);
         db.execSQL(CREATE_ROUND_TABLE);
+        db.execSQL(CREATE_SUBROUND_TABLE);
         db.execSQL(CREATE_ROUNDHOLE_TABLE);
         db.execSQL(CREATE_SHOT_TABLE);
         db.execSQL(CREATE_SHOTTYPE_TABLE);
@@ -281,6 +282,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS" + COURSEHOLE_TABLE);
         db.execSQL("DROP TABLE IF EXISTS" + COURSEHOLEINFO_TABLE);
         db.execSQL("DROP TABLE IF EXISTS" + ROUND_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS" + SUBROUND_TABLE);
         db.execSQL("DROP TABLE IF EXISTS" + ROUNDHOLE_TABLE);
         db.execSQL("DROP TABLE IF EXISTS" + SHOT_TABLE);
         db.execSQL("DROP TABLE IF EXISTS" + SHOTTYPE_TABLE);
