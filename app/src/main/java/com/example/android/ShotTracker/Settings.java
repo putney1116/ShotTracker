@@ -11,12 +11,22 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.objects.Player;
+
+import java.util.List;
 
 public class Settings extends Activity{
 //hello
 	private AlertDialog.Builder builder;
+
+    private String playerDefault = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -28,126 +38,84 @@ public class Settings extends Activity{
 	    buildDialog();
 	    
 	    //Sets the hints in the editable text boxes
-	    setHints();
+	    setDefaultPlayerSpinner();
 	    
 	    //Initializes the button that saves the settings
 	    saveSettingsButtonInitializer();
 	}
-	
+
+    private void saveSettings() {
+        //First get the current default player
+        PlayerDAO playerDAO = new PlayerDAO(this);
+        Player currentdef = playerDAO.readUserDefaultPlayer();
+
+        //Test if if the selected name is different
+        if (currentdef.getName() != playerDefault && playerDefault != null) {
+            // Get the newly selected player
+            long pID = playerDAO.readIDFromName(playerDefault);
+            if (pID > 0) {
+                Player newdef = new Player();
+                newdef.setID(pID);
+                newdef = playerDAO.readPlayer(newdef);
+
+                // unset the old default and update
+                currentdef.setUserDefault(false);
+                playerDAO.update(currentdef);
+
+                // set the new default and update
+                newdef.setUserDefault(true);
+                playerDAO.update(newdef);
+            }
+        }
+    }
+
 	//Saves the settings and returns to the home screen
 	private void saveSettingsButtonInitializer(){
-		Button saveSettingsButton = (Button)findViewById(R.id.savesettingsbutton);
+		final Button saveSettingsButton = (Button)findViewById(R.id.savesettingsbutton);
 		
 		saveSettingsButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try{
-					//Opens the shared preferences file
-					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-	    			SharedPreferences.Editor editor = preferences.edit();
-	    			
-	    			//Saves either the entered value or the default value to the file
-	    			EditText input = (EditText)findViewById(R.id.player1defaulttext);
-	    			if(input.getText().toString().equals("")){
-	    				editor.putString("Player 1 Name", input.getHint().toString());
-					}
-					else{
-						editor.putString("Player 1 Name", input.getText().toString());
-					}
-	    			
-	    			//Saves either the entered value or the default value to the file
-	    			input = (EditText)findViewById(R.id.player2defaulttext);
-	    			if(input.getText().toString().equals("")){
-	    				editor.putString("Player 2 Name", input.getHint().toString());
-					}
-					else{
-						editor.putString("Player 2 Name", input.getText().toString());
-					}
-	    			
-	    			//Saves either the entered value or the default value to the file
-	    			input = (EditText)findViewById(R.id.player3defaulttext);
-	    			if(input.getText().toString().equals("")){
-	    				editor.putString("Player 3 Name", input.getHint().toString());
-					}
-					else{
-						editor.putString("Player 3 Name", input.getText().toString());
-					}
-	    			
-	    			//Saves either the entered value or the default value to the file
-	    			input = (EditText)findViewById(R.id.player4defaulttext);
-	    			if(input.getText().toString().equals("")){
-	    				editor.putString("Player 4 Name", input.getHint().toString());
-					}
-					else{
-						editor.putString("Player 4 Name", input.getText().toString());
-					}
-	    			
-	    			//Saves the file
-	    			editor.commit();
-			         
+                    saveSettings();
+
 	    			//Closes the present activity and returns the display to the home screen
 			        finish();
-				}catch(Exception e) {
-				}
 			}
     	});
 	}
-	
-	//Sets the hints in the editable text boxes
-	private void setHints(){
-		//Opens the shared preferences file
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
-		//Sets the hints to the defaults
-		EditText input = (EditText)findViewById(R.id.player1defaulttext);
-		input.setHint(preferences.getString("Player 1 Name", "Me"));
-		
-		input = (EditText)findViewById(R.id.player2defaulttext);
-		input.setHint(preferences.getString("Player 2 Name", "Player 2"));
-		
-		input = (EditText)findViewById(R.id.player3defaulttext);
-		input.setHint(preferences.getString("Player 3 Name", "Player 3"));
-		
-		input = (EditText)findViewById(R.id.player4defaulttext);
-		input.setHint(preferences.getString("Player 4 Name", "Player 4"));
-	}
-	
+
+    //Sets the list of players in the spinner
+    private void setDefaultPlayerSpinner() {
+        PlayerDAO playerDAO = new PlayerDAO(this);
+        final List<String> players = playerDAO.readListofPlayerNameswDefaultFirst();
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Settings.this, android.R.layout.simple_spinner_item, players);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //player 1
+        Spinner spinner1 = (Spinner) findViewById(R.id.defaultplayer);
+        spinner1.setAdapter(adapter);
+
+        //Sets the map location to the correct hole when the hole number is changed
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                playerDefault = players.get(pos);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+    }
+
+
 	//If the back button is pressed, the dialog to save the settings is called if changes have been made
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			//Checks if any changes have been made
-			EditText input = (EditText)findViewById(R.id.player1defaulttext);
-			if(input.getText().toString().equals("")){
-				input = (EditText)findViewById(R.id.player2defaulttext);
-				if(input.getText().toString().equals("")){
-					input = (EditText)findViewById(R.id.player3defaulttext);
-					if(input.getText().toString().equals("")){
-						input = (EditText)findViewById(R.id.player4defaulttext);
-						if(input.getText().toString().equals("")){
-							//If no changes have been made the present activity is closed and the display returns to the home screen
-							finish();
-						}
-						else{
-							//If changes have been made, the dialog box asking for save confirmation is displayed 
-				        	builder.show();
-						}
-					}
-					else{
-						//If changes have been made, the dialog box asking for save confirmation is displayed 
-			        	builder.show();
-					}
-				}
-				else{
-					//If changes have been made, the dialog box asking for save confirmation is displayed 
-		        	builder.show();
-				}
-			}
-			else{
-				//If changes have been made, the dialog box asking for save confirmation is displayed 
-	        	builder.show();
-			}
-        	
+            //If changes have been made, the dialog box asking for save confirmation is displayed
+            builder.show();
+
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -162,49 +130,8 @@ public class Settings extends Activity{
     	//If the user would like to save the settings
     	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
     		public void onClick(DialogInterface dialog, int id){ 
-    			//Opens the shared preferences file
-    			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    			SharedPreferences.Editor editor = preferences.edit();
-    			
-    			//Saves either the entered value or the default value to the file
-    			EditText input = (EditText)findViewById(R.id.player1defaulttext);
-    			if(input.getText().toString().equals("")){
-    				editor.putString("Player 1 Name", input.getHint().toString());
-				}
-				else{
-					editor.putString("Player 1 Name", input.getText().toString());
-				}
-    			
-    			//Saves either the entered value or the default value to the file
-    			input = (EditText)findViewById(R.id.player2defaulttext);
-    			if(input.getText().toString().equals("")){
-    				editor.putString("Player 2 Name", input.getHint().toString());
-				}
-				else{
-					editor.putString("Player 2 Name", input.getText().toString());
-				}
-    			
-    			//Saves either the entered value or the default value to the file
-    			input = (EditText)findViewById(R.id.player3defaulttext);
-    			if(input.getText().toString().equals("")){
-    				editor.putString("Player 3 Name", input.getHint().toString());
-				}
-				else{
-					editor.putString("Player 3 Name", input.getText().toString());
-				}
-    			
-    			//Saves either the entered value or the default value to the file
-    			input = (EditText)findViewById(R.id.player4defaulttext);
-    			if(input.getText().toString().equals("")){
-    				editor.putString("Player 4 Name", input.getHint().toString());
-				}
-				else{
-					editor.putString("Player 4 Name", input.getText().toString());
-				}
-    			
-    			//Saves the file
-    			editor.commit();
-    			
+                saveSettings();
+
     			//Closes the present activity and returns the display to the home screen
     			finish();
     		}

@@ -199,6 +199,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
             ", expected 1. In PlayerDBAO::readPlayer()");
         }
 
+        cursor.moveToNext();
         player.setName(cursor.getString(1));
         player.setUserDefault(cursor.getInt(2) == 1);
         player.setHandicap(cursor.getInt(3));
@@ -255,6 +256,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
 
         cursor.moveToNext();
         Player player = new Player();
+        player.setID(cursor.getLong(0));
         player.setName(cursor.getString(1));
         player.setUserDefault(cursor.getInt(2) == 1);
         player.setHandicap(cursor.getInt(3));
