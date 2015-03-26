@@ -100,7 +100,9 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         ///\todo Check nulls
         Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
                 new String[] { DataBaseHelper.PLAYERID_COLUMN,
-                        DataBaseHelper.PLAYERNAME_COLUMN, DataBaseHelper.PLAYERHANDICAP_COLUMN},
+                        DataBaseHelper.PLAYERNAME_COLUMN,
+                        DataBaseHelper.USRDEF_COLUMN,
+                        DataBaseHelper.PLAYERHANDICAP_COLUMN},
                 null, null, null, null, null);
 
         while ( cursor.moveToNext() ) {
@@ -150,6 +152,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
                 new String[] { DataBaseHelper.PLAYERID_COLUMN,
                         DataBaseHelper.PLAYERNAME_COLUMN,
+                        DataBaseHelper.USRDEF_COLUMN,
                         DataBaseHelper.PLAYERHANDICAP_COLUMN},
                 WHERE_ID_EQUALS,
                 new String[] {String.valueOf(player.getID())},
@@ -198,4 +201,29 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return playerID;
     }
 
+    public Player readUserDefaultPlayer() {
+
+        Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
+                new String[] { DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNAME_COLUMN,
+                        DataBaseHelper.USRDEF_COLUMN,
+                        DataBaseHelper.PLAYERHANDICAP_COLUMN},
+                WHERE_USERDEF_EQUALS,
+                new String[] {String.valueOf(1)},
+                null, null, null);
+
+        if (cursor.getCount() != 1) {
+            throw new RuntimeException("DB Query returned " +
+                    cursor.getCount() +
+                    ", expected 1. In PlayerDBAO::readUserDefaultPlayer()");
+        }
+
+        Player player = new Player();
+        player.setName(cursor.getString(1));
+        player.setUserDefault(cursor.getInt(2) == 1);
+        player.setHandicap(cursor.getInt(3));
+        cursor.close();
+
+        return player;
+    }
 }
