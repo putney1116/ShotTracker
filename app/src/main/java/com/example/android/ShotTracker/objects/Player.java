@@ -7,6 +7,7 @@ public class Player {
 
     private long mID = -1;
     private String mName = "";
+    private boolean mUsrDef = false;
     private int mHandicap = -1;
 
     /**
@@ -23,9 +24,10 @@ public class Player {
      * @param name Player Name
      * @param handicap Player Handicap
      */
-    public Player(long id, String name, int handicap) {
+    public Player(long id, String name, boolean userdef, int handicap) {
         this.mID = id;
         this.mName = name;
+        this.mUsrDef = userdef;
         this.mHandicap = handicap;
     }
 
@@ -60,6 +62,8 @@ public class Player {
         this.mName = name;
     }
 
+    public void setUserDefault(boolean userdef) { this.mUsrDef = userdef; }
+
     public void setHandicap(int handicap) {
         this.mHandicap = handicap;
     }
@@ -75,6 +79,7 @@ public class Player {
         return this.mName;
     }
 
+    public boolean getUserDefault() {return this.mUsrDef; }
     public int getHandicap() {
         return this.mHandicap;
     }

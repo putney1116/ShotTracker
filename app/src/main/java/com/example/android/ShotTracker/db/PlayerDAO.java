@@ -23,6 +23,9 @@ public class PlayerDAO extends ShotTrackerDBDAO {
     private static final String WHERE_NAME_EQUALS = DataBaseHelper.PLAYERNAME_COLUMN
             + " =?";
 
+    private static final String WHERE_USERDEF_EQUALS = DataBaseHelper.USRDEF_COLUMN
+            + " =?";
+
     public PlayerDAO(Context context) {
         super(context);
     }
@@ -36,6 +39,9 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         ContentValues values = new ContentValues();
 
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
+
+        if (player.getUserDefault())
+            values.put(DataBaseHelper.USRDEF_COLUMN, player.getUserDefault() ? 1 : 0);
 
         if (player.getHandicap() > 0)
             values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
@@ -58,6 +64,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
             throw new RuntimeException("player ID not set in PlayerDAO.update()");
 
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
+        values.put(DataBaseHelper.USRDEF_COLUMN, player.getUserDefault() ? 1 : 0);
 
         if (player.getHandicap() > 0)
             values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
@@ -100,7 +107,8 @@ public class PlayerDAO extends ShotTrackerDBDAO {
             Player player = new Player();
             player.setID(cursor.getLong(0));
             player.setName(cursor.getString(1));
-            player.setHandicap(cursor.getInt(2));
+            player.setUserDefault(cursor.getInt(2) == 1);
+            player.setHandicap(cursor.getInt(3));
 
             players.add(player);
         }
@@ -154,7 +162,8 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         }
 
         player.setName(cursor.getString(1));
-        player.setHandicap(cursor.getInt(2));
+        player.setUserDefault(cursor.getInt(2) == 1);
+        player.setHandicap(cursor.getInt(3));
         cursor.close();
 
         return player;

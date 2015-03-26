@@ -92,6 +92,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      */
     public static final String PLAYERID_COLUMN = "PlayerID";
     public static final String PLAYERNAME_COLUMN = "PlayerName";
+    public static final String USRDEF_COLUMN = "UserDefault";
     public static final String PLAYERHANDICAP_COLUMN = "PlayerHandicap";
 
     /**
@@ -197,6 +198,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + PLAYER_TABLE + "("
             + PLAYERID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + PLAYERNAME_COLUMN + " TEXT NOT NULL UNIQUE, "
+            + USRDEF_COLUMN + " BOOLEAN NOT NULL DEFAULT 0, "
             + PLAYERHANDICAP_COLUMN + " INT"
             +");";
 
