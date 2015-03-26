@@ -139,6 +139,41 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return players;
     }
 
+    public List<String> readListofPlayerNameswDefaultFirst() {
+        List<String> players = new ArrayList<String>();
+
+        // Get the default player first
+        Cursor cursordef = database.query(DataBaseHelper.PLAYER_TABLE,
+                new String[] {DataBaseHelper.PLAYERNAME_COLUMN},
+                WHERE_USERDEF_EQUALS,
+                new String[] {String.valueOf(1)},
+                null, null, null);
+
+        if (cursordef.getCount() != 1) {
+            throw new RuntimeException("DB Query returned " +
+                    cursordef.getCount() +
+                    ", expected 1. In PlayerDBAO::readUserDefaultPlayer()");
+        }
+        cursordef.moveToNext();
+        players.add(cursordef.getString(0));
+        cursordef.close();
+
+
+        //Get all remaining players
+        Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,
+                new String[] {DataBaseHelper.PLAYERNAME_COLUMN},
+                WHERE_USERDEF_EQUALS,
+                new String[] {String.valueOf(0)},
+                null, null, null);
+
+        while (cursor.moveToNext()) {
+            players.add(cursor.getString(0));
+        }
+        cursor.close();
+
+        return players;
+    }
+
     /**
      * Get the players name and handicap given an ID
      * @param player Player object. ID must be filled
@@ -218,6 +253,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
                     ", expected 1. In PlayerDBAO::readUserDefaultPlayer()");
         }
 
+        cursor.moveToNext();
         Player player = new Player();
         player.setName(cursor.getString(1));
         player.setUserDefault(cursor.getInt(2) == 1);

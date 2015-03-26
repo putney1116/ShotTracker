@@ -22,6 +22,7 @@ public class Player {
      *
      * @param id Unique ID number
      * @param name Player Name
+     * @param userdef Default Player Boolean
      * @param handicap Player Handicap
      */
     public Player(long id, String name, boolean userdef, int handicap) {
@@ -30,6 +31,31 @@ public class Player {
         this.mUsrDef = userdef;
         this.mHandicap = handicap;
     }
+
+    /**
+     * Constructor
+     *
+     * @param name Player Name
+     * @param userdef Default Player Boolean
+     * @param handicap Player Handicap
+     */
+    public Player(String name, boolean userdef, int handicap) {
+        this.mName = name;
+        this.mUsrDef = userdef;
+        this.mHandicap = handicap;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param name Player Name
+     * @param userdef Default Player Boolean
+     */
+    public Player(String name, boolean userdef) {
+        this.mName = name;
+        this.mUsrDef = userdef;
+    }
+
 
     /**
      * Constructor
