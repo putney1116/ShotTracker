@@ -38,27 +38,27 @@ public class PastRound extends TabActivity{
     	
     	Intent myIntent = getIntent();
     	
-    	int position = myIntent.getIntExtra("Position", -1);
+    	long roundID = myIntent.getLongExtra("RoundID", -1);
 
     	//Initializes the scorecard tab
     	spec1=tabHost.newTabSpec("Tab 1");
     	spec1.setIndicator("Score Card", res.getDrawable(R.drawable.ic_tab3));
     	Intent in1 = new Intent(this, PastRoundScorecard.class);
-    	in1.putExtra("Position", position);
+    	in1.putExtra("RoundID", roundID);
     	spec1.setContent(in1);
     	
     	//Initializes the map view tab
     	spec2=tabHost.newTabSpec("Tab 2");
     	spec2.setIndicator("Map", res.getDrawable(R.drawable.ic_tab2));
     	Intent in2 = new Intent(this, PastRoundMap.class);
-    	in2.putExtra("Position", position);
+    	in2.putExtra("RoundID", roundID);
     	spec2.setContent(in2);
     	
     	//Initializes the statistics tab
     	spec3=tabHost.newTabSpec("Tab 3");
     	spec3.setIndicator("Stats", res.getDrawable(R.drawable.ic_tab4));
     	Intent in3 = new Intent(this, PastRoundStats.class);
-    	in3.putExtra("Position", position);
+    	in3.putExtra("RoundID", roundID);
     	spec3.setContent(in3);
     	
     	tabHost.addTab(spec1);

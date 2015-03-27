@@ -73,6 +73,9 @@ public class CourseHole {
     public void setSubCourseID(SubCourse subcourse) {
         this.mSubCourseID = subcourse.getID();
     }
+    public void setSubCourseIDFromID(long id) {
+        this.mSubCourseID = id;
+    }
 
     public void setHoleNumber(int hnum) {
         this.mHoleNum = hnum;

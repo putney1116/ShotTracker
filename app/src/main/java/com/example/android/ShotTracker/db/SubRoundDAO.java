@@ -22,6 +22,9 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
     private static final String WHERE_SUBCOURSEID_EQUALS = DataBaseHelper.SUBCOURSEID_COLUMN
             + "=?";
 
+    private static final String WHERE_ROUNDID_EQUALS = DataBaseHelper.ROUNDID_COLUMN
+            + "=?";
+
     public SubRoundDAO(Context context) { super(context); }
 
     /**
@@ -81,14 +84,16 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
      *
      * @return
      */
-    public List<SubRound> readListofSubRounds() {
+    public List<SubRound> readListofSubRounds(Round round) {
         List<SubRound> subRounds = new ArrayList<SubRound>();
 
         Cursor cursor = database.query(DataBaseHelper.SUBROUND_TABLE,
                 new String[] {DataBaseHelper.SUBROUNDID_COLUMN,
                               DataBaseHelper.SUBCOURSEID_COLUMN,
                               DataBaseHelper.ROUNDID_COLUMN},
-                null,null,null,null,null);
+                WHERE_ROUNDID_EQUALS,
+                new String[] {String.valueOf(round.getID())},
+                null, null, null);
 
         while (cursor.moveToNext()) {
             SubRound subRound = new SubRound();
@@ -96,9 +101,9 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
             SubCourse subCourse = new SubCourse();
             subCourse.setID(cursor.getLong(1));
             subRound.setSubCourseID(subCourse);
-            Round round = new Round();
-            round.setID(cursor.getLong(2));
-            subRound.setRoundID(round);
+            Round newround = new Round();
+            newround.setID(cursor.getLong(2));
+            subRound.setRoundID(newround);
 
             subRounds.add(subRound);
         }
@@ -137,7 +142,8 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
         return subRound;
     }
 
-    public SubRound readSubRoundSubCourse (SubCourse subCourse){
+    //\todo Needs to return a list
+    public SubRound readSubRoundGivenSubCourse (SubCourse subCourse){
         if (subCourse.getID() < 0 ){
             throw new RuntimeException("SubCourse ID not set in RoundDAO::readRoundSubCourse()");
         }

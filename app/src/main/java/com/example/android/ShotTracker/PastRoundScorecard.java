@@ -1,14 +1,7 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.Integer;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,6 +9,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseHoleDAO;
+import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.db.RoundDAO;
+import com.example.android.ShotTracker.db.RoundHoleDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
+import com.example.android.ShotTracker.db.SubRoundDAO;
+import com.example.android.ShotTracker.objects.Course;
+import com.example.android.ShotTracker.objects.CourseHole;
+import com.example.android.ShotTracker.objects.CourseHoleInfo;
+import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.Round;
+import com.example.android.ShotTracker.objects.RoundHole;
+import com.example.android.ShotTracker.objects.SubCourse;
+import com.example.android.ShotTracker.objects.SubRound;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PastRoundScorecard extends Activity implements OnClickListener{
 	
@@ -37,6 +50,12 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 	private int menHandicap[] = new int[19];
 	private int womenHandicap[] = new int[19];
 	private int numberOfPlayers = 0;
+
+    private Round round = null;
+    private List <SubRound> subRounds = null;
+
+    private RoundDAO roundDAO = null;
+    private SubRoundDAO subRoundDAO = null;
     
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -56,107 +75,113 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 	}
 	
 	//Loads the player names and course information
-	private void loadCourseInfo(){
-		Intent myIntent = getIntent();
-		
-		//Loads the file number from the previous activity
-		pastRoundFileNumber = myIntent.getIntExtra("Position", -1);
-		
-		//Opens the past round's file
-		InputStream filereader = null;
-		try {
-			filereader = openFileInput("pastround"+pastRoundFileNumber+".txt");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		InputStreamReader inputreader = new InputStreamReader(filereader);
-	    BufferedReader bufferedreader = new BufferedReader(inputreader);
-	    
-	    //Loads the course name
-	    try {
-			fileName = bufferedreader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    
-		//Opens the course info file
-		AssetManager assetManager = getAssets();
-		try {
-			filereader = assetManager.open(fileName);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}						
-	    inputreader = new InputStreamReader(filereader);
-	    bufferedreader = new BufferedReader(inputreader);
-	    
-	    try {
-	    	//Saves the official course name
-			courseName = bufferedreader.readLine();
-	    
-			//Saves the scorecard info for the course
-			for(int x=0;x<19;x++){
-				par[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				blueYardage[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				whiteYardage[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				redYardage[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				menHandicap[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-			for(int x=0;x<19;x++){
-				womenHandicap[x] = Integer.parseInt(bufferedreader.readLine());
-			}
-	    } catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    //Loads the player names and course information
+    private void loadCourseInfo(){
+
+        CourseDAO courseDAO = new CourseDAO(this);
+        SubCourseDAO subCourseDAO = new SubCourseDAO(this);
+        CourseHoleDAO courseHoleDAO = new CourseHoleDAO(this);
+        CourseHoleInfoDAO courseHoleInfoDAO = new CourseHoleInfoDAO(this);
+        subRoundDAO = new SubRoundDAO(this);
+        roundDAO = new RoundDAO(this);
+
+        Intent myIntent = getIntent();
+
+        //Loads the course name from the previous activity
+        Long roundID = myIntent.getLongExtra("RoundID", -1);
+
+        round = roundDAO.readRoundFromID(roundID);
+
+        subRounds = subRoundDAO.readListofSubRounds(round);
+        List <SubCourse> subCourses = new ArrayList<SubCourse>();
+
+        for (SubRound subRound : subRounds){
+            subCourses.add(subCourseDAO.readSubCourseFromID(subRound.getSubCourseID()));
+        }
+
+        Course course = courseDAO.readCourseFromID(subCourses.get(0).getCourseID());
+
+        //Saves the official course name
+        courseName = course.getName();
+
+        numberOfPlayers = myIntent.getIntExtra("Players", 0);
+
+        //Loads the player names from the previous activity
+        for(int x=1;x<=numberOfPlayers;x++){
+            playerName[x] = myIntent.getStringExtra("Player"+(x-1));
+        }
+
+        for (SubCourse subCourse : subCourses){
+            List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
+
+            for (CourseHole courseHole : courseHoles){
+                List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
+                courseHole.setCourseHoleInfoList(courseHoleInfos);
+
+                par[courseHole.getHoleNumber()] = courseHole.getPar();
+                blueYardage[courseHole.getHoleNumber()] = courseHole.getBlueYardage();
+                whiteYardage[courseHole.getHoleNumber()] = courseHole.getWhiteYardage();
+                redYardage[courseHole.getHoleNumber()] = courseHole.getRedYardage();
+                menHandicap[courseHole.getHoleNumber()] = courseHole.getMenHandicap();
+                womenHandicap[courseHole.getHoleNumber()] = courseHole.getWomenHandicap();
+            }
+        }
+    }
 	
 	//Loads the past round's information
 	private void loadPastRound(){
-		String line;
-    	
-		//Opens the past round's file
-    	try {
-    		InputStream  filereader = openFileInput("pastround"+pastRoundFileNumber+".txt");
-    		InputStreamReader inputreader = new InputStreamReader(filereader);
-            BufferedReader bufferedreader = new BufferedReader(inputreader);
-            
-            //Disregards unused information
-            for(int x=0;x<3;x++){
-            	bufferedreader.readLine();
+
+        RoundHoleDAO roundHoleDAO = new RoundHoleDAO(this);
+        CourseHoleDAO courseHoleDAO = new CourseHoleDAO(this);
+        PlayerDAO playerDAO = new PlayerDAO(this);
+
+        //\todo Get unique player list here, might want to be for each unique player number, add that player to the list to account for comments below
+        //Issue with just unique player list is if the same player wants to have their name twice. We currently have no way to account for this
+        //We could solve this by adding a player number column to the round hole. it would be 1 - 4.
+        //Also, would make sure players stay in the same order when viewed in past rounds as they were when originally played
+        List <Player> players = new ArrayList<Player>();
+        Long id = playerDAO.readIDFromName("Darren");
+        Player player1 = new Player();
+        player1.setID(id);
+        player1 = playerDAO.readPlayer(player1);
+        players.add(player1);
+        id = playerDAO.readIDFromName("Eric Putney");
+        player1 = new Player();
+        player1.setID(id);
+        player1 = playerDAO.readPlayer(player1);
+        players.add(player1);
+        id = playerDAO.readIDFromName("Erik Jensen");
+        player1 = new Player();
+        player1.setID(id);
+        player1 = playerDAO.readPlayer(player1);
+        players.add(player1);
+        id = playerDAO.readIDFromName("Justin");
+        player1 = new Player();
+        player1.setID(id);
+        player1 = playerDAO.readPlayer(player1);
+        players.add(player1);
+
+        numberOfPlayers = players.size();
+
+        int player_number = 0;
+
+        for ( Player player : players) {
+            player_number++;
+
+            playerName[player_number] = player.getName();
+
+            for (SubRound subRound : subRounds){
+
+                List <RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRoundPlayer(subRound, player);
+
+                for (RoundHole roundHole : roundHoles){
+
+                    CourseHole courseHole = courseHoleDAO.readCourseHoleFromID(roundHole.getCourseHoleID());
+
+                    holeScore[player_number][courseHole.getHoleNumber()] = roundHole.getScore();
+                }
             }
-            
-            //Loads the number of players
-            line = bufferedreader.readLine();
-            numberOfPlayers = Integer.parseInt(line);
-            
-            //Loads the scores for the players
-            for(int x=1;x<=numberOfPlayers;x++){
-            	for(int y=1;y<19;y++){
-            		line = bufferedreader.readLine();              
-            		holeScore[x][y] = Integer.parseInt(line);
-            	}
-            }      
-            
-            //Loads the name of the players
-            for(int x=1;x<=numberOfPlayers;x++){
-            	line = bufferedreader.readLine();
-            	playerName[x] = line;
-            }
-            
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
+        }
 	}
 	
 	//Called when the front9 space is selected on the scorecard tab
@@ -888,7 +913,7 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
     private void scorecardInitializer() {  	
     	//Displays the course name in the top left corner
     	TextView scorecardText = (TextView)findViewById(R.id.pasttopLeftCorner);
-    	scorecardText.setText(courseName);
+        scorecardText.setText(courseName);
     	
     	//Displays the player names
     	scorecardText = (TextView)findViewById(R.id.pastplayer1Name);

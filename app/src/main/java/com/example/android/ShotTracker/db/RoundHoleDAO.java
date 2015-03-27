@@ -261,7 +261,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             throw new RuntimeException("RoundID or playerID not set in readListofRoundHoleRoundPlayer()");
         }
 
-        Cursor cursor = database.query(DataBaseHelper.ROUND_TABLE,
+        Cursor cursor = database.query(DataBaseHelper.ROUNDHOLE_TABLE,
                 new String[]{DataBaseHelper.ROUNDHOLEID_COLUMN,
                         DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,

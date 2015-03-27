@@ -1,17 +1,37 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseHoleDAO;
+import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.RoundDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
+import com.example.android.ShotTracker.db.SubRoundDAO;
+import com.example.android.ShotTracker.objects.Course;
+import com.example.android.ShotTracker.objects.CourseHole;
+import com.example.android.ShotTracker.objects.CourseHoleInfo;
+import com.example.android.ShotTracker.objects.Round;
+import com.example.android.ShotTracker.objects.SubCourse;
+import com.example.android.ShotTracker.objects.SubRound;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -21,19 +41,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Color;
-import android.location.Location;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.AdapterView.OnItemSelectedListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PastRoundMap extends com.google.android.maps.MapActivity implements OnClickListener, OnMapClickListener{
 	
@@ -83,64 +93,54 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
 	
 	//Loads the gps coordinates of the greens
 	private void loadGreenLocations(){
-		Intent myIntent = getIntent();
-    	
-    	//Loads the file number from the previous activity
-		pastRoundFileNumber = myIntent.getIntExtra("Position", -1);
-		
-		AssetManager assetManager = getAssets();
-		
-		//Opens the past round info file
-		InputStream filereader = null;
-		try {
-			filereader = openFileInput("pastround"+pastRoundFileNumber+".txt");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		InputStreamReader inputreader = new InputStreamReader(filereader);
-		BufferedReader bufferedreader = new BufferedReader(inputreader);
-		      
-		//Saves the course name to be opened later
-		String fileName = null;
-		try {
-			fileName = bufferedreader.readLine();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		//Opens the course info file
-		try {
-			filereader = assetManager.open(fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}						
-	    inputreader = new InputStreamReader(filereader);
-	    bufferedreader = new BufferedReader(inputreader);
-	    
-	    try {
-			//Disregards the unnecessary info
-			for(int x=0;x<115;x++){
-				bufferedreader.readLine();
-			}
-			
-			//Saves the gps locations of the front, middle, and back of all 18 holes
-			for(int x=0;x<2;x++){
-				for(int y=0;y<3;y++){
-					for(int z=0;z<19;z++){		
-						greenLocations[x][y][z] = Double.parseDouble(bufferedreader.readLine());
-					}
-				}
-			}
-			
-			//Saves the gps locations of the tees
-			for(int x=0;x<2;x++){
-				for(int y=0;y<19;y++){
-					teeLocations[x][y] = Double.parseDouble(bufferedreader.readLine());
-				}
-			}
-	    } catch (IOException e) {
-			e.printStackTrace();
-		}
+        CourseDAO courseDAO = new CourseDAO(this);
+        SubCourseDAO subCourseDAO = new SubCourseDAO(this);
+        CourseHoleDAO courseHoleDAO = new CourseHoleDAO(this);
+        CourseHoleInfoDAO courseHoleInfoDAO = new CourseHoleInfoDAO(this);
+        SubRoundDAO subRoundDAO = new SubRoundDAO(this);
+        RoundDAO roundDAO = new RoundDAO(this);
+
+        Intent myIntent = getIntent();
+
+        //Loads the course name from the previous activity
+        Long roundID = myIntent.getLongExtra("RoundID", -1);
+
+        Round round = roundDAO.readRoundFromID(roundID);
+
+        List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+        List <SubCourse> subCourses = new ArrayList<SubCourse>();
+
+        for (SubRound subRound : subRounds){
+            subCourses.add(subCourseDAO.readSubCourseFromID(subRound.getSubCourseID()));
+        }
+        Long subCourseID = subCourses.get(0).getID();
+        Course course = courseDAO.readCourseFromID(subCourseID);
+
+        for (SubCourse subCourse : subCourses){
+            List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
+
+            for (CourseHole courseHole : courseHoles){
+                List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
+                courseHole.setCourseHoleInfoList(courseHoleInfos);
+
+                for(CourseHoleInfo courseHoleInfo : courseHoleInfos){
+
+                    if (courseHoleInfo.getInfo().equals("Green Front")){
+                        greenLocations[0][0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        greenLocations[1][0][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }else if (courseHoleInfo.getInfo().equals("Green Middle")) {
+                        greenLocations[0][1][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        greenLocations[1][1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }else if (courseHoleInfo.getInfo().equals("Green Back")) {
+                        greenLocations[0][2][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        greenLocations[1][2][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }else if (courseHoleInfo.getInfo().equals("Tee")) {
+                        teeLocations[0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
+                        teeLocations[1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                    }
+                }
+            }
+        }
 	}
 	
 	//Initializes the map spinner

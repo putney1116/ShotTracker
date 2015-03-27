@@ -213,7 +213,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    
 
         //Saves the official course name
-        course = courseDAO.readCoursefromID(courseID);
+        course = courseDAO.readCourseFromID(courseID);
         courseName = course.getName();
 
         subCourses = subCourseDAO.readListofSubCourses(course);
@@ -2863,8 +2863,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
         for (int subCourseNumber = 0; subCourseNumber < 2; subCourseNumber++) {
 
-            boolean totalScoreNull = true;
-
             courseHoles = courseHoleDAO.readListofCourseHoles(subCourses.get(subCourseNumber));
 
             subRound = new SubRound();
@@ -2885,7 +2883,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
                     int playerScore = holeScore[x][9*(subCourseNumber) + y];
 
                     if (playerScore > 0) {
-                        totalScoreNull = false;
                         totalRoundNull = false;
 
                         roundHole = new RoundHole();
@@ -2899,13 +2896,16 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
                     }
                 }
             }
-
-            if (totalScoreNull)
-                subRoundDAO.deleteSubRound(subRound);
         }
 
-        if (totalRoundNull)
+        if (totalRoundNull) {
+            //\todo Once created, use DAOUtility to delete a round
+            List <SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+            for (SubRound subRoundDelete : subRounds) {
+                subRoundDAO.deleteSubRound(subRoundDelete);
+            }
             roundDAO.deleteRound(round);
+        }
     }
     
 	//Shows the gps coordinates and the current city of the current location

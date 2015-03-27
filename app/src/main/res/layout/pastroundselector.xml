@@ -40,7 +40,7 @@ android:background="@drawable/golfgreen"
 				android:layout_height="fill_parent"
 				android:layout_width="wrap_content"
 				android:text="Date"
-				android:width="75dip"
+				android:width="90dip"
 				android:textStyle="bold"
 				android:gravity="center"
 				/>

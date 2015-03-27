@@ -3,15 +3,9 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 
 import com.example.android.ShotTracker.objects.Round;
-import com.example.android.ShotTracker.objects.RoundHole;
-import com.example.android.ShotTracker.objects.Shot;
-import com.example.android.ShotTracker.objects.ShotType;
-import com.example.android.ShotTracker.objects.SubCourse;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +111,30 @@ public class RoundDAO extends ShotTrackerDBDAO {
 
         //\todo need to add the while (cursor.movetonext()) or else doesn't work
         round.setDate(new Date(cursor.getLong(1)));
+        cursor.close();
+
+        return round;
+    }
+
+    /**
+     *
+     * @param roundID
+     * @return
+     */
+    public Round readRoundFromID(long roundID){
+
+        Cursor cursor = database.query(DataBaseHelper.ROUND_TABLE,
+                new String[] {DataBaseHelper.ROUNDID_COLUMN,
+                        DataBaseHelper.ROUNDDATE_COLUMN},
+                WHERE_ROUNDID_EQUALS,
+                new String[] {Long.toString(roundID)},
+                null,null,null);
+
+        Round round = new Round();
+        while (cursor.moveToNext()) {
+            round.setID(cursor.getLong(0));
+            round.setDate(new Date(cursor.getLong(1)));
+        }
         cursor.close();
 
         return round;

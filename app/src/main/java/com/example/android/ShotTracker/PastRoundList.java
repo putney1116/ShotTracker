@@ -1,20 +1,9 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
@@ -25,7 +14,19 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.RoundDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
+import com.example.android.ShotTracker.db.SubRoundDAO;
+import com.example.android.ShotTracker.objects.Round;
+import com.example.android.ShotTracker.objects.SubCourse;
+import com.example.android.ShotTracker.objects.SubRound;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class PastRoundList extends ListActivity{
 	
@@ -35,6 +36,9 @@ public class PastRoundList extends ListActivity{
 	private int listLength = 0;
 
     private RoundDAO roundDAO = null;
+    private SubRoundDAO subRoundDAO = null;
+    private SubCourseDAO subCourseDAO = null;
+    private CourseDAO courseDAO = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,7 @@ public class PastRoundList extends ListActivity{
 				//Calls the dialog box that confirms the delete of the round
 				builder.show();
 				
-				return false;
+				return true;
 			}
 		});
 
@@ -77,71 +81,41 @@ public class PastRoundList extends ListActivity{
 		int fileNumber = 0;
 			
 		//Displays the past rounds by using a list of hash maps
-		List<HashMap<String, String>> fillMaps = null;
+		List<HashMap<String, String>> fillMaps = new ArrayList<HashMap<String, String>>();
 			
 		String[] from = new String[] {"col_1", "col_2"};
 		int[] to = new int[] {R.id.item1, R.id.item2};
-			
-		try {
-			try {
-				fillMaps = new ArrayList<HashMap<String, String>>();
 
-				InputStream  filereader = null;
-		   		InputStreamReader inputreader = null;
-		        BufferedReader bufferedreader = null;
+        roundDAO = new RoundDAO(this);
+        subRoundDAO = new SubRoundDAO(this);
+        subCourseDAO = new SubCourseDAO(this);
+        courseDAO = new CourseDAO(this);
 
-		        InputStream  filereader2 = null;
-		  		InputStreamReader inputreader2 = null;
-		        BufferedReader bufferedreader2 = null;
+        List<Round> rounds = roundDAO.readListofRounds();
 
-		        AssetManager assetManager;
-				
-		        //Runs through all the past round files
-				while(true){
-					filereader = openFileInput("pastround"+fileNumber+".txt");							
-		    		inputreader = new InputStreamReader(filereader);
-		            bufferedreader = new BufferedReader(inputreader);
-		            
-		   			fileNumber++;						
-				        
-		   			//Creates a new hash map
-		   			HashMap<String, String> map = new HashMap<String, String>();
-				        
-		   			//Reads in the course name
-		   			line = bufferedreader.readLine();
-		    			
-		   			//Opens the course info file
-		   			assetManager = getAssets();
-		   			try {
-		   				filereader2 = assetManager.open(line);
-		   			} catch (IOException e1) {
-		   				e1.printStackTrace();
-		   			}													
-		    		inputreader2 = new InputStreamReader(filereader2);
-		    		bufferedreader2 = new BufferedReader(inputreader2);
-		   		    
-		    		//Puts the course name, score for the first player, and the date in the hash map
-			        map.put("col_1", bufferedreader2.readLine());
-			        map.put("col_2", bufferedreader.readLine());
-			        map.put("col_3", bufferedreader.readLine());
-			       
-			        //Adds the hash map to the list
-			        fillMaps.add(0,map);			        
-				}
-			} catch (FileNotFoundException e) {
-				//Displays the list of hash maps to the screen
-				SimpleAdapter adapter = new SimpleAdapter(PastRoundList.this, fillMaps, R.layout.pastroundgrid, from, to);
-		        lv.setAdapter(adapter);
-		        
-		        listLength = fillMaps.size();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
+        listLength = rounds.size();
+
+		for (Round round : rounds) {
+            //Creates a new hash map
+            HashMap<String, String> map = new HashMap<String, String>();
+
+            List <SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+            SubCourse subCourse = subCourseDAO.readSubCourseFromID(subRounds.get(0).getSubCourseID());
+            String courseName = courseDAO.readCourseNameFromID(subCourse.getCourseID());
+
+            Date date = round.getDate();
+            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+
+            //Puts the course name and the date in the hash map
+            map.put("col_1", courseName);
+            map.put("col_2", df.format(date));
+
+            //Adds the hash map to the list
+            fillMaps.add(0,map);
+        }
+
+        SimpleAdapter adapter = new SimpleAdapter(PastRoundList.this, fillMaps, R.layout.pastroundgrid, from, to);
+        lv.setAdapter(adapter);
 	}
 	
 	//Asks the user for confirmation to delete the round
@@ -151,28 +125,17 @@ public class PastRoundList extends ListActivity{
 	    builder.setCancelable(true);
 	    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 	    	public void onClick(DialogInterface dialog, int id) {
-	    		//Sets the fileNumber to the inverse of the position in the list
-	    		int fileNumber = (listLength-1) - longClickPosition;
+	    		//Sets the roundNumber to the inverse of the position in the list
+                int roundNumber = (listLength-1) - longClickPosition;
 	    		
 	    		//Deletes the file selected
-	    		File file = new File(getFilesDir(), "pastround"+fileNumber+".txt");	
-	    		file.delete();
-	    		
-	    		//Renames all the files after the one deleted by one less so there is no gap
-	    		while(true){
-	    			file = new File(getFilesDir(), "pastround"+(fileNumber+1)+".txt");
-	    			
-	    			if(file.exists()){
-	    				file.renameTo(new File(getFilesDir(), "pastround"+fileNumber+".txt"));
-	    			}
-	    			else{
-	    				break;
-	    			}
-	    			
-	    			fileNumber++;
-	    		}
-				 
-	    		//Displays the list of past rounds again
+                List<Round> rounds = roundDAO.readListofRounds();
+                Round round = rounds.get(roundNumber);
+
+                //\todo Add utility to delete a round and everything below it and call it here
+                //DAOUtility.deleteRound(round);
+
+                //Displays the list of past rounds again
 	    		loadPastRoundsList();
 	    		
 	    	}
@@ -189,9 +152,13 @@ public class PastRoundList extends ListActivity{
 	@Override
 	public void onListItemClick(ListView list, View v, int position, long id) {
 		//Starts the activity that displays the past round.
-		//The file number is passed to the activity.
+		//The round id is passed to the activity.
+
+        List<Round> rounds = roundDAO.readListofRounds();
+        Long roundID = rounds.get(position).getID();
+
 		Intent myIntent = new Intent(v.getContext(), PastRound.class);
-		myIntent.putExtra("Position", (listLength-1) - position);
+		myIntent.putExtra("RoundID", roundID);
         startActivity(myIntent);  
 	}
 	 

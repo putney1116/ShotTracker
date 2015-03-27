@@ -48,6 +48,8 @@ public class SubCourse {
         this.mCourseID = course.getID();
     }
 
+    public void setCourseIDFromCourseID(long courseID) { this.mCourseID = courseID; }
+
     public void setName(String name) {
         this.mName = name;
     }

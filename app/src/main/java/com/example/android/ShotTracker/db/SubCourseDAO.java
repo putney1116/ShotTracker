@@ -82,6 +82,29 @@ public class SubCourseDAO extends ShotTrackerDBDAO {
                 new String[] {String.valueOf(subCourse.getID())});
     }
 
+    public SubCourse readSubCourseFromID(long subCourseID){
+
+        Cursor cursor = database.query(DataBaseHelper.SUBCOURSE_TABLE,
+                new String[] {DataBaseHelper.SUBCOURSEID_COLUMN,
+                        DataBaseHelper.COURSEID_COLUMN,
+                        DataBaseHelper.SUBCOURSENAME_COLUMN,
+                        DataBaseHelper.SUBCOURSERATING_COLUMN},
+                WHERE_SUBCOURSEID_EQUALS,
+                new String[] {Long.toString(subCourseID)},
+                null,null,null);
+
+        SubCourse subCourse = new SubCourse();
+        while (cursor.moveToNext()) {
+            subCourse.setID(cursor.getLong(0));
+            subCourse.setCourseIDFromCourseID(cursor.getLong(1));
+            subCourse.setName(cursor.getString(2));
+            subCourse.setRating(cursor.getDouble(3));
+        }
+        cursor.close();
+
+        return subCourse;
+    }
+
     /**
      * Get a list of SubCourses for a given Course
      * @param course Course desired

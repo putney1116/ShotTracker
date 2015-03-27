@@ -1,32 +1,24 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.Integer;
-import java.util.List;
-
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
@@ -39,10 +31,10 @@ import com.example.android.ShotTracker.objects.SubCourse;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -52,6 +44,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.List;
 
 public class CourseInfo extends com.google.android.maps.MapActivity implements OnClickListener, OnMapClickListener{
 	
@@ -139,7 +133,7 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 		//Loads the course name from the previous activity
 		courseID = myIntent.getLongExtra("Course ID", -1);
 
-        Course course = courseDAO.readCoursefromID(courseID);
+        Course course = courseDAO.readCourseFromID(courseID);
         courseName = course.getName();
 
         List<SubCourse> subCourses = subCourseDAO.readListofSubCourses(course);

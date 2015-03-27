@@ -171,6 +171,44 @@ public class CourseHoleDAO extends ShotTrackerDBDAO {
         return courseHoles;
     }
 
+    /**
+     *
+     * @param courseHoleID
+     * @return
+     */
+    public CourseHole readCourseHoleFromID(long courseHoleID){
 
+        Cursor cursor = database.query(DataBaseHelper.COURSEHOLE_TABLE,
+                new String[] {DataBaseHelper.COURSEHOLEID_COLUMN,
+                        DataBaseHelper.SUBCOURSEID_COLUMN,
+                        DataBaseHelper.COURSEHOLENUMBER_COLUMN,
+                        DataBaseHelper.PAR_COLUMN,
+                        DataBaseHelper.WOMENPAR_COLUMN,
+                        DataBaseHelper.MENHANDICAP_COLUMN,
+                        DataBaseHelper.WOMENHANDICAP_COLUMN,
+                        DataBaseHelper.BLUEYARD_COLUMN,
+                        DataBaseHelper.WHITEYARD_COLUMN,
+                        DataBaseHelper.REDYARD_COLUMN},
+                WHERE_COURSEHOLEID_EQUALS,
+                new String[] {Long.toString(courseHoleID)},
+                null,null,null);
+
+        CourseHole courseHole = new CourseHole();
+        while (cursor.moveToNext()) {
+            courseHole.setID(cursor.getLong(0));
+            courseHole.setSubCourseIDFromID(cursor.getInt(1));
+            courseHole.setHoleNumber(cursor.getInt(2));
+            courseHole.setPar(cursor.getInt(3));
+            courseHole.setWPar(cursor.getInt(4));
+            courseHole.setMenHandicap(cursor.getInt(5));
+            courseHole.setWomenHandicap(cursor.getInt(6));
+            courseHole.setBlueYardage(cursor.getInt(7));
+            courseHole.setWhiteYardage(cursor.getInt(8));
+            courseHole.setRedYardage(cursor.getInt(9));
+        }
+        cursor.close();
+
+        return courseHole;
+    }
 
 }

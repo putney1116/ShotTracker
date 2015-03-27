@@ -3,13 +3,8 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 
 import com.example.android.ShotTracker.objects.Course;
-import com.example.android.ShotTracker.objects.CourseHole;
-import com.example.android.ShotTracker.objects.CourseHoleInfo;
-import com.example.android.ShotTracker.objects.SubCourse;
-import com.google.android.gms.fitness.request.DataReadRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +80,12 @@ public class CourseDAO extends ShotTrackerDBDAO {
                 new String[]{String.valueOf(course.getID())});
     }
 
-
-    public Course readCoursefromID(long courseID){
+    /**
+     *
+     * @param courseID
+     * @return
+     */
+    public Course readCourseFromID(long courseID){
 
         Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
                 new String[] {DataBaseHelper.COURSEID_COLUMN,
@@ -112,7 +111,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
      * @param courseID
      * @return
      */
-    public String readCourseNamefromID(long courseID){
+    public String readCourseNameFromID(long courseID){
         String courseName = null;
 
         Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
@@ -128,6 +127,7 @@ public class CourseDAO extends ShotTrackerDBDAO {
 
         return courseName;
     }
+
     /**
      * Get a list of all Course's in the DB
      * @return A list of Course objects
