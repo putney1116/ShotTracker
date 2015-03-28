@@ -100,7 +100,7 @@ public class PastRoundList extends ListActivity{
             HashMap<String, String> map = new HashMap<String, String>();
 
             List <SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
-            SubCourse subCourse = subCourseDAO.readSubCourseFromID(subRounds.get(0).getSubCourseID());
+            SubCourse subCourse = subCourseDAO.readSubCoursefromID(subRounds.get(0).getSubCourseID());
             String courseName = courseDAO.readCourseNameFromID(subCourse.getCourseID());
 
             Date date = round.getDate();

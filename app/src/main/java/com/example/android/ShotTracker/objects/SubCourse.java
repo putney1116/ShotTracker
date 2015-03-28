@@ -44,8 +44,10 @@ public class SubCourse {
         this.mID = id;
     }
 
-    public void setCourseID(Course course) {
-        this.mCourseID = course.getID();
+    public void setCourseID(Course course) {this.mCourseID = course.getID();}
+
+    public void setCourseIDFromID(long cid) {
+        this.mCourseID = cid;
     }
 
     public void setCourseIDFromCourseID(long courseID) { this.mCourseID = courseID; }

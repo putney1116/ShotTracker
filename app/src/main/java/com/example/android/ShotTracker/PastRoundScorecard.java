@@ -96,7 +96,7 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
         List <SubCourse> subCourses = new ArrayList<SubCourse>();
 
         for (SubRound subRound : subRounds){
-            subCourses.add(subCourseDAO.readSubCourseFromID(subRound.getSubCourseID()));
+            subCourses.add(subCourseDAO.readSubCoursefromID(subRound.getSubCourseID()));
         }
 
         Course course = courseDAO.readCourseFromID(subCourses.get(0).getCourseID());
@@ -183,6 +183,8 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
             }
         }
 	}
+
+    //\todo deal with hole numbers being out of order in the same way as start round
 	
 	//Called when the front9 space is selected on the scorecard tab
 	public void front9ButtonHandler(View view){		

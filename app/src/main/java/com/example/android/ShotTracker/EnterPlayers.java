@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.SubCourse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +36,15 @@ public class EnterPlayers extends Activity{
 
 	private Button startRoundButton;
 
-	private long courseID;
+	private long front9SubCourseID;
+    private long back9SubCourseID;
 	
 	private int radioButtonNumber;
 	
 	private Vibrator vibe;
 
     private CourseDAO courseDAO = null;
+    private SubCourseDAO subCourseDAO = null;
 
     private AlertDialog.Builder builder;
 
@@ -51,9 +55,8 @@ public class EnterPlayers extends Activity{
 				
 		//Loads the file name from the previous activity
 		Intent myIntent = getIntent();
-		courseID = myIntent.getLongExtra("Course ID", -1);
-
-        Log.e("Test", "course ID = " + courseID);
+		front9SubCourseID = myIntent.getLongExtra("Front 9 SubCourseID", -1);
+        back9SubCourseID = myIntent.getLongExtra("Back 9 SubCourseID", -1);
 		
 		//Initialize Vibrate
     	vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -189,8 +192,11 @@ public class EnterPlayers extends Activity{
 	//Displays the course name at the top of the screen
 	private void setCourseName(){
 		courseDAO = new CourseDAO(this);
+        subCourseDAO = new SubCourseDAO(this);
 
-        String courseName = courseDAO.readCourseNameFromID(courseID);
+        SubCourse front9SubCourse = subCourseDAO.readSubCoursefromID(front9SubCourseID);
+
+        String courseName = courseDAO.readCourseNameFromID(front9SubCourse.getCourseID());
 		
 		//Displays the course name at the top of the screen
 		TextView courseNameText = (TextView)findViewById(R.id.coursename);
@@ -211,7 +217,8 @@ public class EnterPlayers extends Activity{
 					//Calls the activity that is the main screen during play
 					//The course file name and number of players are passed along
 					Intent myIntent = new Intent(v.getContext(), StartRound.class);
-					myIntent.putExtra("Course ID", courseID);
+                    myIntent.putExtra("Front 9 SubCourseID", front9SubCourseID);
+                    myIntent.putExtra("Back 9 SubCourseID", back9SubCourseID);
 					myIntent.putExtra("Players", radioButtonNumber);
 					
 					List<String> playerList = new ArrayList<String>();

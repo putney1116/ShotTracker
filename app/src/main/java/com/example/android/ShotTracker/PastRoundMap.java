@@ -111,7 +111,7 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
         List <SubCourse> subCourses = new ArrayList<SubCourse>();
 
         for (SubRound subRound : subRounds){
-            subCourses.add(subCourseDAO.readSubCourseFromID(subRound.getSubCourseID()));
+            subCourses.add(subCourseDAO.readSubCoursefromID(subRound.getSubCourseID()));
         }
         Long subCourseID = subCourses.get(0).getID();
         Course course = courseDAO.readCourseFromID(subCourseID);
@@ -142,6 +142,8 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
             }
         }
 	}
+
+    //\todo deal with hole numbers being out of order in the same way as start round
 	
 	//Initializes the map spinner
 	private void mapSpinnerSetup(){    	

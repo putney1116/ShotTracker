@@ -67,6 +67,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -202,7 +203,13 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		Intent myIntent = getIntent();
 		
 		//Loads the course name from the previous activity
-		courseID = myIntent.getLongExtra("Course ID", -1);
+        long front9SubCourseID = myIntent.getLongExtra("Front 9 SubCourseID", -1);
+        long back9SubCourseID = myIntent.getLongExtra("Back 9 SubCourseID", -1);
+
+        subCourses = new ArrayList<SubCourse>();
+
+        subCourses.add(subCourseDAO.readSubCoursefromID(front9SubCourseID));
+        subCourses.add(subCourseDAO.readSubCoursefromID(back9SubCourseID));
 		
 		numberOfPlayers = myIntent.getIntExtra("Players", 0);
 		
@@ -210,42 +217,49 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		for(int x=1;x<=numberOfPlayers;x++){
 			playerName[x] = myIntent.getStringExtra("Player"+(x-1));
 		}
-	    
 
         //Saves the official course name
+        courseID = subCourseDAO.readSubCoursefromID(front9SubCourseID).getCourseID();
         course = courseDAO.readCourseFromID(courseID);
         courseName = course.getName();
 
-        subCourses = subCourseDAO.readListofSubCourses(course);
+        //\todo Need to make display of hole numbers dynamic based on subCourses
+
+        int holecounter = 0;
 
         for (SubCourse subCourse : subCourses){
             List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
 
             for (CourseHole courseHole : courseHoles){
+
+                holecounter++;
+
                 List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
                 courseHole.setCourseHoleInfoList(courseHoleInfos);
 
-                par[courseHole.getHoleNumber()] = courseHole.getPar();
-                blueYardage[courseHole.getHoleNumber()] = courseHole.getBlueYardage();
-                whiteYardage[courseHole.getHoleNumber()] = courseHole.getWhiteYardage();
-                redYardage[courseHole.getHoleNumber()] = courseHole.getRedYardage();
-                menHandicap[courseHole.getHoleNumber()] = courseHole.getMenHandicap();
-                womenHandicap[courseHole.getHoleNumber()] = courseHole.getWomenHandicap();
+                //\todo We should have a check to make sure the list of courseholes is in order 1-9 or 10-19 (ex). We currently assume they are.
+
+                par[holecounter] = courseHole.getPar();
+                blueYardage[holecounter] = courseHole.getBlueYardage();
+                whiteYardage[holecounter] = courseHole.getWhiteYardage();
+                redYardage[holecounter] = courseHole.getRedYardage();
+                menHandicap[holecounter] = courseHole.getMenHandicap();
+                womenHandicap[holecounter] = courseHole.getWomenHandicap();
 
                 for(CourseHoleInfo courseHoleInfo : courseHoleInfos){
 
                     if (courseHoleInfo.getInfo().equals("Green Front")){
-                        greenLocations[0][0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][0][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][0][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][0][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Green Middle")) {
-                        greenLocations[0][1][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][1][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][1][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Green Back")) {
-                        greenLocations[0][2][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][2][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][2][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][2][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Tee")) {
-                        teeLocations[0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        teeLocations[1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        teeLocations[0][holecounter] = courseHoleInfo.getLatitude();
+                        teeLocations[1][holecounter] = courseHoleInfo.getLongitude();
                     }
                 }
             }
