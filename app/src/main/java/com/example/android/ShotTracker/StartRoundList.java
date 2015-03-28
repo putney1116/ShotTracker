@@ -26,6 +26,8 @@ public class StartRoundList extends ListActivity{
     private CourseDAO courseDAO = null;
 
     private List<Course> courses = null;
+
+    //\todo Change Stow Acres North and South to one 36 hole course. Same w/ Blue Hills.
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,7 @@ public class StartRoundList extends ListActivity{
 		vibe.vibrate(15);
 		
 		//The file name is sent to the next activity which is entering the players names
-		Intent myIntent = new Intent(v.getContext(), EnterPlayers.class);
+		Intent myIntent = new Intent(v.getContext(), SubCourseSelector.class);
 		myIntent.putExtra("Course ID", loadCourseID(position));
         startActivity(myIntent);  
          

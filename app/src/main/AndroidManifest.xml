@@ -114,5 +114,11 @@
               android:configChanges="keyboardHidden|orientation|screenSize">
 
           </activity>
+
+          <activity android:name=".SubCourseSelector"
+              android:screenOrientation="portrait"
+              android:configChanges="keyboardHidden|orientation|screenSize">
+
+           </activity>
       </application>
 </manifest>
