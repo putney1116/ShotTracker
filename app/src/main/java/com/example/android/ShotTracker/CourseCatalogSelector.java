@@ -48,8 +48,6 @@ public class CourseCatalogSelector extends Activity {
         //Initialize Vibrate
         vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
 
-        //\todo Make the back 9 column disappear when the #holes = 9
-
         //Sets the course name in a banner along the top
         setCourseName();
 

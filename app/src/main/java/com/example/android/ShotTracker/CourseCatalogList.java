@@ -14,6 +14,7 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ListView;
@@ -24,7 +25,7 @@ import com.example.android.ShotTracker.objects.Course;
 
 public class CourseCatalogList extends ListActivity{
 
-    //\todo Vibrator?!
+    private Vibrator vibe;
 
     private CourseDAO courseDAO = null;
 
@@ -116,6 +117,9 @@ public class CourseCatalogList extends ListActivity{
 	@Override
 	public void onListItemClick(ListView list, View v, int position, long id) {
 		//The file name is sent to the next activity which is the detailed course information pages
+
+		vibe.vibrate(15);
+
 		Intent myIntent = new Intent(v.getContext(), CourseCatalogSelector.class);
 		myIntent.putExtra("Course ID", loadCourseID(position));
         startActivity(myIntent);
