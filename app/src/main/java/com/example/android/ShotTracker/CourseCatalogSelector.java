@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -22,7 +21,7 @@ import java.util.List;
 /**
  * Created by ewjensen on 3/25/15.
  */
-public class SubCourseSelector extends Activity {
+public class CourseCatalogSelector extends Activity {
 
     private long courseID;
     private String courseName;
@@ -41,13 +40,15 @@ public class SubCourseSelector extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.subcourseselector);
+        setContentView(R.layout.coursecatalogsubcourseselector);
 
         Intent myIntent = getIntent();
         courseID = myIntent.getLongExtra("Course ID", -1);
 
         //Initialize Vibrate
         vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+
+        //\todo Make the back 9 column disappear when the #holes = 9
 
         //Sets the course name in a banner along the top
         setCourseName();
@@ -67,30 +68,30 @@ public class SubCourseSelector extends Activity {
 
         courseName = courseDAO.readCourseNameFromID(courseID);
 
-        TextView courseNameText = (TextView)findViewById(R.id.subcourseselectorcoursename);
+        TextView courseNameText = (TextView)findViewById(R.id.coursecatalogsubcourseselectorcoursename);
         courseNameText.setText(courseName);
     }
 
     public void setSubCourses(){
 
-        subCourseNames[0] = (TextView)findViewById(R.id.subcourseselectorcourse1text);
-        subCourseNames[1] = (TextView)findViewById(R.id.subcourseselectorcourse2text);
-        subCourseNames[2] = (TextView)findViewById(R.id.subcourseselectorcourse3text);
-        subCourseNames[3] = (TextView)findViewById(R.id.subcourseselectorcourse4text);
-        subCourseNames[4] = (TextView)findViewById(R.id.subcourseselectorcourse5text);
+        subCourseNames[0] = (TextView)findViewById(R.id.coursecatalogsubcourseselectorcourse1text);
+        subCourseNames[1] = (TextView)findViewById(R.id.coursecatalogsubcourseselectorcourse2text);
+        subCourseNames[2] = (TextView)findViewById(R.id.coursecatalogsubcourseselectorcourse3text);
+        subCourseNames[3] = (TextView)findViewById(R.id.coursecatalogsubcourseselectorcourse4text);
+        subCourseNames[4] = (TextView)findViewById(R.id.coursecatalogsubcourseselectorcourse5text);
 
         //Radiobutton[front/back][subcoursenumber]
         RadioButton[][] radioButton = new RadioButton[2][5];
-        radioButton[0][0] = (RadioButton)findViewById(R.id.subcourseselectorfront9radio1);
-        radioButton[0][1] = (RadioButton)findViewById(R.id.subcourseselectorfront9radio2);
-        radioButton[0][2] = (RadioButton)findViewById(R.id.subcourseselectorfront9radio3);
-        radioButton[0][3] = (RadioButton)findViewById(R.id.subcourseselectorfront9radio4);
-        radioButton[0][4] = (RadioButton)findViewById(R.id.subcourseselectorfront9radio5);
-        radioButton[1][0] = (RadioButton)findViewById(R.id.subcourseselectorback9radio1);
-        radioButton[1][1] = (RadioButton)findViewById(R.id.subcourseselectorback9radio2);
-        radioButton[1][2] = (RadioButton)findViewById(R.id.subcourseselectorback9radio3);
-        radioButton[1][3] = (RadioButton)findViewById(R.id.subcourseselectorback9radio4);
-        radioButton[1][4] = (RadioButton)findViewById(R.id.subcourseselectorback9radio5);
+        radioButton[0][0] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorfront9radio1);
+        radioButton[0][1] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorfront9radio2);
+        radioButton[0][2] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorfront9radio3);
+        radioButton[0][3] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorfront9radio4);
+        radioButton[0][4] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorfront9radio5);
+        radioButton[1][0] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorback9radio1);
+        radioButton[1][1] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorback9radio2);
+        radioButton[1][2] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorback9radio3);
+        radioButton[1][3] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorback9radio4);
+        radioButton[1][4] = (RadioButton)findViewById(R.id.coursecatalogsubcourseselectorback9radio5);
 
         subCourseDAO = new SubCourseDAO(this);
 
@@ -190,7 +191,7 @@ public class SubCourseSelector extends Activity {
     }
 
     private void numberOfHolesSwitchRadioButton(){
-        RadioGroup radioGroup = (RadioGroup)findViewById(R.id.subcourseselectorradiobuttons);
+        RadioGroup radioGroup = (RadioGroup)findViewById(R.id.coursecatalogsubcourseselectorradiobuttons);
 
         //called when radio button is selected
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -201,17 +202,17 @@ public class SubCourseSelector extends Activity {
 
                 int numHoles = rGroup.getCheckedRadioButtonId();
 
-                RadioGroup back9RadioGroup = (RadioGroup)findViewById(R.id.subcourseselectorback9);
-                TextView back9Label = (TextView)findViewById(R.id.subcourseselectorfrontbackheaderback);
+                RadioGroup back9RadioGroup = (RadioGroup)findViewById(R.id.coursecatalogsubcourseselectorback9);
+                TextView back9Label = (TextView)findViewById(R.id.coursecatalogsubcourseselectorfrontbackheaderback);
 
                 switch (numHoles) {
-                    case R.id.subcourseselectorradioButton1: {
+                    case R.id.coursecatalogsubcourseselectorradioButton1: {
                         fullRound = false;
                         back9RadioGroup.setVisibility(View.INVISIBLE);
                         back9Label.setVisibility(View.INVISIBLE);
                         break;
                     }
-                    case R.id.subcourseselectorradioButton2: {
+                    case R.id.coursecatalogsubcourseselectorradioButton2: {
                         fullRound = true;
                         back9RadioGroup.setVisibility(View.VISIBLE);
                         back9Label.setVisibility(View.VISIBLE);
@@ -229,7 +230,7 @@ public class SubCourseSelector extends Activity {
     }
 
     private void selectPlayerButtonInitializer(){
-        Button selectPlayersButton = (Button)findViewById(R.id.startroundactivitybutton);
+        Button selectPlayersButton = (Button)findViewById(R.id.coursecatalogstartroundactivitybutton);
 
         selectPlayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,8 +240,8 @@ public class SubCourseSelector extends Activity {
                     vibe.vibrate(15);
 
                     RadioGroup[] radioGroups = new RadioGroup[2];
-                    radioGroups[0] = (RadioGroup)findViewById(R.id.subcourseselectorfront9);
-                    radioGroups[1] = (RadioGroup)findViewById(R.id.subcourseselectorback9);
+                    radioGroups[0] = (RadioGroup)findViewById(R.id.coursecatalogsubcourseselectorfront9);
+                    radioGroups[1] = (RadioGroup)findViewById(R.id.coursecatalogsubcourseselectorback9);
 
                     int front9RadioButtonID = radioGroups[0].getCheckedRadioButtonId();
                     int back9RadioButtonID = radioGroups[1].getCheckedRadioButtonId();
@@ -249,23 +250,23 @@ public class SubCourseSelector extends Activity {
                     long back9SubCourseID;
 
                     switch (front9RadioButtonID) {
-                        case R.id.subcourseselectorfront9radio1: {
+                        case R.id.coursecatalogsubcourseselectorfront9radio1: {
                             front9SubCourseID = subCourses.get(0).getID();
                             break;
                         }
-                        case R.id.subcourseselectorfront9radio2: {
+                        case R.id.coursecatalogsubcourseselectorfront9radio2: {
                             front9SubCourseID = subCourses.get(1).getID();
                             break;
                         }
-                        case R.id.subcourseselectorfront9radio3: {
+                        case R.id.coursecatalogsubcourseselectorfront9radio3: {
                             front9SubCourseID = subCourses.get(2).getID();
                             break;
                         }
-                        case R.id.subcourseselectorfront9radio4: {
+                        case R.id.coursecatalogsubcourseselectorfront9radio4: {
                             front9SubCourseID = subCourses.get(3).getID();
                             break;
                         }
-                        case R.id.subcourseselectorfront9radio5: {
+                        case R.id.coursecatalogsubcourseselectorfront9radio5: {
                             front9SubCourseID = subCourses.get(4).getID();
                             break;
                         }
@@ -276,23 +277,23 @@ public class SubCourseSelector extends Activity {
                     }
 
                     switch (back9RadioButtonID) {
-                        case R.id.subcourseselectorback9radio1: {
+                        case R.id.coursecatalogsubcourseselectorback9radio1: {
                             back9SubCourseID = subCourses.get(0).getID();
                             break;
                         }
-                        case R.id.subcourseselectorback9radio2: {
+                        case R.id.coursecatalogsubcourseselectorback9radio2: {
                             back9SubCourseID = subCourses.get(1).getID();
                             break;
                         }
-                        case R.id.subcourseselectorback9radio3: {
+                        case R.id.coursecatalogsubcourseselectorback9radio3: {
                             back9SubCourseID = subCourses.get(2).getID();
                             break;
                         }
-                        case R.id.subcourseselectorback9radio4: {
+                        case R.id.coursecatalogsubcourseselectorback9radio4: {
                             back9SubCourseID = subCourses.get(3).getID();
                             break;
                         }
-                        case R.id.subcourseselectorback9radio5: {
+                        case R.id.coursecatalogsubcourseselectorback9radio5: {
                             back9SubCourseID = subCourses.get(4).getID();
                             break;
                         }
@@ -303,7 +304,7 @@ public class SubCourseSelector extends Activity {
                     }
 
                     //The file name is sent to the next activity which is entering the players names
-                    Intent myIntent = new Intent(v.getContext(), EnterPlayers.class);
+                    Intent myIntent = new Intent(v.getContext(), CourseInfo.class);
                     if (fullRound == false) {
                         myIntent.putExtra("Front 9 SubCourseID", front9SubCourseID);
                         myIntent.putExtra("Back 9 SubCourseID", front9SubCourseID);

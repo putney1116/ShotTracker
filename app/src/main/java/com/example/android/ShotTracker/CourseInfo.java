@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseInfo extends com.google.android.maps.MapActivity implements OnClickListener, OnMapClickListener{
@@ -93,6 +94,9 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     private SubCourseDAO subCourseDAO = null;
     private CourseHoleDAO courseHoleDAO = null;
     private CourseHoleInfoDAO courseHoleInfoDAO = null;
+
+	private Course course = null;
+	private List<SubCourse> subCourses = null;
     
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
@@ -131,8 +135,15 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 		Intent myIntent = getIntent();
 		
 		//Loads the course name from the previous activity
-		courseID = myIntent.getLongExtra("Course ID", -1);
+		long front9SubCourseID = myIntent.getLongExtra("Front 9 SubCourseID", -1);
+		long back9SubCourseID = myIntent.getLongExtra("Back 9 SubCourseID", -1);
 
+		subCourses = new ArrayList<SubCourse>();
+
+		subCourses.add(subCourseDAO.readSubCoursefromID(front9SubCourseID));
+		subCourses.add(subCourseDAO.readSubCoursefromID(back9SubCourseID));
+
+		courseID = subCourseDAO.readSubCoursefromID(front9SubCourseID).getCourseID();
         Course course = courseDAO.readCourseFromID(courseID);
         courseName = course.getName();
 

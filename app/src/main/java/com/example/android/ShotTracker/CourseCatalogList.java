@@ -116,7 +116,7 @@ public class CourseCatalogList extends ListActivity{
 	@Override
 	public void onListItemClick(ListView list, View v, int position, long id) {
 		//The file name is sent to the next activity which is the detailed course information pages
-		Intent myIntent = new Intent(v.getContext(), CourseInfo.class);
+		Intent myIntent = new Intent(v.getContext(), CourseCatalogSelector.class);
 		myIntent.putExtra("Course ID", loadCourseID(position));
         startActivity(myIntent);
 

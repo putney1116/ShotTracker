@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/subcourseselectorpage"
+    android:id="@+id/coursecatalogsubcourseselectorpage"
     android:orientation="vertical"
     android:background="@drawable/golfgreen"
     >
     <TextView
-        android:id="@+id/subcourseselectorcoursename"
+        android:id="@+id/coursecatalogsubcourseselectorcoursename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -18,7 +18,7 @@
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
     <TextView
-        android:id="@+id/howmanyholes"
+        android:id="@+id/coursecatalogsubcourseselectorhowmanyholes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -29,8 +29,8 @@
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/howmanyholes"
-        android:id="@+id/subcourseselectorradiobuttons"
+        android:layout_below="@id/coursecatalogsubcourseselectorhowmanyholes"
+        android:id="@+id/coursecatalogsubcourseselectorradiobuttons"
         android:orientation="horizontal"
         android:layout_centerInParent="true"
         >
@@ -41,7 +41,7 @@
             android:layout_weight="2"
             />
         <RadioButton
-            android:id="@+id/subcourseselectorradioButton1"
+            android:id="@+id/coursecatalogsubcourseselectorradioButton1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="9"
@@ -54,7 +54,7 @@
             android:layout_weight="1"
             />
         <RadioButton
-            android:id="@+id/subcourseselectorradioButton2"
+            android:id="@+id/coursecatalogsubcourseselectorradioButton2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="18"
@@ -71,13 +71,13 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/subcourseselectorradiobuttons"
+        android:layout_below="@id/coursecatalogsubcourseselectorradiobuttons"
         android:orientation="horizontal"
-        android:id="@+id/subcourseselectorfrontbackheader"
+        android:id="@+id/coursecatalogsubcourseselectorfrontbackheader"
         android:layout_marginTop="10dp"
         >
         <TextView
-            android:id="@+id/subcourseselectorfrontbackheadername"
+            android:id="@+id/coursecatalogsubcourseselectorfrontbackheadername"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -86,7 +86,7 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/subcourseselectorfrontbackheaderfront"
+            android:id="@+id/coursecatalogsubcourseselectorfrontbackheaderfront"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -95,7 +95,7 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/subcourseselectorfrontbackheaderback"
+            android:id="@+id/coursecatalogsubcourseselectorfrontbackheaderback"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -107,18 +107,18 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/subcourseselectorfrontbackheader"
+        android:layout_below="@id/coursecatalogsubcourseselectorfrontbackheader"
         android:orientation="horizontal"
         >
         <LinearLayout
-            android:id="@+id/subcourseselectorsubcoursenames"
+            android:id="@+id/coursecatalogsubcourseselectorsubcoursenames"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="6"
             android:orientation="vertical"
             >
             <TextView
-                android:id="@+id/subcourseselectorcourse1text"
+                android:id="@+id/coursecatalogsubcourseselectorcourse1text"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text=""
@@ -128,7 +128,7 @@
                 android:textColor="#FFFFFF"
             />
             <TextView
-                android:id="@+id/subcourseselectorcourse2text"
+                android:id="@+id/coursecatalogsubcourseselectorcourse2text"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text=""
@@ -138,7 +138,7 @@
                 android:textColor="#FFFFFF"
                 />
             <TextView
-                android:id="@+id/subcourseselectorcourse3text"
+                android:id="@+id/coursecatalogsubcourseselectorcourse3text"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text=""
@@ -148,7 +148,7 @@
                 android:textColor="#FFFFFF"
                 />
             <TextView
-                android:id="@+id/subcourseselectorcourse4text"
+                android:id="@+id/coursecatalogsubcourseselectorcourse4text"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text=""
@@ -158,7 +158,7 @@
                 android:textColor="#FFFFFF"
                 />
             <TextView
-                android:id="@+id/subcourseselectorcourse5text"
+                android:id="@+id/coursecatalogsubcourseselectorcourse5text"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text=""
@@ -168,7 +168,7 @@
                 android:textColor="#FFFFFF"
                 />
             <TextView
-                android:id="@+id/subcourseselectorcourse6text"
+                android:id="@+id/coursecatalogsubcourseselectorcourse6text"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text=""
@@ -186,12 +186,12 @@
         <RadioGroup
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:id="@+id/subcourseselectorfront9"
+            android:id="@+id/coursecatalogsubcourseselectorfront9"
             android:orientation="vertical"
             android:layout_weight="1"
             >
             <RadioButton
-                android:id="@+id/subcourseselectorfront9radio1"
+                android:id="@+id/coursecatalogsubcourseselectorfront9radio1"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -199,35 +199,35 @@
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorfront9radio2"
+                android:id="@+id/coursecatalogsubcourseselectorfront9radio2"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorfront9radio3"
+                android:id="@+id/coursecatalogsubcourseselectorfront9radio3"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorfront9radio4"
+                android:id="@+id/coursecatalogsubcourseselectorfront9radio4"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorfront9radio5"
+                android:id="@+id/coursecatalogsubcourseselectorfront9radio5"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorfront9radio6"
+                android:id="@+id/coursecatalogsubcourseselectorfront9radio6"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -242,19 +242,19 @@
         <RadioGroup
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:id="@+id/subcourseselectorback9"
+            android:id="@+id/coursecatalogsubcourseselectorback9"
             android:orientation="vertical"
             android:layout_weight="1"
             >
             <RadioButton
-                android:id="@+id/subcourseselectorback9radio1"
+                android:id="@+id/coursecatalogsubcourseselectorback9radio1"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorback9radio2"
+                android:id="@+id/coursecatalogsubcourseselectorback9radio2"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -262,28 +262,28 @@
                 android:checked="true"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorback9radio3"
+                android:id="@+id/coursecatalogsubcourseselectorback9radio3"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorback9radio4"
+                android:id="@+id/coursecatalogsubcourseselectorback9radio4"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorback9radio5"
+                android:id="@+id/coursecatalogsubcourseselectorback9radio5"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="invisible"
                 />
             <RadioButton
-                android:id="@+id/subcourseselectorback9radio6"
+                android:id="@+id/coursecatalogsubcourseselectorback9radio6"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -297,10 +297,10 @@
             />
     </LinearLayout>
 
-    <Button  android:id="@+id/startroundactivitybutton"
+    <Button  android:id="@+id/coursecatalogstartroundactivitybutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Players"
+        android:text="View Course"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:padding="15dp"
