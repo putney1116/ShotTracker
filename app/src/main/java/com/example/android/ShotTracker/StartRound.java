@@ -132,6 +132,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private int redYardage[] = new int[19];
 	private int menHandicap[] = new int[19];
 	private int womenHandicap[] = new int[19];
+	private int holeNumberText[] = new int [19];
 	private int numberOfPlayers = 0;
 	
 	//greenlocations[lat,long][front,middle,back][holenumber]
@@ -245,6 +246,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
                 redYardage[holecounter] = courseHole.getRedYardage();
                 menHandicap[holecounter] = courseHole.getMenHandicap();
                 womenHandicap[holecounter] = courseHole.getWomenHandicap();
+				holeNumberText[holecounter] = courseHole.getHoleNumber();
 
                 for(CourseHoleInfo courseHoleInfo : courseHoleInfos){
 
@@ -1987,43 +1989,43 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	//Loads and displays the top row
     	if(frontActive){
     		scorecardText = (TextView)findViewById(R.id.hole1Text);
-        	scorecardText.setText("1");
+        	scorecardText.setText(Integer.toString(holeNumberText[1]));
         	scorecardText = (TextView)findViewById(R.id.hole2Text);
-        	scorecardText.setText("2");
+        	scorecardText.setText(Integer.toString(holeNumberText[2]));
         	scorecardText = (TextView)findViewById(R.id.hole3Text);
-        	scorecardText.setText("3");
+        	scorecardText.setText(Integer.toString(holeNumberText[3]));
         	scorecardText = (TextView)findViewById(R.id.hole4Text);
-        	scorecardText.setText("4");
+        	scorecardText.setText(Integer.toString(holeNumberText[4]));
         	scorecardText = (TextView)findViewById(R.id.hole5Text);
-        	scorecardText.setText("5");
+        	scorecardText.setText(Integer.toString(holeNumberText[5]));
         	scorecardText = (TextView)findViewById(R.id.hole6Text);
-        	scorecardText.setText("6");
+        	scorecardText.setText(Integer.toString(holeNumberText[6]));
         	scorecardText = (TextView)findViewById(R.id.hole7Text);
-        	scorecardText.setText("7");
+        	scorecardText.setText(Integer.toString(holeNumberText[7]));
         	scorecardText = (TextView)findViewById(R.id.hole8Text);
-        	scorecardText.setText("8");
+        	scorecardText.setText(Integer.toString(holeNumberText[8]));
         	scorecardText = (TextView)findViewById(R.id.hole9Text);
-        	scorecardText.setText("9");
+        	scorecardText.setText(Integer.toString(holeNumberText[9]));
     	}	
     	else{
     		scorecardText = (TextView)findViewById(R.id.hole1Text);
-        	scorecardText.setText("10");
+        	scorecardText.setText(Integer.toString(holeNumberText[10]));
         	scorecardText = (TextView)findViewById(R.id.hole2Text);
-        	scorecardText.setText("11");
+        	scorecardText.setText(Integer.toString(holeNumberText[11]));
         	scorecardText = (TextView)findViewById(R.id.hole3Text);
-        	scorecardText.setText("12");
+        	scorecardText.setText(Integer.toString(holeNumberText[12]));
         	scorecardText = (TextView)findViewById(R.id.hole4Text);
-        	scorecardText.setText("13");
+        	scorecardText.setText(Integer.toString(holeNumberText[13]));
         	scorecardText = (TextView)findViewById(R.id.hole5Text);
-        	scorecardText.setText("14");
+        	scorecardText.setText(Integer.toString(holeNumberText[14]));
         	scorecardText = (TextView)findViewById(R.id.hole6Text);
-        	scorecardText.setText("15");
+        	scorecardText.setText(Integer.toString(holeNumberText[15]));
         	scorecardText = (TextView)findViewById(R.id.hole7Text);
-        	scorecardText.setText("16");
+        	scorecardText.setText(Integer.toString(holeNumberText[16]));
         	scorecardText = (TextView)findViewById(R.id.hole8Text);
-        	scorecardText.setText("17");
+        	scorecardText.setText(Integer.toString(holeNumberText[17]));
         	scorecardText = (TextView)findViewById(R.id.hole9Text);
-        	scorecardText.setText("18");
+        	scorecardText.setText(Integer.toString(holeNumberText[18]));
     	}
     }
     
@@ -2212,11 +2214,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     //Initializes the tab views
     private void tabSetup() {
     	//Loads and displays the text for the first hole, par, and first player's name
-    	final TextView holeNumberText = (TextView)findViewById(R.id.holenumber);
+    	final TextView holeNumberTextView = (TextView)findViewById(R.id.holenumber);
     	final TextView parText = (TextView)findViewById(R.id.parnumber);
     	final TextView playerNameText = (TextView)findViewById(R.id.playername);
     	
-    	holeNumberText.setText("Hole " + holeNumber);
+    	holeNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     	parText.setText("Par " + par[holeNumber]);
     	playerNameText.setText(playerName[playerNumber]);
     	
@@ -2273,7 +2275,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    	   			if(tabHost.getCurrentTab()==0){
 	    	   				//Displays the current hole number, par, player name, and score if the main screen tab is selected
 	    	   				scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
-	    	   				holeNumberText.setText("Hole " + holeNumber);
+	    	   				holeNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
 	    	   				parText.setText("Par " + par[holeNumber]);
     						playerNameText.setText(playerName[playerNumber]);
     						
@@ -2323,7 +2325,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         private static final int SWIPE_MAX_OFF_PATH = 250;
         private static final int SWIPE_THRESHOLD_VELOCITY = 20;
         
-    	private TextView greenHoleNumberText = (TextView)findViewById(R.id.holenumber);
+    	private TextView greenHoleNumberTextView = (TextView)findViewById(R.id.holenumber);
     	private TextView greenParText = (TextView)findViewById(R.id.parnumber);
     	private TextView greenPlayerNameText = (TextView)findViewById(R.id.playername);
     	 
@@ -2344,7 +2346,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     					else {
     						//Increases the current hole and displays the increase
     						holeNumber++;
-    						greenHoleNumberText.setText("Hole " + holeNumber);
+    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
     						
     						//Updates the scorecard display if the increase goes from the front to the back
@@ -2378,7 +2380,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     					else {
     						//Decreases the current hole and displays the decrease
     						holeNumber--;
-    						greenHoleNumberText.setText("Hole " + holeNumber);
+    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
     						
     						//Updates the scorecard display if the decrease goes from the back to the front
@@ -2434,7 +2436,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						playerNumber = 1;
         					
     						//Displays the new hole number, par, player name, and score
-    						greenHoleNumberText.setText("Hole " + holeNumber);
+    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -2444,7 +2446,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						playerNumber++;
     					
     						//Displays the new hole number, par, player name, and score
-    						greenHoleNumberText.setText("Hole " + holeNumber);
+    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -2484,7 +2486,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						playerNumber = numberOfPlayers;
     						
     						//Displays the new hole number, par, player name, and score
-    						greenHoleNumberText.setText("Hole " + holeNumber);
+    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -2494,7 +2496,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						playerNumber--;
     					   			
     						//Displays the new hole number, par, player name, and score
-    						greenHoleNumberText.setText("Hole " + holeNumber);
+    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -3060,7 +3062,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		pinMarker = map.addMarker(new MarkerOptions()
     		.position(new LatLng(lat[1],lng[1]))
     		.title(Integer.toString(middleDistance)+" Yds")
-    		.snippet("Hole " + holeNumber)
+    		.snippet("Hole " + Integer.toString(holeNumberText[holeNumber]))
     		.icon(BitmapDescriptorFactory
     		.fromResource(R.drawable.pinmarker))
     		.anchor((float)0.37, (float)1.0));
@@ -3070,7 +3072,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		playerMarker = map.addMarker(new MarkerOptions()
         	.position(new LatLng(lat[0],lng[0]))
         	.title("Tee")
-        	.snippet("Hole " + holeNumber)
+        	.snippet("Hole " + Integer.toString(holeNumberText[holeNumber]))
         	.icon(BitmapDescriptorFactory
             .fromResource(R.drawable.playermarker)));
 	
