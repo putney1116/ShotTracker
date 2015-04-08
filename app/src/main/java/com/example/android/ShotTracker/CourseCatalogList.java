@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.GradientDrawable;
@@ -35,6 +36,9 @@ public class CourseCatalogList extends ListActivity{
 	public void onCreate(Bundle savedInstanceState) {
 	   	super.onCreate(savedInstanceState);
 		setContentView(R.layout.coursecataloglistselector);
+
+		//Initialize Vibrate
+		vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
 					
 		//Calls the method that fills in the list of courses
 		loadStartRoundList();
