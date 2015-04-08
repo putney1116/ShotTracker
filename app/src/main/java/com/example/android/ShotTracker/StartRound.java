@@ -224,8 +224,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         course = courseDAO.readCourseFromID(courseID);
         courseName = course.getName();
 
-        //\todo Need to make display of hole numbers dynamic based on subCourses
-
         int holecounter = 0;
 
         for (SubCourse subCourse : subCourses){

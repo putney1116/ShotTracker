@@ -154,8 +154,11 @@ public class PastRoundList extends ListActivity{
 		//Starts the activity that displays the past round.
 		//The round id is passed to the activity.
 
+		//Sets the roundNumber to the inverse of the position in the list
+		int roundNumber = (listLength-1) - position;
+
         List<Round> rounds = roundDAO.readListofRounds();
-        Long roundID = rounds.get(position).getID();
+        Long roundID = rounds.get(roundNumber).getID();
 
 		Intent myIntent = new Intent(v.getContext(), PastRound.class);
 		myIntent.putExtra("RoundID", roundID);

@@ -67,6 +67,8 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
 	private Marker playerMarker;
 	private Marker mapClickMarker;
 	private Polyline mapPolyline;
+
+	private int holeNumberText[] = new int [19];
 	
 	//greenlocations[lat,long][front,middle,back][holenumber]
 	private double greenLocations[][][] = new double[2][3][19];
@@ -116,40 +118,50 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
         Long subCourseID = subCourses.get(0).getID();
         Course course = courseDAO.readCourseFromID(subCourseID);
 
+		int holecounter = 0;
+
         for (SubCourse subCourse : subCourses){
             List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
 
             for (CourseHole courseHole : courseHoles){
+				holecounter++;
+
                 List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
                 courseHole.setCourseHoleInfoList(courseHoleInfos);
+
+				holeNumberText[holecounter] = courseHole.getHoleNumber();
 
                 for(CourseHoleInfo courseHoleInfo : courseHoleInfos){
 
                     if (courseHoleInfo.getInfo().equals("Green Front")){
-                        greenLocations[0][0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][0][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][0][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][0][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Green Middle")) {
-                        greenLocations[0][1][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][1][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][1][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Green Back")) {
-                        greenLocations[0][2][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][2][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][2][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][2][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Tee")) {
-                        teeLocations[0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        teeLocations[1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        teeLocations[0][holecounter] = courseHoleInfo.getLatitude();
+                        teeLocations[1][holecounter] = courseHoleInfo.getLongitude();
                     }
                 }
             }
         }
 	}
-
-    //\todo deal with hole numbers being out of order in the same way as start round
 	
 	//Initializes the map spinner
 	private void mapSpinnerSetup(){    	
-    	String[] items = {"Hole 1","Hole 2","Hole 3","Hole 4","Hole 5","Hole 6",
-    					"Hole 7","Hole 8","Hole 9","Hole 10","Hole 11","Hole 12",
-    					"Hole 13","Hole 14","Hole 15","Hole 16","Hole 17","Hole 18"};
+    	String[] items = {"Hole " + Integer.toString(holeNumberText[1]),"Hole " + Integer.toString(holeNumberText[2]),
+						"Hole " + Integer.toString(holeNumberText[3]),"Hole " + Integer.toString(holeNumberText[4]),
+						"Hole " + Integer.toString(holeNumberText[5]),"Hole " + Integer.toString(holeNumberText[6]),
+						"Hole " + Integer.toString(holeNumberText[7]),"Hole " + Integer.toString(holeNumberText[8]),
+						"Hole " + Integer.toString(holeNumberText[9]),"Hole " + Integer.toString(holeNumberText[10]),
+						"Hole " + Integer.toString(holeNumberText[11]),"Hole " + Integer.toString(holeNumberText[12]),
+						"Hole " + Integer.toString(holeNumberText[13]),"Hole " + Integer.toString(holeNumberText[14]),
+						"Hole " + Integer.toString(holeNumberText[15]),"Hole " + Integer.toString(holeNumberText[16]),
+						"Hole " + Integer.toString(holeNumberText[17]),"Hole " + Integer.toString(holeNumberText[18])};
     	Spinner spinner = (Spinner) findViewById(R.id.pastmapspinner);
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(PastRoundMap.this, android.R.layout.simple_spinner_item, items);
@@ -224,7 +236,7 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
 		pinMarker = map.addMarker(new MarkerOptions()
 	   		.position(new LatLng(lat[1],lng[1]))
 	   		.title(Integer.toString(middleDistance)+" Yds")
-	   		.snippet("Hole " + holeNumber)
+	   		.snippet("Hole " + Integer.toString(holeNumberText[holeNumber]))
 	   		.icon(BitmapDescriptorFactory
 	   		.fromResource(R.drawable.pinmarker))
 	   		.anchor((float)0.37, (float)1.0));
@@ -234,7 +246,7 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
 		playerMarker = map.addMarker(new MarkerOptions()
 	       	.position(new LatLng(lat[0],lng[0]))
 	       	.title("Tee")
-	       	.snippet("Hole " + holeNumber)
+	       	.snippet("Hole " + Integer.toString(holeNumberText[holeNumber]))
 	       	.icon(BitmapDescriptorFactory
 	          .fromResource(R.drawable.playermarker)));
 	

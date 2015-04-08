@@ -49,6 +49,7 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 	private int redYardage[] = new int[19];
 	private int menHandicap[] = new int[19];
 	private int womenHandicap[] = new int[19];
+	private int holeNumberText[] = new int [19];
 	private int numberOfPlayers = 0;
 
     private Round round = null;
@@ -111,19 +112,24 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
             playerName[x] = myIntent.getStringExtra("Player"+(x-1));
         }
 
+		int holecounter = 0;
+
         for (SubCourse subCourse : subCourses){
             List<CourseHole> courseHoles = courseHoleDAO.readListofCourseHoles(subCourse);
 
             for (CourseHole courseHole : courseHoles){
+				holecounter++;
+
                 List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
                 courseHole.setCourseHoleInfoList(courseHoleInfos);
 
-                par[courseHole.getHoleNumber()] = courseHole.getPar();
-                blueYardage[courseHole.getHoleNumber()] = courseHole.getBlueYardage();
-                whiteYardage[courseHole.getHoleNumber()] = courseHole.getWhiteYardage();
-                redYardage[courseHole.getHoleNumber()] = courseHole.getRedYardage();
-                menHandicap[courseHole.getHoleNumber()] = courseHole.getMenHandicap();
-                womenHandicap[courseHole.getHoleNumber()] = courseHole.getWomenHandicap();
+                par[holecounter] = courseHole.getPar();
+                blueYardage[holecounter] = courseHole.getBlueYardage();
+                whiteYardage[holecounter] = courseHole.getWhiteYardage();
+                redYardage[holecounter] = courseHole.getRedYardage();
+                menHandicap[holecounter] = courseHole.getMenHandicap();
+                womenHandicap[holecounter] = courseHole.getWomenHandicap();
+				holeNumberText[holecounter] = courseHole.getHoleNumber();
             }
         }
     }
@@ -183,8 +189,6 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
             }
         }
 	}
-
-    //\todo deal with hole numbers being out of order in the same way as start round
 	
 	//Called when the front9 space is selected on the scorecard tab
 	public void front9ButtonHandler(View view){		
@@ -871,43 +875,43 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
     	//Loads and displays the top row
     	if(frontActive){
     		scorecardText = (TextView)findViewById(R.id.pasthole1Text);
-        	scorecardText.setText("1");
+        	scorecardText.setText(Integer.toString(holeNumberText[1]));
         	scorecardText = (TextView)findViewById(R.id.pasthole2Text);
-        	scorecardText.setText("2");
+        	scorecardText.setText(Integer.toString(holeNumberText[2]));
         	scorecardText = (TextView)findViewById(R.id.pasthole3Text);
-        	scorecardText.setText("3");
+        	scorecardText.setText(Integer.toString(holeNumberText[3]));
         	scorecardText = (TextView)findViewById(R.id.pasthole4Text);
-        	scorecardText.setText("4");
+        	scorecardText.setText(Integer.toString(holeNumberText[4]));
         	scorecardText = (TextView)findViewById(R.id.pasthole5Text);
-        	scorecardText.setText("5");
+        	scorecardText.setText(Integer.toString(holeNumberText[5]));
         	scorecardText = (TextView)findViewById(R.id.pasthole6Text);
-        	scorecardText.setText("6");
+        	scorecardText.setText(Integer.toString(holeNumberText[6]));
         	scorecardText = (TextView)findViewById(R.id.pasthole7Text);
-        	scorecardText.setText("7");
+        	scorecardText.setText(Integer.toString(holeNumberText[7]));
         	scorecardText = (TextView)findViewById(R.id.pasthole8Text);
-        	scorecardText.setText("8");
+        	scorecardText.setText(Integer.toString(holeNumberText[8]));
         	scorecardText = (TextView)findViewById(R.id.pasthole9Text);
-        	scorecardText.setText("9");
+        	scorecardText.setText(Integer.toString(holeNumberText[9]));
     	}	
     	else{
     		scorecardText = (TextView)findViewById(R.id.pasthole1Text);
-        	scorecardText.setText("10");
+        	scorecardText.setText(Integer.toString(holeNumberText[10]));
         	scorecardText = (TextView)findViewById(R.id.pasthole2Text);
-        	scorecardText.setText("11");
+        	scorecardText.setText(Integer.toString(holeNumberText[11]));
         	scorecardText = (TextView)findViewById(R.id.pasthole3Text);
-        	scorecardText.setText("12");
+        	scorecardText.setText(Integer.toString(holeNumberText[12]));
         	scorecardText = (TextView)findViewById(R.id.pasthole4Text);
-        	scorecardText.setText("13");
+        	scorecardText.setText(Integer.toString(holeNumberText[13]));
         	scorecardText = (TextView)findViewById(R.id.pasthole5Text);
-        	scorecardText.setText("14");
+        	scorecardText.setText(Integer.toString(holeNumberText[14]));
         	scorecardText = (TextView)findViewById(R.id.pasthole6Text);
-        	scorecardText.setText("15");
+        	scorecardText.setText(Integer.toString(holeNumberText[15]));
         	scorecardText = (TextView)findViewById(R.id.pasthole7Text);
-        	scorecardText.setText("16");
+        	scorecardText.setText(Integer.toString(holeNumberText[16]));
         	scorecardText = (TextView)findViewById(R.id.pasthole8Text);
-        	scorecardText.setText("17");
+        	scorecardText.setText(Integer.toString(holeNumberText[17]));
         	scorecardText = (TextView)findViewById(R.id.pasthole9Text);
-        	scorecardText.setText("18");
+        	scorecardText.setText(Integer.toString(holeNumberText[18]));
     	}
     }
     
