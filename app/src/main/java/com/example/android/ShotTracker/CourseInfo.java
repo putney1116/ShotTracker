@@ -82,6 +82,7 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 	private int redYardage[] = new int[19];
 	private int menHandicap[] = new int[19];
 	private int womenHandicap[] = new int[19];
+	private int holeNumberText[] = new int [19];
 	
 	//greenlocations[lat,long][front,middle,back][holenumber]
 	private double greenLocations[][][] = new double[2][3][19];
@@ -147,7 +148,7 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
         Course course = courseDAO.readCourseFromID(courseID);
         courseName = course.getName();
 
-        List<SubCourse> subCourses = subCourseDAO.readListofSubCourses(course);
+		int holecounter = 0;
 
         for (SubCourse subCourse : subCourses){
 
@@ -155,29 +156,32 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 
             for (CourseHole courseHole : courseHoles){
 
+				holecounter++;
+
                 List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
 
-                par[courseHole.getHoleNumber()] = courseHole.getPar();
-                blueYardage[courseHole.getHoleNumber()] = courseHole.getBlueYardage();
-                whiteYardage[courseHole.getHoleNumber()] = courseHole.getWhiteYardage();
-                redYardage[courseHole.getHoleNumber()] = courseHole.getRedYardage();
-                menHandicap[courseHole.getHoleNumber()] = courseHole.getMenHandicap();
-                womenHandicap[courseHole.getHoleNumber()] = courseHole.getWomenHandicap();
+                par[holecounter] = courseHole.getPar();
+                blueYardage[holecounter] = courseHole.getBlueYardage();
+                whiteYardage[holecounter] = courseHole.getWhiteYardage();
+                redYardage[holecounter] = courseHole.getRedYardage();
+                menHandicap[holecounter] = courseHole.getMenHandicap();
+                womenHandicap[holecounter] = courseHole.getWomenHandicap();
+				holeNumberText[holecounter] = courseHole.getHoleNumber();
 
                 for (CourseHoleInfo courseHoleInfo : courseHoleInfos){
 
                     if (courseHoleInfo.getInfo().equals("Green Front")){
-                        greenLocations[0][0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][0][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][0][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][0][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Green Middle")) {
-                        greenLocations[0][1][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][1][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][1][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Green Back")) {
-                        greenLocations[0][2][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        greenLocations[1][2][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        greenLocations[0][2][holecounter] = courseHoleInfo.getLatitude();
+                        greenLocations[1][2][holecounter] = courseHoleInfo.getLongitude();
                     }else if (courseHoleInfo.getInfo().equals("Tee")) {
-                        teeLocations[0][courseHole.getHoleNumber()] = courseHoleInfo.getLatitude();
-                        teeLocations[1][courseHole.getHoleNumber()] = courseHoleInfo.getLongitude();
+                        teeLocations[0][holecounter] = courseHoleInfo.getLatitude();
+                        teeLocations[1][holecounter] = courseHoleInfo.getLongitude();
                     }
                 }
             }
@@ -499,43 +503,43 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     	//Loads and displays the top row
     	if(frontActive){
     		scorecardText = (TextView)findViewById(R.id.cataloghole1Text);
-        	scorecardText.setText("1");
+        	scorecardText.setText(Integer.toString(holeNumberText[1]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole2Text);
-        	scorecardText.setText("2");
+        	scorecardText.setText(Integer.toString(holeNumberText[2]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole3Text);
-        	scorecardText.setText("3");
+        	scorecardText.setText(Integer.toString(holeNumberText[3]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole4Text);
-        	scorecardText.setText("4");
+        	scorecardText.setText(Integer.toString(holeNumberText[4]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole5Text);
-        	scorecardText.setText("5");
+        	scorecardText.setText(Integer.toString(holeNumberText[5]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole6Text);
-        	scorecardText.setText("6");
+        	scorecardText.setText(Integer.toString(holeNumberText[6]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole7Text);
-        	scorecardText.setText("7");
+        	scorecardText.setText(Integer.toString(holeNumberText[7]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole8Text);
-        	scorecardText.setText("8");
+        	scorecardText.setText(Integer.toString(holeNumberText[8]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole9Text);
-        	scorecardText.setText("9");
+        	scorecardText.setText(Integer.toString(holeNumberText[9]));
     	}	
     	else{
     		scorecardText = (TextView)findViewById(R.id.cataloghole1Text);
-        	scorecardText.setText("10");
+        	scorecardText.setText(Integer.toString(holeNumberText[10]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole2Text);
-        	scorecardText.setText("11");
+        	scorecardText.setText(Integer.toString(holeNumberText[11]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole3Text);
-        	scorecardText.setText("12");
+        	scorecardText.setText(Integer.toString(holeNumberText[12]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole4Text);
-        	scorecardText.setText("13");
+        	scorecardText.setText(Integer.toString(holeNumberText[13]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole5Text);
-        	scorecardText.setText("14");
+        	scorecardText.setText(Integer.toString(holeNumberText[14]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole6Text);
-        	scorecardText.setText("15");
+        	scorecardText.setText(Integer.toString(holeNumberText[15]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole7Text);
-        	scorecardText.setText("16");
+        	scorecardText.setText(Integer.toString(holeNumberText[16]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole8Text);
-        	scorecardText.setText("17");
+        	scorecardText.setText(Integer.toString(holeNumberText[17]));
         	scorecardText = (TextView)findViewById(R.id.cataloghole9Text);
-        	scorecardText.setText("18");
+        	scorecardText.setText(Integer.toString(holeNumberText[18]));
     	}
     }
     
@@ -591,10 +595,16 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     }
     
     //Initializes the map spinner
-	private void mapSpinnerSetup(){    	
-    	String[] items = {"Hole 1","Hole 2","Hole 3","Hole 4","Hole 5","Hole 6",
-    					"Hole 7","Hole 8","Hole 9","Hole 10","Hole 11","Hole 12",
-    					"Hole 13","Hole 14","Hole 15","Hole 16","Hole 17","Hole 18"};
+	private void mapSpinnerSetup(){
+		String[] items = {"Hole " + Integer.toString(holeNumberText[1]),"Hole " + Integer.toString(holeNumberText[2]),
+				"Hole " + Integer.toString(holeNumberText[3]),"Hole " + Integer.toString(holeNumberText[4]),
+				"Hole " + Integer.toString(holeNumberText[5]),"Hole " + Integer.toString(holeNumberText[6]),
+				"Hole " + Integer.toString(holeNumberText[7]),"Hole " + Integer.toString(holeNumberText[8]),
+				"Hole " + Integer.toString(holeNumberText[9]),"Hole " + Integer.toString(holeNumberText[10]),
+				"Hole " + Integer.toString(holeNumberText[11]),"Hole " + Integer.toString(holeNumberText[12]),
+				"Hole " + Integer.toString(holeNumberText[13]),"Hole " + Integer.toString(holeNumberText[14]),
+				"Hole " + Integer.toString(holeNumberText[15]),"Hole " + Integer.toString(holeNumberText[16]),
+				"Hole " + Integer.toString(holeNumberText[17]),"Hole " + Integer.toString(holeNumberText[18])};
     	Spinner spinner = (Spinner) findViewById(R.id.catalogSpinner);
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(CourseInfo.this, android.R.layout.simple_spinner_item, items);
@@ -669,7 +679,7 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 		pinMarker = map.addMarker(new MarkerOptions()
 	   		.position(new LatLng(lat[1],lng[1]))
 	   		.title(Integer.toString(middleDistance)+" Yds")
-	   		.snippet("Hole " + holeNumber)
+	   		.snippet("Hole " + Integer.toString(holeNumberText[holeNumber]))
 	   		.icon(BitmapDescriptorFactory
 	   		.fromResource(R.drawable.pinmarker))
 	   		.anchor((float)0.37, (float)1.0));
@@ -679,7 +689,7 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 		playerMarker = map.addMarker(new MarkerOptions()
 	       	.position(new LatLng(lat[0],lng[0]))
 	       	.title("Tee")
-	       	.snippet("Hole " + holeNumber)
+	       	.snippet("Hole " + Integer.toString(holeNumberText[holeNumber]))
 	       	.icon(BitmapDescriptorFactory
 	        .fromResource(R.drawable.playermarker)));
 	
