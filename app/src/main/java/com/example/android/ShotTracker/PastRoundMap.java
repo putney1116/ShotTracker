@@ -75,6 +75,8 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
 	
 	//teelocations[lat,long][holenumber]
 	private double teeLocations[][] = new double[2][19];
+
+	private boolean eighteenHoleRound = true;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
@@ -110,6 +112,11 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
         Round round = roundDAO.readRoundFromID(roundID);
 
         List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+
+		if(subRounds.size()==1){
+			eighteenHoleRound = false;
+		}
+
         List <SubCourse> subCourses = new ArrayList<SubCourse>();
 
         for (SubRound subRound : subRounds){
@@ -152,16 +159,21 @@ public class PastRoundMap extends com.google.android.maps.MapActivity implements
 	}
 	
 	//Initializes the map spinner
-	private void mapSpinnerSetup(){    	
-    	String[] items = {"Hole " + Integer.toString(holeNumberText[1]),"Hole " + Integer.toString(holeNumberText[2]),
-						"Hole " + Integer.toString(holeNumberText[3]),"Hole " + Integer.toString(holeNumberText[4]),
-						"Hole " + Integer.toString(holeNumberText[5]),"Hole " + Integer.toString(holeNumberText[6]),
-						"Hole " + Integer.toString(holeNumberText[7]),"Hole " + Integer.toString(holeNumberText[8]),
-						"Hole " + Integer.toString(holeNumberText[9]),"Hole " + Integer.toString(holeNumberText[10]),
-						"Hole " + Integer.toString(holeNumberText[11]),"Hole " + Integer.toString(holeNumberText[12]),
-						"Hole " + Integer.toString(holeNumberText[13]),"Hole " + Integer.toString(holeNumberText[14]),
-						"Hole " + Integer.toString(holeNumberText[15]),"Hole " + Integer.toString(holeNumberText[16]),
-						"Hole " + Integer.toString(holeNumberText[17]),"Hole " + Integer.toString(holeNumberText[18])};
+	private void mapSpinnerSetup(){
+		String [] items = null;
+		if(eighteenHoleRound) {
+			items = new String[18];
+			for(int x = 1; x < 19; x++) {
+				items[x-1] = "Hole " + Integer.toString(holeNumberText[x]);
+			}
+		}
+		else{
+			items = new String[9];
+			for(int x = 1; x < 10; x++) {
+				items[x-1] = "Hole " + Integer.toString(holeNumberText[x]);
+			}
+		}
+
     	Spinner spinner = (Spinner) findViewById(R.id.pastmapspinner);
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(PastRoundMap.this, android.R.layout.simple_spinner_item, items);

@@ -305,7 +305,7 @@ public class CourseCatalogSelector extends Activity {
                     Intent myIntent = new Intent(v.getContext(), CourseInfo.class);
                     if (fullRound == false) {
                         myIntent.putExtra("Front 9 SubCourseID", front9SubCourseID);
-                        myIntent.putExtra("Back 9 SubCourseID", front9SubCourseID);
+                        myIntent.putExtra("Back 9 SubCourseID", (long)-10);
                     } else {
                         myIntent.putExtra("Front 9 SubCourseID", front9SubCourseID);
                         myIntent.putExtra("Back 9 SubCourseID", back9SubCourseID);

@@ -15,7 +15,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
@@ -154,16 +153,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
     private Course course = null;
     private List<SubCourse> subCourses = null;
+
+	private boolean eighteenHoleRound = true;
     
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 	    super.onCreate(savedInstanceState);
-    	setContentView(R.layout.inroundscreen);
     	
     	//Loads the player names and course information
     	loadCourseInfo();
+
+		selectLayout();
     	
     	//Initializes the map tab
     	mapInitializer();
@@ -207,10 +209,16 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         long front9SubCourseID = myIntent.getLongExtra("Front 9 SubCourseID", -1);
         long back9SubCourseID = myIntent.getLongExtra("Back 9 SubCourseID", -1);
 
+		if(back9SubCourseID==-10){
+			eighteenHoleRound = false;
+		}
+
         subCourses = new ArrayList<SubCourse>();
 
         subCourses.add(subCourseDAO.readSubCoursefromID(front9SubCourseID));
-        subCourses.add(subCourseDAO.readSubCoursefromID(back9SubCourseID));
+		if(eighteenHoleRound) {
+			subCourses.add(subCourseDAO.readSubCoursefromID(back9SubCourseID));
+		}
 		
 		numberOfPlayers = myIntent.getIntExtra("Players", 0);
 		
@@ -266,6 +274,15 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         }
 	}
 
+	public void selectLayout(){
+		if(eighteenHoleRound) {
+			setContentView(R.layout.inroundscreen);
+		}
+		else {
+			setContentView(R.layout.inroundscreen2);
+		}
+	}
+
 	//Called when the front9 space is selected on the scorecard tab
 	public void front9ButtonHandler(View view){
 		//Sets the vibrate time
@@ -295,29 +312,32 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     
 	//Called when the back9 space is selected on the scorecard tab
     public void back9ButtonHandler(View view){		
-    	//Sets the vibrate time
-		vibe.vibrate(15);
-    	
-    	//Sets the selected score view back to its default
-    	scoreEntryScorecard.setBackgroundColor(0xFFFFC775);
-	   	
-    	//Makes the plus minus buttons disappear
-		scorecardPlusButton.setVisibility(View.GONE);
-		scorecardMinusButton.setVisibility(View.GONE);
-		scorecardPlusButtonText.setVisibility(View.GONE);
-		scorecardMinusButtonText.setVisibility(View.GONE);
-		
-		//Declares that the scorecard is no longer being edited
-		buttonsVisible = false;
-    	
-		//Calls the methods that display the values on the scorecard for the back 9
-    	frontActive = false;
-		frontBackViewSwitcher();
-		updateScorecard();
-		
-		//Calls the method that calculates the total score for each player
-		for(int x=1;x<=numberOfPlayers;x++)
-			updateScorecardTotals(x);
+    	if(eighteenHoleRound) {
+			//Sets the vibrate time
+
+			vibe.vibrate(15);
+
+			//Sets the selected score view back to its default
+			scoreEntryScorecard.setBackgroundColor(0xFFFFC775);
+
+			//Makes the plus minus buttons disappear
+			scorecardPlusButton.setVisibility(View.GONE);
+			scorecardMinusButton.setVisibility(View.GONE);
+			scorecardPlusButtonText.setVisibility(View.GONE);
+			scorecardMinusButtonText.setVisibility(View.GONE);
+
+			//Declares that the scorecard is no longer being edited
+			buttonsVisible = false;
+
+			//Calls the methods that display the values on the scorecard for the back 9
+			frontActive = false;
+			frontBackViewSwitcher();
+			updateScorecard();
+
+			//Calls the method that calculates the total score for each player
+			for (int x = 1; x <= numberOfPlayers; x++)
+				updateScorecardTotals(x);
+		}
 	}
     
     //Initializes the main screen plus minus and finish buttons
@@ -349,14 +369,14 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));    
 					
 					//Loads the correct view from the scorecard tab
-					setTextViewHoleNumber(playerNumber,holeNumber);
-						
+					setTextViewHoleNumber(playerNumber, holeNumber);
+
 					//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
 					//If so, the scorecard display is updated to show the change in score
 					if(holeNumber<10){
 						if(frontActive){
 							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
-							
+
 							updateScorecardTotals(playerNumber);
 						}
 					}
@@ -365,7 +385,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					else{
 						if(!frontActive){
 							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
-							
+
 							updateScorecardTotals(playerNumber);
 						}
 					}
@@ -1693,10 +1713,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	RelativeLayout scorecardFrontBackButton;
     	
     	if(frontActive){
-    		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.front9Button);
-    		scorecardFrontBackButton.setBackgroundColor(0xFFFFC775);
-    		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.back9Button);
-    		scorecardFrontBackButton.setBackgroundColor(0xFFCCCCCC);
+			if(eighteenHoleRound) {
+				scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.front9Button);
+				scorecardFrontBackButton.setBackgroundColor(0xFFFFC775);
+				scorecardFrontBackButton = (RelativeLayout) findViewById(R.id.back9Button);
+				scorecardFrontBackButton.setBackgroundColor(0xFFCCCCCC);
+			}
     	}
     	else{
     		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.front9Button);
@@ -2031,7 +2053,16 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     private void scorecardInitializer() {  
     	//Displays the course name in the top left corner
     	TextView scorecardText = (TextView)findViewById(R.id.topLeftCorner);
-    	scorecardText.setText(courseName);
+		if(eighteenHoleRound) {
+			scorecardText.setText(courseName);
+			scorecardText = (TextView)findViewById(R.id.front9ButtonText);
+			scorecardText.setText(subCourses.get(0).getName());
+			scorecardText = (TextView)findViewById(R.id.back9ButtonText);
+			scorecardText.setText(subCourses.get(1).getName());
+		}
+		else{
+			scorecardText.setText(courseName + " - " + subCourses.get(0).getName());
+		}
     	
     	//Displays the player names
     	scorecardText = (TextView)findViewById(R.id.player1Name);
@@ -2064,70 +2095,40 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         RelativeLayout scorecardButtons = null;
         
         //Initializes the scorecard views so that the swipe gesture is detected over them
-        scorecardButtons = (RelativeLayout)findViewById(R.id.front9Button);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.back9Button);
-        scorecardButtons.setOnTouchListener(gestureListener);
+        if(eighteenHoleRound) {
+			scorecardButtons = (RelativeLayout) findViewById(R.id.front9Button);
+			scorecardButtons.setOnTouchListener(gestureListener);
+			scorecardButtons = (RelativeLayout) findViewById(R.id.back9Button);
+			scorecardButtons.setOnTouchListener(gestureListener);
+		}
         
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceTopLevelLeft);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceTopLevelRight);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlusButtonLevelLeft);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlusButtonLevelMiddle);
         scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlusButtonLevelRight);
-        scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceMinusButtonLevelLeft);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceMinusButtonLevelMiddle);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceMinusButtonLevelRight);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer1LevelLeft);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer1LevelRight);
         scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer1LevelFarRight);
-        scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer2LevelLeft);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer2LevelRight);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer2LevelFarRight);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer3LevelLeft);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer3LevelRight);
         scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer3LevelFarRight);
-        scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer4LevelLeft);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer4LevelRight);
         scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpacePlayer4LevelFarRight);
-        scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceBottomLevelLeft);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceBottomLevelRight);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceLeft1);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.front9Button);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceLeft2);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.back9Button);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceBottom);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceLeft3);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceLeft4);
-        scorecardButtons.setOnTouchListener(gestureListener);
-        scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceBottomText);
         scorecardButtons.setOnTouchListener(gestureListener);
         scorecardButtons = (RelativeLayout)findViewById(R.id.blankSpaceTopLevel2);
         scorecardButtons.setOnTouchListener(gestureListener);
@@ -2339,33 +2340,33 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     					vibe.vibrate(15);
     					
     					//Only runs if the current hole is not the last hole
-    					if(holeNumber==18)
-    						return false;
-    					else {
-    						//Increases the current hole and displays the increase
-    						holeNumber++;
-    						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
-    						greenParText.setText("Par " + par[holeNumber]);
-    						
-    						//Updates the scorecard display if the increase goes from the front to the back
-    						if(holeNumber==10){
-    							frontActive = false;
-    							frontBackViewSwitcher();
-    							updateScorecard();
-    							
-    							for(int x=1;x<=numberOfPlayers;x++)
-    								updateScorecardTotals(x);
-    						}
-    						
-    						//Loads the current hole's score
-    						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
-    						
-    						//Gets the location and calls the method that calculates the distance to the green
-    						Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    						if (location != null)
-    							gpsClass.onLocationChanged(location);
-    					}
-    				}
+						if ((eighteenHoleRound && holeNumber == 18) || (!eighteenHoleRound && holeNumber == 9)){
+							return false;
+						} else {
+							//Increases the current hole and displays the increase
+							holeNumber++;
+							greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
+							greenParText.setText("Par " + par[holeNumber]);
+
+							//Updates the scorecard display if the increase goes from the front to the back
+							if (holeNumber == 10) {
+								frontActive = false;
+								frontBackViewSwitcher();
+								updateScorecard();
+
+								for (int x = 1; x <= numberOfPlayers; x++)
+									updateScorecardTotals(x);
+							}
+
+							//Loads the current hole's score
+							scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							//Gets the location and calls the method that calculates the distance to the green
+							Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+							if (location != null)
+								gpsClass.onLocationChanged(location);
+						}
+					}
     				
     				//Left to right swipe
     				else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
@@ -2408,7 +2409,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     					
     					if(playerNumber==numberOfPlayers){
     						//Only runs if it is not the last hole and player
-    						if(holeNumber==18){
+    						if((eighteenHoleRound && holeNumber == 18) || (!eighteenHoleRound && holeNumber == 9)){
     							return false;
     						}
     						else{ 
@@ -2515,7 +2516,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         					vibe.vibrate(15);
         					
         					//Clears the edit score views if it is the last hole
-        					if(holeNumber==18){
+        					if((eighteenHoleRound && holeNumber == 18) || (!eighteenHoleRound && holeNumber == 9)){
         						scoreEntryScorecard.setBackgroundColor(0xFFFFC775);
 						   	
 								scorecardPlusButton.setVisibility(View.GONE);
@@ -2607,7 +2608,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         					vibe.vibrate(15);
         					
         					//Clears the edit score views if it is the last hole and player
-        					if(playerNumber==numberOfPlayers && holeNumber==18){
+        					if(playerNumber==numberOfPlayers && ((eighteenHoleRound && holeNumber == 18) || (!eighteenHoleRound && holeNumber == 9))){
         						scoreEntryScorecard.setBackgroundColor(0xFFFFC775);
     						   	
 								scorecardPlusButton.setVisibility(View.GONE);
@@ -2875,7 +2876,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
         boolean totalRoundNull = true;
 
-        for (int subCourseNumber = 0; subCourseNumber < 2; subCourseNumber++) {
+        for (int subCourseNumber = 0; subCourseNumber < subCourses.size(); subCourseNumber++) {
 
             courseHoles = courseHoleDAO.readListofCourseHoles(subCourses.get(subCourseNumber));
 
@@ -2888,8 +2889,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
             for (int x = 1; x <= numberOfPlayers; x++) {
                 player = new Player();
-
-                Log.d("test", playerName[x]);
 
                 player.setID(playerDAO.readIDFromName(playerName[x]));
 

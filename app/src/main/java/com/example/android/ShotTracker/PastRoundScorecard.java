@@ -54,19 +54,23 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 
     private Round round = null;
     private List <SubRound> subRounds = null;
+	private List <SubCourse> subCourses = null;
 
     private RoundDAO roundDAO = null;
     private SubRoundDAO subRoundDAO = null;
+
+	private boolean eighteenHoleRound = true;
     
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-    	setContentView(R.layout.pastscorecardview);
     	
     	//Loads the player names and course information
     	loadCourseInfo();
     	
     	//Loads the round's information
     	loadPastRound();
+
+		selectLayout();
     	
     	//Initializes the scorecard tab
     	scorecardInitializer();
@@ -94,7 +98,12 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
         round = roundDAO.readRoundFromID(roundID);
 
         subRounds = subRoundDAO.readListofSubRounds(round);
-        List <SubCourse> subCourses = new ArrayList<SubCourse>();
+
+		if(subRounds.size()==1){
+			eighteenHoleRound = false;
+		}
+
+		subCourses = new ArrayList<SubCourse>();
 
         for (SubRound subRound : subRounds){
             subCourses.add(subCourseDAO.readSubCoursefromID(subRound.getSubCourseID()));
@@ -176,18 +185,40 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 
             playerName[player_number] = player.getName();
 
+			int roundCounter = 0;
+
             for (SubRound subRound : subRounds){
+
+				roundCounter++;
 
                 List <RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRoundPlayer(subRound, player);
 
                 for (RoundHole roundHole : roundHoles){
 
-                    CourseHole courseHole = courseHoleDAO.readCourseHoleFromID(roundHole.getCourseHoleID());
+					CourseHole courseHole = courseHoleDAO.readCourseHoleFromID(roundHole.getCourseHoleID());
 
-                    holeScore[player_number][courseHole.getHoleNumber()] = roundHole.getScore();
+					int holeNumber = courseHole.getHoleNumber();
+
+					if(roundCounter == 1){
+						holeNumber %= 9;
+					}
+					else{
+						holeNumber %= 9 + 9;
+					}
+
+                    holeScore[player_number][holeNumber] = roundHole.getScore();
                 }
             }
         }
+	}
+
+	public void selectLayout(){
+		if(eighteenHoleRound) {
+			setContentView(R.layout.pastscorecardview);
+		}
+		else {
+			setContentView(R.layout.pastscorecardview2);
+		}
 	}
 	
 	//Called when the front9 space is selected on the scorecard tab
@@ -204,14 +235,16 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 	
 	//Called when the back9 space is selected on the scorecard tab
     public void back9ButtonHandler(View view){		
-  		//Calls the methods that display the values on the scorecard for the back 9
-    	frontActive = false;
-		frontBackViewSwitcher();
-		updateScorecard();
-		
-		//Calls the method that calculates the total score for each player
-		for(int x=1;x<=numberOfPlayers;x++)
-			updateScorecardTotals(x);
+  		if(eighteenHoleRound) {
+			//Calls the methods that display the values on the scorecard for the back 9
+			frontActive = false;
+			frontBackViewSwitcher();
+			updateScorecard();
+
+			//Calls the method that calculates the total score for each player
+			for (int x = 1; x <= numberOfPlayers; x++)
+				updateScorecardTotals(x);
+		}
     }
     
     //Updates the player score values on the scorecard tab
@@ -581,10 +614,12 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
     	RelativeLayout scorecardFrontBackButton;
     	
     	if(frontActive){
-    		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.pastfront9Button);
-    		scorecardFrontBackButton.setBackgroundColor(0xFFFFC775);
-    		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.pastback9Button);
-    		scorecardFrontBackButton.setBackgroundColor(0xFFCCCCCC);
+			if(eighteenHoleRound) {
+    			scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.pastfront9Button);
+    			scorecardFrontBackButton.setBackgroundColor(0xFFFFC775);
+				scorecardFrontBackButton = (RelativeLayout) findViewById(R.id.pastback9Button);
+				scorecardFrontBackButton.setBackgroundColor(0xFFCCCCCC);
+			}
     	}
     	else{
     		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.pastfront9Button);
@@ -919,7 +954,16 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
     private void scorecardInitializer() {  	
     	//Displays the course name in the top left corner
     	TextView scorecardText = (TextView)findViewById(R.id.pasttopLeftCorner);
-        scorecardText.setText(courseName);
+		if(eighteenHoleRound) {
+			scorecardText.setText(courseName);
+			scorecardText = (TextView)findViewById(R.id.pastfront9ButtonText);
+			scorecardText.setText(subCourses.get(0).getName());
+			scorecardText = (TextView)findViewById(R.id.pastback9ButtonText);
+			scorecardText.setText(subCourses.get(1).getName());
+		}
+		else{
+			scorecardText.setText(courseName + " - " + subCourses.get(0).getName());
+		}
     	
     	//Displays the player names
     	scorecardText = (TextView)findViewById(R.id.pastplayer1Name);

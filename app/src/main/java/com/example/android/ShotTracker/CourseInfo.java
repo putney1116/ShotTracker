@@ -98,16 +98,19 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 
 	private Course course = null;
 	private List<SubCourse> subCourses = null;
+
+	private boolean eighteenHoleRound = true;
     
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		super.onCreate(savedInstanceState);
-    	setContentView(R.layout.coursecatalogmainscreen);
     	
     	//Loads the player names and course information
     	loadCourseInfo();
+
+		selectLayout();
     	
     	//Initializes the scorecard tab
     	scorecardInitializer();
@@ -139,10 +142,16 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
 		long front9SubCourseID = myIntent.getLongExtra("Front 9 SubCourseID", -1);
 		long back9SubCourseID = myIntent.getLongExtra("Back 9 SubCourseID", -1);
 
+		if(back9SubCourseID==-10){
+			eighteenHoleRound = false;
+		}
+
 		subCourses = new ArrayList<SubCourse>();
 
 		subCourses.add(subCourseDAO.readSubCoursefromID(front9SubCourseID));
-		subCourses.add(subCourseDAO.readSubCoursefromID(back9SubCourseID));
+		if(eighteenHoleRound) {
+			subCourses.add(subCourseDAO.readSubCoursefromID(back9SubCourseID));
+		}
 
 		courseID = subCourseDAO.readSubCoursefromID(front9SubCourseID).getCourseID();
         Course course = courseDAO.readCourseFromID(courseID);
@@ -187,6 +196,15 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
             }
         }
 	}
+
+	public void selectLayout(){
+		if(eighteenHoleRound) {
+			setContentView(R.layout.coursecatalogmainscreen);
+		}
+		else {
+			setContentView(R.layout.coursecatalogmainscreen2);
+		}
+	}
 	
 	//Called when the front9 space is selected on the scorecard tab
 	public void front9ButtonHandler(View view){	   	
@@ -196,11 +214,14 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     }
 	
 	//Called when the back9 space is selected on the scorecard tab
-    public void back9ButtonHandler(View view){		    	
-		//Calls the methods that display the values on the scorecard for the back 9
-    	frontActive = false;
-		frontBackViewSwitcher();
-    }
+    public void back9ButtonHandler(View view) {
+		if (eighteenHoleRound) {
+			//Calls the methods that display the values on the scorecard for the back 9
+
+			frontActive = false;
+			frontBackViewSwitcher();
+		}
+	}
     
     //Loads the scorecard values for the front and back nines
     private void frontBackViewSwitcher(){
@@ -209,10 +230,12 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     	RelativeLayout scorecardFrontBackButton;
     	
     	if(frontActive){
-    		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.catalogfront9Button);
-    		scorecardFrontBackButton.setBackgroundColor(0xFFFFC775);
-    		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.catalogback9Button);
-    		scorecardFrontBackButton.setBackgroundColor(0xFFCCCCCC);
+			if(eighteenHoleRound) {
+				scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.catalogfront9Button);
+    			scorecardFrontBackButton.setBackgroundColor(0xFFFFC775);
+				scorecardFrontBackButton = (RelativeLayout) findViewById(R.id.catalogback9Button);
+				scorecardFrontBackButton.setBackgroundColor(0xFFCCCCCC);
+			}
     	}
     	else{
     		scorecardFrontBackButton = (RelativeLayout)findViewById(R.id.catalogfront9Button);
@@ -547,7 +570,16 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     private void scorecardInitializer() {  	
     	//Displays the course name in the top left corner
     	TextView scorecardText = (TextView)findViewById(R.id.catalogtopLeftCorner);
-    	scorecardText.setText(courseName);
+		if(eighteenHoleRound) {
+			scorecardText.setText(courseName);
+			scorecardText = (TextView)findViewById(R.id.catalogfront9ButtonText);
+			scorecardText.setText(subCourses.get(0).getName());
+			scorecardText = (TextView)findViewById(R.id.catalogback9ButtonText);
+			scorecardText.setText(subCourses.get(1).getName());
+		}
+		else{
+			scorecardText.setText(courseName + " - " + subCourses.get(0).getName());
+		}
     	
     	//Loads the scorecard view for later use
     	scorecardTab = (RelativeLayout)findViewById(R.id.catalogtab1);
@@ -596,15 +628,20 @@ public class CourseInfo extends com.google.android.maps.MapActivity implements O
     
     //Initializes the map spinner
 	private void mapSpinnerSetup(){
-		String[] items = {"Hole " + Integer.toString(holeNumberText[1]),"Hole " + Integer.toString(holeNumberText[2]),
-				"Hole " + Integer.toString(holeNumberText[3]),"Hole " + Integer.toString(holeNumberText[4]),
-				"Hole " + Integer.toString(holeNumberText[5]),"Hole " + Integer.toString(holeNumberText[6]),
-				"Hole " + Integer.toString(holeNumberText[7]),"Hole " + Integer.toString(holeNumberText[8]),
-				"Hole " + Integer.toString(holeNumberText[9]),"Hole " + Integer.toString(holeNumberText[10]),
-				"Hole " + Integer.toString(holeNumberText[11]),"Hole " + Integer.toString(holeNumberText[12]),
-				"Hole " + Integer.toString(holeNumberText[13]),"Hole " + Integer.toString(holeNumberText[14]),
-				"Hole " + Integer.toString(holeNumberText[15]),"Hole " + Integer.toString(holeNumberText[16]),
-				"Hole " + Integer.toString(holeNumberText[17]),"Hole " + Integer.toString(holeNumberText[18])};
+		String [] items = null;
+		if(eighteenHoleRound) {
+			items = new String[18];
+			for(int x = 1; x < 19; x++) {
+				items[x-1] = "Hole " + Integer.toString(holeNumberText[x]);
+			}
+		}
+		else{
+			items = new String[9];
+			for(int x = 1; x < 10; x++) {
+				items[x-1] = "Hole " + Integer.toString(holeNumberText[x]);
+			}
+		}
+
     	Spinner spinner = (Spinner) findViewById(R.id.catalogSpinner);
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(CourseInfo.this, android.R.layout.simple_spinner_item, items);

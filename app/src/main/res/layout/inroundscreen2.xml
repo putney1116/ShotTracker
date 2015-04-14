@@ -359,19 +359,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#92D050"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-			    		android:text=""
-			    		android:id="@+id/rightButton1"
-			    		android:layout_marginLeft="1dp"
-			    		android:background="#92D050"
-		    			/>
 					</TableRow>
 					<TableRow 
 					android:layout_height="wrap_content"
@@ -535,18 +522,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="center"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#538ED5"	
-		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-			    		android:id="@+id/rightButton2"
-			    		android:layout_marginLeft="1dp"
-		    			android:background="#538ED5"		    			
 		    			/>
 		    		</TableRow>
 		    		<TableRow 
@@ -712,18 +687,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFFFFF"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton3"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFFFFF"
-		    			/>
 		   			</TableRow>
 		   			<TableRow 
 					android:layout_height="wrap_content"
@@ -885,18 +848,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_weight="1.0"
 		    			android:text=""
 		    			android:gravity="center"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFC775"
-		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton4"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFC775"
 		    			/>
@@ -1076,18 +1027,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#92D050"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton5"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#92D050"
-		    			/>
 	    			</TableRow>
 	    			<TableRow 
 					android:layout_height="wrap_content"
@@ -1239,18 +1178,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_weight="1.0"
 		    			android:text=""
 		    			android:gravity="center"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFC775"
-		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton6"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFC775"
 		    			/>
@@ -1408,18 +1335,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFC775"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton7"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFC775"
-		    			/>
 	    			</TableRow>
 	    			<TableRow 
 					android:layout_height="wrap_content"
@@ -1574,18 +1489,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFC775"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton8"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFC775"
-		    			/>
 	    			</TableRow>
 	    			<TableRow 
 					android:layout_height="wrap_content"
@@ -1737,18 +1640,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_weight="1.0"
 		    			android:text=""
 		    			android:gravity="center"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFC775"
-		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton9"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFC775"
 		    			/>
@@ -1907,18 +1798,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#B80000"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton10"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#B80000"
-		    			/>
 	    			</TableRow>
 	    			<TableRow 
 					android:layout_height="wrap_content"
@@ -2074,18 +1953,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:background="#FFC775"
 		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-			    		android:layout_height="fill_parent" 
-			    		android:orientation="horizontal"
-		   				android:textColor="#000000"
-		   				android:textSize="14sp"
-		    			android:layout_weight="2.0"
-			    		android:gravity="center"
-		    			android:id="@+id/rightButton11"
-		    			android:layout_marginLeft="1dp"
-		    			android:background="#FFC775"
-		    			/>
 	    			</TableRow>
 	    		</TableLayout>
 	    		
@@ -2108,14 +1975,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="center"
 		    			android:onClick="blankSpaceHandler"
 						android:layout_weight="15.0"
-		    			/>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceTopLevelRight"
-		    			android:gravity="center"
-						android:layout_weight="2.0"
 		    			/>
 		    		</TableRow>
 		    		<TableRow 
@@ -2159,14 +2018,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:onClick="blankSpaceHandler"
 						android:layout_weight="11.0"
 		    			/>
-						<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpacePlusButtonLevelRight"
-		    			android:gravity="center"
-						android:layout_weight="2.0"
-		    			/>
 		    		</TableRow>
 		    		<TableRow 
 					android:layout_height="0dp"
@@ -2206,14 +2057,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="center"
 		    			android:onClick="blankSpaceHandler"
 						android:layout_weight="11.0"
-		    			/>
-						<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceMinusButtonLevelRight"
-		    			android:gravity="center"
-						android:layout_weight="2.0"
 		    			/>
 					</TableRow>
 					<TableRow
@@ -2330,15 +2173,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:gravity="center"
 		    			android:onClick="blankSpaceHandler"
-						android:layout_weight="2.0"
-		    			/>
-						<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpacePlayer1LevelFarRight"
-		    			android:layout_marginLeft="1dp"
-		    			android:gravity="center"
 						android:layout_weight="2.0"
 		    			/>
 					</TableRow>
@@ -2458,15 +2292,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:onClick="blankSpaceHandler"
 						android:layout_weight="2.0"
 		    			/>
-						<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpacePlayer2LevelFarRight"
-		    			android:layout_marginLeft="1dp"
-		    			android:gravity="center"
-						android:layout_weight="2.0"
-		    			/>
 					</TableRow>
 					<TableRow
 					android:layout_height="0dp"
@@ -2582,15 +2407,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:layout_marginLeft="1dp"
 		    			android:gravity="center"
 		    			android:onClick="blankSpaceHandler"
-						android:layout_weight="2.0"
-		    			/>
-						<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpacePlayer3LevelFarRight"
-		    			android:layout_marginLeft="1dp"
-		    			android:gravity="center"
 						android:layout_weight="2.0"
 		    			/>
 					</TableRow>
@@ -2710,15 +2526,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:onClick="blankSpaceHandler"
 						android:layout_weight="2.0"
 		    			/>
-						<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpacePlayer4LevelFarRight"
-		    			android:layout_marginLeft="1dp"
-		    			android:gravity="center"
-						android:layout_weight="2.0"
-		    			/>
 					</TableRow>
 					<TableRow 
 					android:layout_height="0dp"
@@ -2734,15 +2541,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:gravity="center"
 		    			android:onClick="blankSpaceHandler"
 						android:layout_weight="15.0"
-		    			/>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceBottomLevelRight"
-		    			android:gravity="center"
-						android:layout_weight="2.0"
-						android:onClick="blankSpaceHandler"
 		    			/>
 		    		</TableRow>
 				</TableLayout>
@@ -2764,7 +2562,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:orientation="horizontal"
 		    			android:id="@+id/blankSpaceTopLevel2"
 		    			android:gravity="center"
-						android:layout_weight="17.0"
+						android:layout_weight="15.0"
 		    			/>
 		    		</TableRow>
 		    		<TableRow 
@@ -2804,7 +2602,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:orientation="horizontal"
 		    			android:id="@+id/blankSpacePlusButtonLevelRight2"
 		    			android:gravity="center"
-						android:layout_weight="13.0"
+						android:layout_weight="11.0"
 		    			/>
 		    		</TableRow>
 		    		<TableRow 
@@ -2841,7 +2639,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:orientation="horizontal"
 		    			android:id="@+id/blankSpaceMinusButtonLevelRight2"
 		    			android:gravity="center"
-						android:layout_weight="13.0"
+						android:layout_weight="11.0"
 		    			/>
 					</TableRow>
 					<TableRow
@@ -2856,7 +2654,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:orientation="horizontal"
 		    			android:id="@+id/blankSpaceSecondLevel2"
 		    			android:gravity="center"
-						android:layout_weight="17.0"
+						android:layout_weight="15.0"
 		    			/>
 					</TableRow>
 					<TableRow
@@ -2871,7 +2669,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:orientation="horizontal"
 		    			android:id="@+id/blankThirdTopLevel2"
 		    			android:gravity="center"
-						android:layout_weight="17.0"
+						android:layout_weight="15.0"
 		    			/>
 					</TableRow>
 					<TableRow 
@@ -2886,163 +2684,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		    			android:orientation="horizontal"
 		    			android:id="@+id/blankSpaceBottomLevel2"
 		    			android:gravity="center"
-						android:layout_weight="17.0"
+						android:layout_weight="15.0"
 		    			/>
 		    		</TableRow>
 				</TableLayout>
-    		
-    			<TableLayout
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
-	    		android:id="@+id/tableLayout3"
-	    		android:orientation="horizontal"
-	    		>    
-	    			<TableRow 
-					android:layout_height="0dp"
-					android:layout_width="fill_parent"
-					android:layout_weight="5.0"
-					android:id="@+id/front9ButtonRow"
-					>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceLeft1"
-		    			android:gravity="center"
-						android:layout_weight="15.0"
-		    			/>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/front9Button"
-		    			android:gravity="center"
-		    			android:layout_marginLeft="12dp"
-						android:layout_weight="2.0"
-						android:onClick="front9ButtonHandler"
-						android:background="#FFC775"
-		    			/>
-		    		</TableRow>
-		    		<TableRow 
-					android:layout_height="0dp"
-					android:layout_width="fill_parent"
-					android:layout_weight="5.0"
-		    		android:layout_marginTop="1dp"
-					android:id="@+id/back9ButtonRow"
-					>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceLeft2"
-		    			android:gravity="center"
-						android:layout_weight="15.0"
-		    			/>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/back9Button"
-		    			android:gravity="center"
-		    			android:layout_marginLeft="12dp"
-						android:layout_weight="2.0"
-						android:onClick="back9ButtonHandler"
-						android:background="#ffcccccc"
-		    			/>
-		    		</TableRow>
-		    		<TableRow 
-					android:layout_height="0dp"
-					android:layout_width="fill_parent"
-					android:layout_weight="1.0"
-		    		android:layout_marginTop="1dp"
-					>
-		    			<RelativeLayout  
-		    			android:layout_width="fill_parent" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceBottom"
-		    			android:gravity="center"
-		    			android:onClick="blankSpaceHandler"
-		    			/>
-		    		</TableRow>
-		    	</TableLayout>
-		    	
-    			<TableLayout
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
-	    		android:id="@+id/tableLayout4"
-	    		android:orientation="horizontal"
-	    		>    
-	    			<TableRow 
-					android:layout_height="0dp"
-					android:layout_width="fill_parent"
-					android:layout_weight="5.0"
-					>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceLeft3"
-		    			android:gravity="center"
-						android:layout_weight="15.0"
-		    			/>
-		    			<TextView  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:textColor="#000000"
-		   				android:textSize="14sp"
-		   				android:text="Front"
-		    			android:id="@+id/front9ButtonText"
-		    			android:gravity="center"
-		    			android:layout_marginLeft="12dp"
-						android:layout_weight="2.0"
-		    			/>
-		    		</TableRow>
-		    		<TableRow 
-					android:layout_height="0dp"
-					android:layout_width="fill_parent"
-					android:layout_weight="5.0"
-		    		android:layout_marginTop="1dp"
-					>
-		    			<RelativeLayout  
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceLeft4"
-		    			android:gravity="center"
-						android:layout_weight="15.0"
-		    			/>
-		    			<TextView 
-		    			android:layout_width="0dp" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:textColor="#000000"
-		   				android:textSize="14sp"
-		   				android:text="Back"
-		    			android:id="@+id/back9ButtonText"
-		    			android:gravity="center"
-		    			android:layout_marginLeft="12dp"
-						android:layout_weight="2.0"
-		    			/>
-		    		</TableRow>
-		    		<TableRow 
-					android:layout_height="0dp"
-					android:layout_width="fill_parent"
-					android:layout_weight="1.0"
-		    		android:layout_marginTop="1dp"
-					>
-		    			<RelativeLayout  
-		    			android:layout_width="fill_parent" 
-		    			android:layout_height="fill_parent" 
-		    			android:orientation="horizontal"
-		    			android:id="@+id/blankSpaceBottomText"
-		    			android:gravity="center"
-		    			android:onClick="blankSpaceHandler"
-		    			/>
-		    		</TableRow>
-		    	</TableLayout>
-    			
 			</RelativeLayout>
 			<LinearLayout
 			android:layout_width="fill_parent"
