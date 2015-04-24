@@ -67,7 +67,7 @@ public class EnterPlayers extends Activity{
         addPlayer();
 
         //Sets the spinners for the drop down players
-        setPlayerSpinners();
+        setPlayerSpinners(false);
 
         //Displays the course name at the top of the screen
         setCourseName();
@@ -78,7 +78,7 @@ public class EnterPlayers extends Activity{
 
 	}
 
-    private void setPlayerSpinners(){
+    private void setPlayerSpinners(boolean onAddPlayer){
         PlayerDAO playerDAO = new PlayerDAO(this);
         final List<String> players = playerDAO.readListofPlayerNameswDefaultFirst();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(EnterPlayers.this, android.R.layout.simple_spinner_item, players);
@@ -88,7 +88,10 @@ public class EnterPlayers extends Activity{
         Spinner spinner1 = (Spinner) findViewById(R.id.player1);
         spinner1.setAdapter(adapter);
 
-        //Sets the map location to the correct hole when the hole number is changed
+		if(onAddPlayer) {
+			spinner1.setSelection(adapter.getPosition(playerNames[0]));
+		}
+
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 playerNames[0] = players.get(pos);
@@ -102,7 +105,10 @@ public class EnterPlayers extends Activity{
         Spinner spinner2 = (Spinner) findViewById(R.id.player2);
         spinner2.setAdapter(adapter);
 
-        //Sets the map location to the correct hole when the hole number is changed
+		if(onAddPlayer) {
+			spinner2.setSelection(adapter.getPosition(playerNames[1]));
+		}
+
         spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 playerNames[1] = players.get(pos);
@@ -116,7 +122,10 @@ public class EnterPlayers extends Activity{
         Spinner spinner3 = (Spinner) findViewById(R.id.player3);
         spinner3.setAdapter(adapter);
 
-        //Sets the map location to the correct hole when the hole number is changed
+		if(onAddPlayer) {
+			spinner3.setSelection(adapter.getPosition(playerNames[2]));
+		}
+
         spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 playerNames[2] = players.get(pos);
@@ -130,7 +139,10 @@ public class EnterPlayers extends Activity{
         Spinner spinner4 = (Spinner) findViewById(R.id.player4);
         spinner4.setAdapter(adapter);
 
-        //Sets the map location to the correct hole when the hole number is changed
+		if(onAddPlayer) {
+			spinner4.setSelection(adapter.getPosition(playerNames[3]));
+		}
+
         spinner4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 playerNames[3] = players.get(pos);
@@ -168,8 +180,7 @@ public class EnterPlayers extends Activity{
                         try {
                             playerDAO.create(player);
                             input.setText("");
-                            //\todo Read current selections from spinners and pass back
-                            setPlayerSpinners();
+                            setPlayerSpinners(true);
 
                         } catch (Exception e) {
                             CharSequence text = "Name already exists. Please enter a unique name.";
@@ -225,14 +236,7 @@ public class EnterPlayers extends Activity{
 					//The player names are added to the player list
 					//They are either what the user entered or the default player names if left blank
 					for(int x=0;x<radioButtonNumber;x++){
-							//Checks to make sure there are no duplicate names
-							if(playerList.contains(playerNames[x])){
-								Toast.makeText(getBaseContext(), "Cannot have duplicate names", Toast.LENGTH_LONG).show();
-								break;
-							}
-							else
-								playerList.add(playerNames[x]);
-
+						playerList.add(playerNames[x]);
 					}
 					
 					//The player names are passed to the next activity.
