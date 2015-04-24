@@ -354,9 +354,9 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                     else
                         numberOf9s = Integer.parseInt(input.getText().toString());
 
-                    //\todo Delete hardcoding below
-                    //\todo Number of nines capped at 5
-                    numberOf9s = 2;
+
+                    //\todo Cap Number of Nines at 5
+
 
 
                     if(courseName.equals("") || courseZipCode.equals("") || numberOf9s == 0){
@@ -408,10 +408,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
                                 (TextView) findViewById(R.id.subcoursename4text),
                                 (TextView) findViewById(R.id.subcoursename5text)};
 
-                        TextView courseNameText = (TextView) findViewById(R.id.subcoursecoursename);
 
-
-                        courseNameText.setText(courseName);
 
                         for (int y = 1; y < numberOf9s; y++) {
                             subcourseNameEdit[y - 1].setVisibility(View.VISIBLE);
@@ -467,6 +464,10 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     }
 
     private void nextButtonSubcourseNameInitializer(){
+        TextView courseNameText = (TextView) findViewById(R.id.subcoursecoursename);
+
+        courseNameText.setText(courseName);
+
         Button nextButton = (Button)findViewById(R.id.subcoursenamesfinishbutton);
 
         nextButton.setOnClickListener(new OnClickListener() {
@@ -522,10 +523,11 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
     private void nextButtonHoleNumbersInitializer(){
         TextView courseNameText = (TextView) findViewById(R.id.holenumberscoursename);
 
-
         courseNameText.setText(courseName);
 
         RadioGroup radiogroup = (RadioGroup)findViewById(R.id.holenumbersradiobuttons);
+
+        radiogroup.check(radiogroup.getChildAt(holenumberstart).getId());
         radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
