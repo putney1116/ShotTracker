@@ -356,6 +356,8 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
 
 
                     //\todo Cap Number of Nines at 5
+                    //\todo Edit course name input box to expand to show full name entered
+                    //\todo minimize keyboard on next button clicks (if not previously minimized)
 
 
 
@@ -3069,6 +3071,7 @@ public class AddCourse extends Activity implements OnClickListener, OnMapClickLi
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.remove(frag);
         ft.commit();
+        holenumberstart = current_nine;
         previous_state = 0;
     }
 }
