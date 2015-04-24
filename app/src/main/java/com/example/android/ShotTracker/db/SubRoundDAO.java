@@ -129,14 +129,14 @@ public class SubRoundDAO extends ShotTrackerDBDAO {
                 new String[] {String.valueOf(subRound.getID())},
                 null,null,null);
 
-        //\todo need to add the while (cursor.movetonext()) or else doesn't work
-        SubCourse subCourse = new SubCourse();
-        subCourse.setID(cursor.getLong(1));
-        subRound.setSubCourseID(subCourse);
-        Round round = new Round();
-        round.setID(cursor.getLong(2));
-        subRound.setRoundID(round);
-
+        while (cursor.moveToNext()) {
+            SubCourse subCourse = new SubCourse();
+            subCourse.setID(cursor.getLong(1));
+            subRound.setSubCourseID(subCourse);
+            Round round = new Round();
+            round.setID(cursor.getLong(2));
+            subRound.setRoundID(round);
+        }
         cursor.close();
 
         return subRound;

@@ -31,6 +31,14 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.CourseHoleDAO;
+import com.example.android.ShotTracker.db.DAOUtilities;
+import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.db.StatistisDAO;
+import com.example.android.ShotTracker.objects.Course;
+import com.example.android.ShotTracker.objects.Player;
+
 public class Statistics extends ListActivity{
 	
 	private List<String> courses = new ArrayList<String>();
@@ -42,6 +50,8 @@ public class Statistics extends ListActivity{
 	private double averageFront9PlusMinus = 0;
 	private double averageBack9Score = 0;
 	private double averageBack9PlusMinus = 0;
+    private double averageHoleScore = 0;
+    private double averageHolePlusMinus = 0;
 	private int numberOfHoles = 0;
 	private int numberOfPar3Holes = 0;
 	private int numberOfPar4Holes = 0;
@@ -102,7 +112,7 @@ public class Statistics extends ListActivity{
 	
 	//Initializes the main spinner
 	private void topSpinnerSetup(){    	
-    	String[] items = {"My Total", "By Course", "Other Players"};
+    	String[] items = {players.get(0) + "'s Total", "By Course", "Other Players"};
     	Spinner spinner = (Spinner) findViewById(R.id.StatsSpinner);
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(Statistics.this, android.R.layout.simple_spinner_item, items);
@@ -111,14 +121,14 @@ public class Statistics extends ListActivity{
     	
     	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
     		public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-    			//Spinner position is "My Total". Makes other spinners disappear
+    			//Spinner position is ". Makes other spinners disappear
     			if(pos==0){
     				Spinner spinner = (Spinner) findViewById(R.id.CourseSpinner);
     				spinner.setVisibility(View.GONE);
     				spinner = (Spinner) findViewById(R.id.PlayerSpinner);
     				spinner.setVisibility(View.GONE);
     				
-    				calculateStats();
+    				calculatePlayerStats(0);
     			}
     			//Spinner position is "By Course". Shows the course spinner
     			else if(pos==1){
@@ -126,8 +136,9 @@ public class Statistics extends ListActivity{
     				spinner.setVisibility(View.VISIBLE);
     				spinner = (Spinner) findViewById(R.id.PlayerSpinner);
     				spinner.setVisibility(View.GONE);
-    				
-    				calculateCourseStats(courseSpinnerPosition);
+
+                    //Always use the default player for now
+    				calculateCourseStats(courseSpinnerPosition, 0);
     			}
     			//Spinner position is "Other Players". Shows the player spinner
     			else{
@@ -155,7 +166,8 @@ public class Statistics extends ListActivity{
     	
     	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
     		public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-    			calculateCourseStats(pos);
+    			//\todo allow for other players besides the default player (pos=0)
+                calculateCourseStats(pos, 0);
     			
     			courseSpinnerPosition = pos;
     		}
@@ -185,422 +197,179 @@ public class Statistics extends ListActivity{
     	});    	
 	}
 	 
-	//Called by all three statistic types. 
-	//Runs through the scores for the round and increments the stat variables as necessary
-	private boolean calculateScore(int fileNumber, int playerNumber){
-		InputStream filereader = null;
-		boolean scoreOverZero = false;
-		
-		try {
-			//Opens the file for the round passed in
-			filereader = openFileInput("pastround"+fileNumber+".txt");
-			InputStreamReader inputreader = new InputStreamReader(filereader);
-			BufferedReader bufferedreader = new BufferedReader(inputreader);
-			
-			//Disregards the unnecessary info in the file
-			for(int x=0;x<4;x++){
-				bufferedreader.readLine();
-			}
-			
-			//Disregards the scores for players that are not being displayed
-			for(int x = 1;x<=18*(playerNumber-1);x++){
-				bufferedreader.readLine();
-			}
-			
-			int holeScore = 0;
-			int roundScore = 0;
-			int runningPar = 0;
-			
-			//Run through the scores for all 18 holes for that player
-			for(int x=1;x<=18;x++){
-				holeScore = Integer.valueOf(bufferedreader.readLine());
-				
-				//Stats only count if the player played that hole
-				if(holeScore>0){
-					//Declares that the round had a valid score for that player
-					scoreOverZero = true;
-					
-					//Increments different stat variables for future calculations
-					runningPar += par[x];
-					numberOfHoles++;
-					roundScore += holeScore;
-					
-					if(x<=9){
-						averageFront9Score += holeScore;
-						averageFront9PlusMinus += holeScore - par[x];
-					}
-					else{
-						averageBack9Score += holeScore;
-						averageBack9PlusMinus += holeScore - par[x];
-					}
-					
-					//Increments the counts for each score type
-					if(holeScore-par[x]==-3)
-						albatrossCount++;
-					else if(holeScore-par[x]==-2)
-						eagleCount++;
-					else if(holeScore-par[x]==-1)
-						birdieCount++;
-					else if(holeScore-par[x]==0)
-						parCount++;
-					else if(holeScore-par[x]==1)
-						bogeyCount++;
-					else if(holeScore-par[x]==2)
-						doubleBogeyCount++;
-					else if(holeScore-par[x]==3)
-						tripleBogeyCount++;
-					else if(holeScore-par[x]>=4)
-						quadBogeyPlusCount++;
-					
-					//Increments the counts for each score type on par 3's
-					if(par[x]==3){
-						numberOfPar3Holes++;
-						
-						if(holeScore-par[x]==-2)
-							par3EagleCount++;
-						else if(holeScore-par[x]==-1)
-							par3BirdieCount++;
-						else if(holeScore-par[x]==0)
-							par3ParCount++;
-						else if(holeScore-par[x]==1)
-							par3BogeyCount++;
-						else if(holeScore-par[x]==2)
-							par3DoubleBogeyCount++;
-						else if(holeScore-par[x]==3)
-							par3TripleBogeyCount++;
-						else if(holeScore-par[x]>=4)
-							par3QuadBogeyPlusCount++;
-					}
-					//Increments the counts for each score type on par 4's
-					else if(par[x]==4){
-						numberOfPar4Holes++;
-						
-						if(holeScore-par[x]==-3)
-							par4AlbatrossCount++;
-						else if(holeScore-par[x]==-2)
-							par4EagleCount++;
-						else if(holeScore-par[x]==-1)
-							par4BirdieCount++;
-						else if(holeScore-par[x]==0)
-							par4ParCount++;
-						else if(holeScore-par[x]==1)
-							par4BogeyCount++;
-						else if(holeScore-par[x]==2)
-							par4DoubleBogeyCount++;
-						else if(holeScore-par[x]==3)
-							par4TripleBogeyCount++;
-						else if(holeScore-par[x]>=4)
-							par4QuadBogeyPlusCount++;
-					}
-					//Increments the counts for each score type on par 5's
-					else if(par[x]==5){
-						numberOfPar5Holes++;
-						
-						if(holeScore-par[x]==-3)
-							par5AlbatrossCount++;
-						else if(holeScore-par[x]==-2)
-							par5EagleCount++;
-						else if(holeScore-par[x]==-1)
-							par5BirdieCount++;
-						else if(holeScore-par[x]==0)
-							par5ParCount++;
-						else if(holeScore-par[x]==1)
-							par5BogeyCount++;
-						else if(holeScore-par[x]==2)
-							par5DoubleBogeyCount++;
-						else if(holeScore-par[x]==3)
-							par5TripleBogeyCount++;
-						else if(holeScore-par[x]>=4)
-							par5QuadBogeyPlusCount++;
-					}
-				}			
-			}
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		//Returns if the round had a hole with a valid score
-		return scoreOverZero;
-	}
-	
+
 	//Method called when the main spinner is set to "My Total". 
 	//Calculates the total stats for the default first player
-	private void calculateStats(){
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-		AssetManager assetManager = getAssets();
-		
-		//Opens the shared preferences file
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
-		//Sets all the statistic variables back to 0
-		initializeStatisticVariables();
-	
-		int fileNumber = 0;
-		int courseCount = 0;
-		int numberOfPlayers = 0;
-		boolean roundOverZero = false;
-		String fileName = null;
-		
-		//Runs through all the past round files
-		while(true){
-			try {
-				filereader = openFileInput("pastround"+fileNumber+".txt");
-				inputreader = new InputStreamReader(filereader);
-				bufferedreader = new BufferedReader(inputreader);
-				      
-				//Saves the course name to be opened later
-				fileName = bufferedreader.readLine();
-				
-				//Disregards unnecessary info
-				for(int x=0;x<2;x++){
-					bufferedreader.readLine();
-				}
-				
-				//Saves the number of players in the round
-				numberOfPlayers = Integer.parseInt(bufferedreader.readLine());
-				
-				//Disregards unnecessary info
-				for(int x=1;x<=18*numberOfPlayers;x++){
-					bufferedreader.readLine();
-				}
-				
-				//Checks if the first player is the default first player
-				if(bufferedreader.readLine().equals(preferences.getString("Player 1 Name", "Me"))){
-					//If the first player is the default first player, the course info file is opened
-					filereader = assetManager.open(fileName);
-					inputreader = new InputStreamReader(filereader);
-					bufferedreader = new BufferedReader(inputreader);
-					
-					//Disregards unnecessary info
-					bufferedreader.readLine();
-					
-					//Saves the par for each hole on the course
-					getCourseInfo(bufferedreader);
-				
-					//Calculates the stats for the round for the first player
-					roundOverZero = calculateScore(fileNumber, 1);
-					
-					//If there was a valid score on any hole, the count is increased
-					if(roundOverZero)
-						courseCount++;
-				}
-					
-				fileNumber++;
-				
-			}catch (FileNotFoundException e) {
-				Log.d("calculateStats","File Not Found: pastround"+fileNumber+".txt");
-				break;
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
+	private void calculatePlayerStats(int pos) {
+
+        StatistisDAO statDAO = new StatistisDAO(Statistics.this);
+        DAOUtilities daoUtil = new DAOUtilities(Statistics.this);
+        PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
+
+        Player player = new Player();
+        long id = playerDAO.readIDFromName(players.get(pos));
+        player.setID(id);
+
+        averageScore = daoUtil.getAverageAdjustedScorePlayer(player);
+        averagePlusMinus = averageScore - 72;
+        averageFront9Score = daoUtil.getAverageAdjustedFrontNineScorePlayer(player);
+        averageFront9PlusMinus = averageFront9Score - 36;
+        averageBack9Score = daoUtil.getAverageAdjustedBackNineScorePlayer(player);
+        averageBack9PlusMinus = averageBack9Score - 36;
+        averageHoleScore = averageScore / 18;
+        averageHolePlusMinus = averageHoleScore - 4;
+
+
+        // get the number of each holes
+        numberOfPar3Holes = statDAO.getNHolesPar(3, player);
+        numberOfPar4Holes = statDAO.getNHolesPar(4, player);
+        numberOfPar5Holes = statDAO.getNHolesPar(5, player);
+        numberOfHoles = numberOfPar3Holes
+                + numberOfPar4Holes
+                + numberOfPar5Holes;
+
+        // get the counts for par 3's
+        par3EagleCount = statDAO.getNHolesParScore(3, -2, player);
+        par3BirdieCount = statDAO.getNHolesParScore(3, -1, player);
+        par3ParCount = statDAO.getNHolesParScore(3, 0, player);
+        par3BogeyCount = statDAO.getNHolesParScore(3, 1, player);
+        par3DoubleBogeyCount = statDAO.getNHolesParScore(3, 2, player);
+        par3TripleBogeyCount = statDAO.getNHolesParScore(3, 3, player);
+        //\todo this currently only gets +4, get everything >= +4
+        par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player);
+
+        // get the counts for par 4's
+        par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player);
+        par4EagleCount = statDAO.getNHolesParScore(4, -2, player);
+        par4BirdieCount = statDAO.getNHolesParScore(4, -1, player);
+        par4ParCount = statDAO.getNHolesParScore(4, 0, player);
+        par4BogeyCount = statDAO.getNHolesParScore(4, 1, player);
+        par4DoubleBogeyCount = statDAO.getNHolesParScore(4, 2, player);
+        par4TripleBogeyCount = statDAO.getNHolesParScore(4, 3, player);
+        par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player);
+
+        // get the counts for the par 5's
+        par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player);
+        par5EagleCount = statDAO.getNHolesParScore(5, -2, player);
+        par5BirdieCount = statDAO.getNHolesParScore(5, -1, player);
+        par5ParCount = statDAO.getNHolesParScore(5, 0, player);
+        par5BogeyCount = statDAO.getNHolesParScore(5, 1, player);
+        par5DoubleBogeyCount = statDAO.getNHolesParScore(5, 2, player);
+        par5TripleBogeyCount = statDAO.getNHolesParScore(5, 3, player);
+        par5QuadBogeyPlusCount = statDAO.getNHolesParScore(5, 4, player);
+
+        // sum various scores
+        albatrossCount = par4AlbatrossCount + par5AlbatrossCount;
+        eagleCount = par3EagleCount + par4EagleCount + par5EagleCount;
+        birdieCount = par3BirdieCount + par4BirdieCount + par5BirdieCount;
+        parCount = par3ParCount + par4ParCount + par5ParCount;
+        bogeyCount = par3BogeyCount + par4BogeyCount + par5BogeyCount;
+        doubleBogeyCount = par3DoubleBogeyCount
+                + par4DoubleBogeyCount
+                + par5DoubleBogeyCount;
+        tripleBogeyCount = par3TripleBogeyCount
+                + par4TripleBogeyCount
+                + par5TripleBogeyCount;
+        quadBogeyPlusCount = par3QuadBogeyPlusCount
+                + par4QuadBogeyPlusCount
+                + par5QuadBogeyPlusCount;
+
+        // get the number of rounds played
+        int courseCount = 0;
 		//Calls the method that displays the stats on the screen
 		fillInList(courseCount++);
 	}
 		
 	//Method called when the main spinner is set to "By Course". 
 	//Calculates the stats for the default first player on specific courses
-	private void calculateCourseStats(int pos){
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-		AssetManager assetManager = getAssets();
-		
-		//Opens the shared preferences file
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
-		//Sets all the statistic variables back to 0
-		initializeStatisticVariables();
-	
-		int fileNumber = 0;
-		int courseCount = 0;
-		int numberOfPlayers = 0;
-		boolean roundOverZero = false;
-		String fileName = null;
-		String courseName = null;
-		
-		//Runs through all the past round files
-		while(true){
-			try {
-				filereader = openFileInput("pastround"+fileNumber+".txt");
-				inputreader = new InputStreamReader(filereader);
-				bufferedreader = new BufferedReader(inputreader);
-				        
-				//Saves the course name to be opened later
-				fileName = bufferedreader.readLine();
-				
-				//Disregards unnecessary info
-				for(int x=0;x<2;x++){
-					bufferedreader.readLine();
-				}
-				
-				//Saves the number of players in the round
-				numberOfPlayers = Integer.parseInt(bufferedreader.readLine());
-				
-				//Disregards unnecessary info
-				for(int x=1;x<=18*numberOfPlayers;x++){
-					bufferedreader.readLine();
-				}
-				
-				//Checks if the first player is the default first player
-				if(bufferedreader.readLine().equals(preferences.getString("Player 1 Name", "Me"))){
-					//Opens the course info file
-					filereader = assetManager.open(fileName);				
-					inputreader = new InputStreamReader(filereader);
-					bufferedreader = new BufferedReader(inputreader);
-					
-					courseName = bufferedreader.readLine();
-	
-					//Only calculates the stats if the round was played on the specified course
-					if(courseName.equals(courses.get(pos))){
-					
-						//Saves the par for each hole on the course
-						getCourseInfo(bufferedreader);
-						
-						
-					
-						//Calculates the stats for the round for the first player
-						roundOverZero = calculateScore(fileNumber, 1);
-						
-						//If there was a valid score on any hole, the count is increased
-						if(roundOverZero)
-							courseCount++;
-					}
-				}
-				
-				fileNumber++;
-			}catch (FileNotFoundException e) {
-				Log.d("calculateCourseStats","File Not Found: pastround"+fileNumber+".txt");
-				break;
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		//Calls the method that displays the stats on the screen
-		fillInList(courseCount);
-	}
-	
-	//Method called when the main spinner is set to "Other Players". 
-	//Calculates the total stats for the specified player
-	private void calculatePlayerStats(int pos){
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-		InputStream filereader2 = null;
-		InputStreamReader inputreader2 = null;
-		BufferedReader bufferedreader2 = null;
-		AssetManager assetManager = getAssets();
-		
-		//Sets all the statistic variables back to 0
-		initializeStatisticVariables();
-	
-		int fileNumber = 0;
-		int courseCount = 0;
-		int numberOfPlayers = 0;
-		boolean roundOverZero = false;
-		String fileName = null;
-		
-		//Runs through all the past round files
-		while(true){
-			try {
-				filereader = openFileInput("pastround"+fileNumber+".txt");
-				inputreader = new InputStreamReader(filereader);
-				bufferedreader = new BufferedReader(inputreader);
-				
-				//Saves the course name to be opened later
-				fileName = bufferedreader.readLine();
-				
-				//Disregards unnecessary info
-				for(int x=0;x<2;x++){
-					bufferedreader.readLine();
-				}
-				
-				//Saves the number of players in the round
-				numberOfPlayers = Integer.parseInt(bufferedreader.readLine());
-				
-				//Disregards unnecessary info
-				for(int x=1;x<=18*numberOfPlayers;x++){
-					bufferedreader.readLine();
-				}
+	private void calculateCourseStats(int coursePos, int playerPos){
 
-				//Determines if any of the players in the round are the selected player
-				for(int x=1;x<=numberOfPlayers;x++){
-					if(bufferedreader.readLine().equals(players.get(pos))){
-						//If the selected player played in the round, the course info file is opened
-						filereader2 = assetManager.open(fileName);
-						inputreader2 = new InputStreamReader(filereader2);
-						bufferedreader2 = new BufferedReader(inputreader2);
-						
-						//Disregards unnecessary info
-						bufferedreader2.readLine();
-						
-						//Saves the par for each hole on the course
-						getCourseInfo(bufferedreader2);
-						
-						//Calculates the stats for the round for the specified player
-						roundOverZero = calculateScore(fileNumber, x);
-						
-						//If there was a valid score on any hole, the count is increased
-						if(roundOverZero)
-							courseCount++;
-					}
-				}
-				
-				fileNumber++;
-			}catch (FileNotFoundException e) {
-				Log.d("calculatePlayerStats","File Not Found: pastround"+fileNumber+".txt");
-				break;
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		//Calls the method that displays the stats on the screen
-		fillInList(courseCount);
-	}
-	
-	//Saves the par for each hole on the course specified
-	private void getCourseInfo(BufferedReader bufferedreader){		    
-		try {
-			for(int x=0;x<19;x++){
-				par[x]=Integer.parseInt(bufferedreader.readLine());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+        StatistisDAO statDAO = new StatistisDAO(Statistics.this);
+        DAOUtilities daoUtil = new DAOUtilities(Statistics.this);
+        PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
+        CourseDAO courseDAO = new CourseDAO(Statistics.this);
+
+        Player player = new Player();
+        long pid = playerDAO.readIDFromName(players.get(playerPos));
+        player.setID(pid);
+
+        Course course = new Course();
+        long cid = courseDAO.readIDFromName(courses.get(coursePos));
+        course.setID(cid);
+
+        averageScore = daoUtil.getAverageAdjustedScorePlayer(player);
+        averagePlusMinus = averageScore - 72;
+        averageFront9Score = daoUtil.getAverageAdjustedFrontNineScorePlayer(player);
+        averageFront9PlusMinus = averageFront9Score - 36;
+        averageBack9Score = daoUtil.getAverageAdjustedBackNineScorePlayer(player);
+        averageBack9PlusMinus = averageBack9Score - 36;
+        averageHoleScore = averageScore / 18;
+        averageHolePlusMinus = averageHoleScore - 4;
+
+
+        // get the number of each holes
+        numberOfPar3Holes = statDAO.getNHolesPar(3, player);
+        numberOfPar4Holes = statDAO.getNHolesPar(4, player);
+        numberOfPar5Holes = statDAO.getNHolesPar(5, player);
+        numberOfHoles = numberOfPar3Holes
+                + numberOfPar4Holes
+                + numberOfPar5Holes;
+
+        // get the counts for par 3's
+        par3EagleCount = statDAO.getNHolesParScore(3, -2, player);
+        par3BirdieCount = statDAO.getNHolesParScore(3, -1, player);
+        par3ParCount = statDAO.getNHolesParScore(3, 0, player);
+        par3BogeyCount = statDAO.getNHolesParScore(3, 1, player);
+        par3DoubleBogeyCount = statDAO.getNHolesParScore(3, 2, player);
+        par3TripleBogeyCount = statDAO.getNHolesParScore(3, 3, player);
+        //\todo this currently only gets +4, get everything >= +4
+        par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player);
+
+        // get the counts for par 4's
+        par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player);
+        par4EagleCount = statDAO.getNHolesParScore(4, -2, player);
+        par4BirdieCount = statDAO.getNHolesParScore(4, -1, player);
+        par4ParCount = statDAO.getNHolesParScore(4, 0, player);
+        par4BogeyCount = statDAO.getNHolesParScore(4, 1, player);
+        par4DoubleBogeyCount = statDAO.getNHolesParScore(4, 2, player);
+        par4TripleBogeyCount = statDAO.getNHolesParScore(4, 3, player);
+        par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player);
+
+        // get the counts for the par 5's
+        par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player);
+        par5EagleCount = statDAO.getNHolesParScore(5, -2, player);
+        par5BirdieCount = statDAO.getNHolesParScore(5, -1, player);
+        par5ParCount = statDAO.getNHolesParScore(5, 0, player);
+        par5BogeyCount = statDAO.getNHolesParScore(5, 1, player);
+        par5DoubleBogeyCount = statDAO.getNHolesParScore(5, 2, player);
+        par5TripleBogeyCount = statDAO.getNHolesParScore(5, 3, player);
+        par5QuadBogeyPlusCount = statDAO.getNHolesParScore(5, 4, player);
+
+        // sum various scores
+        albatrossCount = par4AlbatrossCount + par5AlbatrossCount;
+        eagleCount = par3EagleCount + par4EagleCount + par5EagleCount;
+        birdieCount = par3BirdieCount + par4BirdieCount + par5BirdieCount;
+        parCount = par3ParCount + par4ParCount + par5ParCount;
+        bogeyCount = par3BogeyCount + par4BogeyCount + par5BogeyCount;
+        doubleBogeyCount = par3DoubleBogeyCount
+                + par4DoubleBogeyCount
+                + par5DoubleBogeyCount;
+        tripleBogeyCount = par3TripleBogeyCount
+                + par4TripleBogeyCount
+                + par5TripleBogeyCount;
+        quadBogeyPlusCount = par3QuadBogeyPlusCount
+                + par4QuadBogeyPlusCount
+                + par5QuadBogeyPlusCount;
+
+        // get the number of rounds played
+        int courseCount = 0;
+        //Calls the method that displays the stats on the screen
+        fillInList(courseCount++);
 	}
 	
 	//Displays the stats on the screen
 	private void fillInList(int roundCount){
-		//Displays all unused stats as 0 instead of a division error
-		if(roundCount==0)
-			roundCount=1;
-		if(numberOfHoles==0)
-			numberOfHoles=1;
-		if(numberOfPar3Holes==0)
-			numberOfPar3Holes=1;
-		if(numberOfPar4Holes==0)
-			numberOfPar4Holes=1;
-		if(numberOfPar5Holes==0)
-			numberOfPar5Holes=1;
-		
-		//Calculates the total scores by dividing by the number of rounds that were applicable
-		averageScore = averageFront9Score + averageBack9Score;
-		averageScore /= roundCount;
-		averagePlusMinus = averageFront9PlusMinus + averageBack9PlusMinus;
-		averagePlusMinus /= roundCount;
-		averageFront9Score /= roundCount;
-		averageFront9PlusMinus /= roundCount;
-		averageBack9Score /= roundCount;
-		averageBack9PlusMinus /= roundCount;
-		
+
 		//Displays all of the stats to the screen by using a list of hash maps
 		List<HashMap<String, String>> fillMaps = null;
 		
@@ -635,8 +404,8 @@ public class Statistics extends ListActivity{
         
         map = new HashMap<String, String>();
         map.put("col_1", "Score Per Hole");
-        map.put("col_2", ""+df.format(averageScore*roundCount/numberOfHoles));
-        map.put("col_3", ""+df.format(averagePlusMinus*roundCount/numberOfHoles));
+        map.put("col_2", ""+df.format(averageHoleScore));
+        map.put("col_3", ""+df.format(averageHolePlusMinus));
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -862,127 +631,22 @@ public class Statistics extends ListActivity{
 	}
 	
 	//Creates the list of courses to be used by the course spinner
-	private void getCourseList(){    	    	
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-		InputStream filereader2 = null;
-        InputStreamReader inputreader2 = null;
-        BufferedReader bufferedreader2 = null;
-		
-		int fileNumber = 0;
-		String course = null;
-		
-		AssetManager assetManager = getAssets();
-		
-		//Opens every past round file to get the names of all the courses played
-		while(true){
-			try {
-				filereader = openFileInput("pastround"+fileNumber+".txt");
-				inputreader = new InputStreamReader(filereader);
-				bufferedreader = new BufferedReader(inputreader);
-		        
-		        course = bufferedreader.readLine();
-	        	
-		        //Opens the course info file for each round
-	        	try {
-	        		filereader2 = assetManager.open(course);
-	        	} catch (IOException e1) {
-	        		e1.printStackTrace();
-	        	}										
-	        	inputreader2 = new InputStreamReader(filereader2);
-	        	bufferedreader2 = new BufferedReader(inputreader2);
-	        	
-	        	//Saves the name of the course
-	        	course = bufferedreader2.readLine();
-    			
-	        	//Determines if the courses in the round are already in the list.
-	        	//If so, it removes the course so that the course will move to the top of the list
-	        	if(courses.contains(course))  
-	        		courses.remove(course);
+	private void getCourseList(){
 
-	        	//Adds the course to the beginning of the list
-        		courses.add(0,course);
-	        	
-	        	fileNumber++;
-			} catch (FileNotFoundException e) {
-				Log.d("getCourseList","File Not Found: pastround"+fileNumber+".txt");
-				break;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+        CourseDAO courseDAO = new CourseDAO(Statistics.this);
+        List<Course> courseList= courseDAO.readListofCourses();
+        for(Course course: courseList) {
+            courses.add(course.getName());
+        }
+
     }
 	
 	//Creates the list of players to be used by the player spinner
-	private void getPlayerList(){    	    	
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-	
-		int fileNumber = 0;
-		int numberOfPlayers = 0;
-		
-		//Opens every past round file to get the names of all the players
-		while(true){
-			try {
-				filereader = openFileInput("pastround"+fileNumber+".txt");
-				inputreader = new InputStreamReader(filereader);
-				bufferedreader = new BufferedReader(inputreader);
-				     
-				//Disregards unnecessary info
-				for(int x=0;x<3;x++){
-					bufferedreader.readLine();
-				}
-				
-				//Saves the number of players in the round
-				numberOfPlayers = Integer.parseInt(bufferedreader.readLine());
-				
-				//Disregards unnecessary info
-				for(int x=0;x<18*numberOfPlayers;x++){
-					bufferedreader.readLine();
-				}
-				
-				List<String> playersSubset = new ArrayList<String>();
-				
-				String player = null;
-				
-				//Runs through the list of players in the current round
-				for(int x=0;x<numberOfPlayers;x++){
-					player = bufferedreader.readLine();
-					
-					//Determines if the players in the current round are already in the list.
-					//If so, it removes the player so that the player will move to the top of the list
-					if(players.contains(player))
-						players.remove(player);
-					
-					//Adds the player to the list of players from the current round
-					playersSubset.add(player);
-				}
-				
-				//Adds the players from the current round to the beginning of the list
-				players.addAll(0,playersSubset);
-			
-				fileNumber++;
-			}catch (FileNotFoundException e) {
-				Log.d("getPlayerList","File Not Found: pastround"+fileNumber+".txt");
-				
-				//Opens the shared preferences file
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-				
-				//Saves the default player 1 name
-				String defaultPlayer1Name = preferences.getString("Player 1 Name", "Me");
-				
-				//Moves the default player 1 to the top of the list
-				if(players.contains(defaultPlayer1Name)){
-					players.remove(defaultPlayer1Name);
-					players.add(0,defaultPlayer1Name);
-				}
-				break;
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	private void getPlayerList(){
+
+        PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
+        players = playerDAO.readListofPlayerNameswDefaultFirst();
+
     }
 	
 	//Sets all the statistic variables back to 0

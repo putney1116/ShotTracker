@@ -17,6 +17,8 @@ public class CourseDAO extends ShotTrackerDBDAO {
     private static final String WHERE_COURSEID_EQUALS = DataBaseHelper.COURSEID_COLUMN
             + "=?";
 
+    private static final String WHERE_COURSENAME_EQUALS = DataBaseHelper.COURSENAME_COLUMN
+            + "=?";
 
     public CourseDAO(Context context) {
         super(context);
@@ -126,6 +128,27 @@ public class CourseDAO extends ShotTrackerDBDAO {
         cursor.close();
 
         return courseName;
+    }
+
+    /**
+     * Read the CourseID from a name
+     * @param course_name
+     * @return
+     */
+    public long readIDFromName(String course_name) {
+        Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
+                new String[] {DataBaseHelper.COURSENAME_COLUMN},
+                WHERE_COURSENAME_EQUALS,
+                new String[] {course_name},
+                null, null, null);
+
+        long courseID = -1;
+
+        while (cursor.moveToNext()) {
+            courseID = cursor.getLong(0);
+        }
+
+        return courseID;
     }
 
     /**

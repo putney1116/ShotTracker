@@ -3,9 +3,12 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 
+import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -94,6 +97,46 @@ public class RoundDAO extends ShotTrackerDBDAO {
     }
 
     /**
+     * Get a list of Rounds played by a Player
+     * @param player
+     * @return
+     */
+    public List<Round> readListofRounds(Player player) {
+        List<Round> rounds = new ArrayList<Round>();
+
+       String query = "SELECT "
+               + DataBaseHelper.ROUNDID_COLUMN + " "
+               + DataBaseHelper.ROUNDDATE_COLUMN
+               + " FROM "
+               + DataBaseHelper.ROUND_TABLE
+               + " NATURAL JOIN "
+               + DataBaseHelper.SUBROUND_TABLE
+               + " NATURAL JOIN "
+               + DataBaseHelper.ROUNDHOLE_TABLE
+               + " WHERE "
+               + DataBaseHelper.PLAYERID_COLUMN
+               + "=" + player.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        List<Long> usedIDs = new ArrayList<Long>();
+
+        while(cursor.moveToNext()) {
+            if ( usedIDs.contains(cursor.getLong(0)) ) continue;
+
+            Round newRound = new Round();
+            newRound.setID(cursor.getLong(0));
+            newRound.setDate(new Date(cursor.getLong(1)));
+            rounds.add(newRound);
+
+            usedIDs.add(new Long(newRound.getID()));
+        }
+        cursor.close();
+
+        return rounds;
+    }
+
+    /**
      * @param round
      * @return
      */
@@ -109,8 +152,9 @@ public class RoundDAO extends ShotTrackerDBDAO {
                 new String[]{String.valueOf(round.getID())},
                 null, null, null);
 
-        //\todo need to add the while (cursor.movetonext()) or else doesn't work
-        round.setDate(new Date(cursor.getLong(1)));
+        while(cursor.moveToNext()) {
+            round.setDate(new Date(cursor.getLong(1)));
+        }
         cursor.close();
 
         return round;
