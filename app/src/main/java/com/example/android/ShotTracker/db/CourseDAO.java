@@ -3,6 +3,7 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.android.ShotTracker.objects.Course;
 
@@ -136,11 +137,16 @@ public class CourseDAO extends ShotTrackerDBDAO {
      * @return
      */
     public long readIDFromName(String course_name) {
-        Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
-                new String[] {DataBaseHelper.COURSENAME_COLUMN},
-                WHERE_COURSENAME_EQUALS,
-                new String[] {course_name},
-                null, null, null);
+        String queryID = "SELECT "
+                + DataBaseHelper.COURSEID_COLUMN
+                + " FROM "
+                + DataBaseHelper.COURSE_TABLE
+                + " WHERE "
+                + DataBaseHelper.COURSENAME_COLUMN
+                + " = "
+                + "\"" + course_name + "\"";
+
+        Cursor cursor = database.rawQuery(queryID, null);
 
         long courseID = -1;
 

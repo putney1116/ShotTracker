@@ -308,42 +308,42 @@ public class Statistics extends ListActivity{
 
 
         // get the number of each holes
-        numberOfPar3Holes = statDAO.getNHolesPar(3, player);
-        numberOfPar4Holes = statDAO.getNHolesPar(4, player);
-        numberOfPar5Holes = statDAO.getNHolesPar(5, player);
+        numberOfPar3Holes = statDAO.getNHolesPar(3, player, course);
+        numberOfPar4Holes = statDAO.getNHolesPar(4, player, course);
+        numberOfPar5Holes = statDAO.getNHolesPar(5, player, course);
         numberOfHoles = numberOfPar3Holes
                 + numberOfPar4Holes
                 + numberOfPar5Holes;
 
         // get the counts for par 3's
-        par3EagleCount = statDAO.getNHolesParScore(3, -2, player);
-        par3BirdieCount = statDAO.getNHolesParScore(3, -1, player);
-        par3ParCount = statDAO.getNHolesParScore(3, 0, player);
-        par3BogeyCount = statDAO.getNHolesParScore(3, 1, player);
-        par3DoubleBogeyCount = statDAO.getNHolesParScore(3, 2, player);
-        par3TripleBogeyCount = statDAO.getNHolesParScore(3, 3, player);
+        par3EagleCount = statDAO.getNHolesParScore(3, -2, player, course);
+        par3BirdieCount = statDAO.getNHolesParScore(3, -1, player, course);
+        par3ParCount = statDAO.getNHolesParScore(3, 0, player, course);
+        par3BogeyCount = statDAO.getNHolesParScore(3, 1, player, course);
+        par3DoubleBogeyCount = statDAO.getNHolesParScore(3, 2, player, course);
+        par3TripleBogeyCount = statDAO.getNHolesParScore(3, 3, player, course);
         //\todo this currently only gets +4, get everything >= +4
-        par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player);
+        par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player, course);
 
         // get the counts for par 4's
-        par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player);
-        par4EagleCount = statDAO.getNHolesParScore(4, -2, player);
-        par4BirdieCount = statDAO.getNHolesParScore(4, -1, player);
-        par4ParCount = statDAO.getNHolesParScore(4, 0, player);
-        par4BogeyCount = statDAO.getNHolesParScore(4, 1, player);
-        par4DoubleBogeyCount = statDAO.getNHolesParScore(4, 2, player);
-        par4TripleBogeyCount = statDAO.getNHolesParScore(4, 3, player);
-        par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player);
+        par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player, course);
+        par4EagleCount = statDAO.getNHolesParScore(4, -2, player, course);
+        par4BirdieCount = statDAO.getNHolesParScore(4, -1, player, course);
+        par4ParCount = statDAO.getNHolesParScore(4, 0, player, course);
+        par4BogeyCount = statDAO.getNHolesParScore(4, 1, player, course);
+        par4DoubleBogeyCount = statDAO.getNHolesParScore(4, 2, player, course);
+        par4TripleBogeyCount = statDAO.getNHolesParScore(4, 3, player, course);
+        par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player, course);
 
         // get the counts for the par 5's
-        par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player);
-        par5EagleCount = statDAO.getNHolesParScore(5, -2, player);
-        par5BirdieCount = statDAO.getNHolesParScore(5, -1, player);
-        par5ParCount = statDAO.getNHolesParScore(5, 0, player);
-        par5BogeyCount = statDAO.getNHolesParScore(5, 1, player);
-        par5DoubleBogeyCount = statDAO.getNHolesParScore(5, 2, player);
-        par5TripleBogeyCount = statDAO.getNHolesParScore(5, 3, player);
-        par5QuadBogeyPlusCount = statDAO.getNHolesParScore(5, 4, player);
+        par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player, course);
+        par5EagleCount = statDAO.getNHolesParScore(5, -2, player, course);
+        par5BirdieCount = statDAO.getNHolesParScore(5, -1, player, course);
+        par5ParCount = statDAO.getNHolesParScore(5, 0, player, course);
+        par5BogeyCount = statDAO.getNHolesParScore(5, 1, player, course);
+        par5DoubleBogeyCount = statDAO.getNHolesParScore(5, 2, player, course);
+        par5TripleBogeyCount = statDAO.getNHolesParScore(5, 3, player, course);
+        par5QuadBogeyPlusCount = statDAO.getNHolesParScore(5, 4, player, course);
 
         // sum various scores
         albatrossCount = par4AlbatrossCount + par5AlbatrossCount;
@@ -417,49 +417,73 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Albatross");
         map.put("col_2", ""+df.format(albatrossCount));
-        map.put("col_3", ""+df.format(albatrossCount/numberOfHoles*100)+"%");
+        if (albatrossCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(albatrossCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Eagle");
         map.put("col_2", ""+df.format(eagleCount));
-        map.put("col_3", ""+df.format(eagleCount/numberOfHoles*100)+"%");
+        if (eagleCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(eagleCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Birdie");
         map.put("col_2", ""+df.format(birdieCount));
-        map.put("col_3", ""+df.format(birdieCount/numberOfHoles*100)+"%");
+        if (birdieCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(birdieCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Par");
         map.put("col_2", ""+df.format(parCount));
-        map.put("col_3", ""+df.format(parCount/numberOfHoles*100)+"%");
+        if (parCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(parCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Bogey");
         map.put("col_2", ""+df.format(bogeyCount));
-        map.put("col_3", ""+df.format(bogeyCount/numberOfHoles*100)+"%");
+        if (bogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(bogeyCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Double");
         map.put("col_2", ""+df.format(doubleBogeyCount));
-        map.put("col_3", ""+df.format(doubleBogeyCount/numberOfHoles*100)+"%");
+        if (doubleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(doubleBogeyCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Triple");
         map.put("col_2", ""+df.format(tripleBogeyCount));
-        map.put("col_3", ""+df.format(tripleBogeyCount/numberOfHoles*100)+"%");
+        if (tripleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(tripleBogeyCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Quadruple or Worse");
         map.put("col_2", ""+df.format(quadBogeyPlusCount));
-        map.put("col_3", ""+df.format(quadBogeyPlusCount/numberOfHoles*100)+"%");
+        if (quadBogeyPlusCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(quadBogeyPlusCount/numberOfHoles*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -471,43 +495,64 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Hole In One");
         map.put("col_2", ""+df.format(par3EagleCount));
-        map.put("col_3", ""+df.format(par3EagleCount/numberOfPar3Holes*100)+"%");
+        if (par3EagleCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3EagleCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Birdie");
         map.put("col_2", ""+df.format(par3BirdieCount));
-        map.put("col_3", ""+df.format(par3BirdieCount/numberOfPar3Holes*100)+"%");
+        if (par3BirdieCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3BirdieCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Par");
         map.put("col_2", ""+df.format(par3ParCount));
-        map.put("col_3", ""+df.format(par3ParCount/numberOfPar3Holes*100)+"%");
+        if (par3ParCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3ParCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Bogey");
         map.put("col_2", ""+df.format(par3BogeyCount));
-        map.put("col_3", ""+df.format(par3BogeyCount/numberOfPar3Holes*100)+"%");
+        if (par3BogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3BogeyCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Double");
         map.put("col_2", ""+df.format(par3DoubleBogeyCount));
-        map.put("col_3", ""+df.format(par3DoubleBogeyCount/numberOfPar3Holes*100)+"%");
+        if (par3DoubleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3DoubleBogeyCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Triple");
         map.put("col_2", ""+df.format(par3TripleBogeyCount));
-        map.put("col_3", ""+df.format(par3TripleBogeyCount/numberOfPar3Holes*100)+"%");
+        if (par3TripleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3TripleBogeyCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Quadruple or Worse");
         map.put("col_2", ""+df.format(par3QuadBogeyPlusCount));
-        map.put("col_3", ""+df.format(par3QuadBogeyPlusCount/numberOfPar3Holes*100)+"%");
+        if (par3QuadBogeyPlusCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par3QuadBogeyPlusCount/numberOfPar3Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -519,49 +564,73 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Hole In One");
         map.put("col_2", ""+df.format(par4AlbatrossCount));
-        map.put("col_3", ""+df.format(par4AlbatrossCount/numberOfPar4Holes*100)+"%");
+        if (par4AlbatrossCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4AlbatrossCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Eagle");
         map.put("col_2", ""+df.format(par4EagleCount));
-        map.put("col_3", ""+df.format(par4EagleCount/numberOfPar4Holes*100)+"%");
+        if (par4EagleCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4EagleCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Birdie");
         map.put("col_2", ""+df.format(par4BirdieCount));
-        map.put("col_3", ""+df.format(par4BirdieCount/numberOfPar4Holes*100)+"%");
+        if (par4BirdieCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4BirdieCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Par");
         map.put("col_2", ""+df.format(par4ParCount));
-        map.put("col_3", ""+df.format(par4ParCount/numberOfPar4Holes*100)+"%");
+        if (par4ParCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4ParCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Bogey");
         map.put("col_2", ""+df.format(par4BogeyCount));
-        map.put("col_3", ""+df.format(par4BogeyCount/numberOfPar4Holes*100)+"%");
+        if (par4BogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4BogeyCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Double");
         map.put("col_2", ""+df.format(par4DoubleBogeyCount));
-        map.put("col_3", ""+df.format(par4DoubleBogeyCount/numberOfPar4Holes*100)+"%");
+        if (par4DoubleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4DoubleBogeyCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Triple");
         map.put("col_2", ""+df.format(par4TripleBogeyCount));
-        map.put("col_3", ""+df.format(par4TripleBogeyCount/numberOfPar4Holes*100)+"%");
+        if (par4TripleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4TripleBogeyCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Quadruple or Worse");
         map.put("col_2", ""+df.format(par4QuadBogeyPlusCount));
-        map.put("col_3", ""+df.format(par4QuadBogeyPlusCount/numberOfPar4Holes*100)+"%");
+        if (par4QuadBogeyPlusCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par4QuadBogeyPlusCount/numberOfPar4Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -573,49 +642,73 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Albatross");
         map.put("col_2", ""+df.format(par5AlbatrossCount));
-        map.put("col_3", ""+df.format(par5AlbatrossCount/numberOfPar5Holes*100)+"%");
+        if (par5AlbatrossCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5AlbatrossCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Eagle");
         map.put("col_2", ""+df.format(par5EagleCount));
-        map.put("col_3", ""+df.format(par5EagleCount/numberOfPar5Holes*100)+"%");
+        if (par5EagleCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5EagleCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Birdie");
         map.put("col_2", ""+df.format(par5BirdieCount));
-        map.put("col_3", ""+df.format(par5BirdieCount/numberOfPar5Holes*100)+"%");
+        if (par5BirdieCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5BirdieCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Par");
         map.put("col_2", ""+df.format(par5ParCount));
-        map.put("col_3", ""+df.format(par5ParCount/numberOfPar5Holes*100)+"%");
+        if (par5ParCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5ParCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Bogey");
         map.put("col_2", ""+df.format(par5BogeyCount));
-        map.put("col_3", ""+df.format(par5BogeyCount/numberOfPar5Holes*100)+"%");
+        if (par5BogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5BogeyCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Double");
         map.put("col_2", ""+df.format(par5DoubleBogeyCount));
-        map.put("col_3", ""+df.format(par5DoubleBogeyCount/numberOfPar5Holes*100)+"%");
+        if (par5DoubleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5DoubleBogeyCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Triple");
         map.put("col_2", ""+df.format(par5TripleBogeyCount));
-        map.put("col_3", ""+df.format(par5TripleBogeyCount/numberOfPar5Holes*100)+"%");
+        if (par5TripleBogeyCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5TripleBogeyCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Quadruple or Worse");
         map.put("col_2", ""+df.format(par5QuadBogeyPlusCount));
-        map.put("col_3", ""+df.format(par5QuadBogeyPlusCount/numberOfPar5Holes*100)+"%");
+        if (par5QuadBogeyPlusCount == 0)
+            map.put("col_3", "-");
+        else
+            map.put("col_3", ""+df.format(par5QuadBogeyPlusCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
         
         ListView lv = getListView();	

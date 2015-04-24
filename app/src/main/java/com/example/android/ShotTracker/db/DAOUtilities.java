@@ -2,6 +2,7 @@ package com.example.android.ShotTracker.db;
 
 import android.content.Context;
 
+import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
