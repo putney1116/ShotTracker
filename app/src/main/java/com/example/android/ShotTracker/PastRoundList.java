@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.example.android.ShotTracker.db.CourseDAO;
+import com.example.android.ShotTracker.db.DAOUtilities;
 import com.example.android.ShotTracker.db.RoundDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.db.SubRoundDAO;
@@ -120,6 +121,8 @@ public class PastRoundList extends ListActivity{
 	
 	//Asks the user for confirmation to delete the round
 	private void buildDialog(){
+		final DAOUtilities daoUtility = new DAOUtilities(this);
+
 		builder = new AlertDialog.Builder(this);
 	    builder.setMessage("Would you like to delete this round?");
 	    builder.setCancelable(true);
@@ -132,8 +135,7 @@ public class PastRoundList extends ListActivity{
                 List<Round> rounds = roundDAO.readListofRounds();
                 Round round = rounds.get(roundNumber);
 
-                //\todo Add utility to delete a round and everything below it and call it here
-                //DAOUtility.deleteRound(round);
+                daoUtility.deleteRound(round);
 
                 //Displays the list of past rounds again
 	    		loadPastRoundsList();

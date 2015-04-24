@@ -59,4 +59,18 @@ public class ShotLinkDAO extends ShotTrackerDBDAO {
         cursor.close();
         return shotTypes;
     }
+
+    /**
+     * @param shot
+     * @return
+     */
+    public long deleteAllShotLinksByShot(Shot shot){
+        if (shot.getID() < 0) {
+            throw new RuntimeException("ShotID not set in ShotLinkDAO.deleteAllShotLinksByShot()");
+        }
+
+        return database.delete(DataBaseHelper.SHOTLINK_TABLE,
+                WHERE_SHOTID_EQUALS,
+                new String[]{String.valueOf(shot.getID())});
+    }
 }

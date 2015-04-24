@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.DAOUtilities;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.RoundDAO;
 import com.example.android.ShotTracker.db.RoundHoleDAO;
@@ -243,8 +244,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
                 List<CourseHoleInfo> courseHoleInfos = courseHoleInfoDAO.readListofCourseHoleInfos(courseHole);
                 courseHole.setCourseHoleInfoList(courseHoleInfos);
-
-                //\todo We should have a check to make sure the list of courseholes is in order 1-9 or 10-19 (ex). We currently assume they are.
 
                 par[holecounter] = courseHole.getPar();
                 blueYardage[holecounter] = courseHole.getBlueYardage();
@@ -2912,12 +2911,9 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         }
 
         if (totalRoundNull) {
-            //\todo Once created, use DAOUtility to delete a round
-            List <SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
-            for (SubRound subRoundDelete : subRounds) {
-                subRoundDAO.deleteSubRound(subRoundDelete);
-            }
-            roundDAO.deleteRound(round);
+			DAOUtilities daoUtility = new DAOUtilities(this);
+
+			daoUtility.deleteRound(round);
         }
     }
     

@@ -1,12 +1,12 @@
 package com.example.android.ShotTracker.db;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
 import com.example.android.ShotTracker.objects.RoundHole;
+import com.example.android.ShotTracker.objects.Shot;
 import com.example.android.ShotTracker.objects.SubRound;
 
 import java.util.ArrayList;
@@ -202,7 +202,36 @@ public class DAOUtilities {
         return rounds;
     }
 
+    public void deleteRound(Round round){
+        RoundDAO roundDAO = new RoundDAO(mContext);
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+        RoundHoleDAO roundHoleDAO = new RoundHoleDAO(mContext);
+        ShotDAO shotDAO = new ShotDAO(mContext);
+        ShotLinkDAO shotLinkDAO = new ShotLinkDAO(mContext);
 
+        List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+
+        for (SubRound subRound : subRounds){
+            List<RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRound(subRound);
+
+            for (RoundHole roundHole : roundHoles){
+                List<Shot> shots = shotDAO.readListofShotsRoundHoleID(roundHole);
+
+                for (Shot shot : shots){
+                    shotLinkDAO.deleteAllShotLinksByShot(shot);
+
+                    shotDAO.deleteShot(shot);
+                }
+
+                roundHoleDAO.deleteRoundHole(roundHole);
+            }
+
+            subRoundDAO.deleteSubRound(subRound);
+        }
+
+        roundDAO.deleteRound(round);
+
+    }
     // \todo Delete Round
     // \todo Course from Round
     // \todo Delete Player (and all player ID's)
