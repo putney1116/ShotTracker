@@ -47,6 +47,7 @@ import com.example.android.ShotTracker.objects.CourseHoleInfo;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
 import com.example.android.ShotTracker.objects.RoundHole;
+import com.example.android.ShotTracker.objects.Shot;
 import com.example.android.ShotTracker.objects.SubCourse;
 import com.example.android.ShotTracker.objects.SubRound;
 import com.google.android.gms.maps.CameraUpdate;
@@ -73,6 +74,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class StartRound extends com.google.android.maps.MapActivity implements OnClickListener, OnMapClickListener{
+
+	//\todo Copy xml changes to inroundscreen2
 	
 	private TabHost tabHost;
 	private TextView scoreEntryGreen; 
@@ -98,7 +101,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private GestureDetector swipeGesture;	
 	
 	protected LocationManager locationManager;
-	protected Button retrieveLocationButton;
 	private static final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 1; // in Meters
 	private static final long MINIMUM_TIME_BETWEEN_UPDATES = 1000; // in Milliseconds
 	private LocationListener gpsClass;
@@ -155,6 +157,10 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     private Course course = null;
     private List<SubCourse> subCourses = null;
 
+	ViewEditCurrentRound viewEditCurrentRound = null;
+	List[] shotArray = null;
+	Button editRoundButton = null;
+
 	private boolean eighteenHoleRound = true;
     
 	public void onCreate(Bundle savedInstanceState) {
@@ -165,6 +171,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	
     	//Loads the player names and course information
     	loadCourseInfo();
+
+
 
 		selectLayout();
     	
@@ -2771,7 +2779,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
 		//Loads the gps related views
-		retrieveLocationButton = (Button) findViewById(R.id.locationButton);
         gpsStatusPicture = (ImageView)findViewById(R.id.gpsstatusindicator);
          
         //Sets when the gps location should be updated
@@ -2781,14 +2788,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
                 MINIMUM_DISTANCE_CHANGE_FOR_UPDATES,
                 gpsClass
         );
-             
-        //Initializes the retrieve location button to display the current location
-        retrieveLocationButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-    	                showCurrentLocation();
-    	            }
-    	});
     }
 	
 	//Shows the save round confirmation dialog if the back button is pressed
@@ -3179,6 +3178,36 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				mapPolyline.remove();
 				
 				return true;
+			}
+		});
+	}
+
+	//\todo Add array of length 18 made up of a list of shots
+
+	//Initializes the View/Edit Round Button
+	private void EditRoundButtonInitializer(){
+
+		shotArray = new List[19];
+
+		for(int x = 0;x<19;x++){
+			shotArray[x] = new ArrayList<Shot>();
+		}
+
+		editRoundButton = (Button) findViewById(R.id.caddyEditRoundButton);
+
+		viewEditCurrentRound = new ViewEditCurrentRound(this);
+
+		editRoundButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try{
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					shotArray = viewEditCurrentRound.ViewEditCurrentRoundMain(shotArray, greenLocations, teeLocations);
+
+				}catch(Exception e) {
+				}
 			}
 		});
 	}

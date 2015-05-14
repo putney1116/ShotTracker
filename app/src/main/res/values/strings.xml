@@ -2,4 +2,5 @@
     <string name="hello">Hello World, ShotTracker!</string>
     <string name="app_name">ShotTracker</string>
     <string name="MapKey">AIzaSyAoyH7TKJ3-_vy3o8rMPX0G5BloJr2Ev6Y</string>
+    <string name="mainClub"><font size="30">First line!</font>\n\<font size="10sp">Second line!</font></string>
 </resources>

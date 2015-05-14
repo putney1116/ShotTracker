@@ -17,10 +17,10 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
     private Shot shotTableIn;
 
     public ViewEditCurrentRound(Context context){
-       contextIn = context;
+        contextIn = context;
 
     }
-    public List[] ViewEditCurrentRoundMain(List[] shotList, Double[][][] greenLocations, Double[][] teeLocations){
+    public List[] ViewEditCurrentRoundMain(List[] shotList, double[][][] greenLocations, double[][] teeLocations){
 
         //greenLocations[latlng][0(front)/1(middle)/2(back)][hole number - human readable, 0 index is blank, hole numbers and index numbers are 1-18 for 19 length array]
         //teeLocations[latlng][hole number - same weirdness with indices as greenlocations]
