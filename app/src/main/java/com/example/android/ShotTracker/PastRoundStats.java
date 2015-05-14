@@ -30,6 +30,12 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.ShotTracker.db.DAOUtilities;
+import com.example.android.ShotTracker.db.PlayerDAO;
+import com.example.android.ShotTracker.db.StatistisDAO;
+import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.Round;
+
 public class PastRoundStats extends ListActivity{
 	
 	private List<String> players = new ArrayList<String>();
@@ -117,214 +123,92 @@ public class PastRoundStats extends ListActivity{
     	});    	
 	}
 	 
-	//Runs through the scores for the round and increments the stat variables as necessary
-	private void calculateScore(int playerNumber){
-		InputStream filereader = null;
-		
-		try {
-			//Opens the file for the round passed in
-			filereader = openFileInput("pastround"+pastRoundFileNumber+".txt");
-			InputStreamReader inputreader = new InputStreamReader(filereader);
-			BufferedReader bufferedreader = new BufferedReader(inputreader);
-			
-			//Disregards the unnecessary info in the file
-			for(int x=0;x<4;x++){
-				bufferedreader.readLine();
-			}
-			
-			//Disregards the scores for players that are not being displayed
-			for(int x = 1;x<=18*(playerNumber-1);x++){
-				bufferedreader.readLine();
-			}
-			
-			int holeScore = 0;
-			int roundScore = 0;
-			int runningPar = 0;
-			
-			//Run through the scores for all 18 holes for that player
-			for(int x=1;x<=18;x++){
-				holeScore = Integer.valueOf(bufferedreader.readLine());
-				
-				//Stats only count if the player played that hole
-				if(holeScore>0){
-					//Increments different stat variables for future calculations
-					runningPar += par[x];
-					numberOfHoles++;
-					roundScore += holeScore;
-					
-					if(x<=9){
-						averageFront9Score += holeScore;
-						averageFront9PlusMinus += holeScore - par[x];
-					}
-					else{
-						averageBack9Score += holeScore;
-						averageBack9PlusMinus += holeScore - par[x];
-					}
-					
-					//Increments the counts for each score type
-					if(holeScore-par[x]==-3)
-						albatrossCount++;
-					else if(holeScore-par[x]==-2)
-						eagleCount++;
-					else if(holeScore-par[x]==-1)
-						birdieCount++;
-					else if(holeScore-par[x]==0)
-						parCount++;
-					else if(holeScore-par[x]==1)
-						bogeyCount++;
-					else if(holeScore-par[x]==2)
-						doubleBogeyCount++;
-					else if(holeScore-par[x]==3)
-						tripleBogeyCount++;
-					else if(holeScore-par[x]>=4)
-						quadBogeyPlusCount++;
-					
-					//Increments the counts for each score type on par 3's
-					if(par[x]==3){
-						numberOfPar3Holes++;
-						
-						if(holeScore-par[x]==-2)
-							par3EagleCount++;
-						else if(holeScore-par[x]==-1)
-							par3BirdieCount++;
-						else if(holeScore-par[x]==0)
-							par3ParCount++;
-						else if(holeScore-par[x]==1)
-							par3BogeyCount++;
-						else if(holeScore-par[x]==2)
-							par3DoubleBogeyCount++;
-						else if(holeScore-par[x]==3)
-							par3TripleBogeyCount++;
-						else if(holeScore-par[x]>=4)
-							par3QuadBogeyPlusCount++;
-					}
-					//Increments the counts for each score type on par 4's
-					else if(par[x]==4){
-						numberOfPar4Holes++;
-						
-						if(holeScore-par[x]==-3)
-							par4AlbatrossCount++;
-						else if(holeScore-par[x]==-2)
-							par4EagleCount++;
-						else if(holeScore-par[x]==-1)
-							par4BirdieCount++;
-						else if(holeScore-par[x]==0)
-							par4ParCount++;
-						else if(holeScore-par[x]==1)
-							par4BogeyCount++;
-						else if(holeScore-par[x]==2)
-							par4DoubleBogeyCount++;
-						else if(holeScore-par[x]==3)
-							par4TripleBogeyCount++;
-						else if(holeScore-par[x]>=4)
-							par4QuadBogeyPlusCount++;
-					}
-					//Increments the counts for each score type on par 5's
-					else if(par[x]==5){
-						numberOfPar5Holes++;
-						
-						if(holeScore-par[x]==-3)
-							par5AlbatrossCount++;
-						else if(holeScore-par[x]==-2)
-							par5EagleCount++;
-						else if(holeScore-par[x]==-1)
-							par5BirdieCount++;
-						else if(holeScore-par[x]==0)
-							par5ParCount++;
-						else if(holeScore-par[x]==1)
-							par5BogeyCount++;
-						else if(holeScore-par[x]==2)
-							par5DoubleBogeyCount++;
-						else if(holeScore-par[x]==3)
-							par5TripleBogeyCount++;
-						else if(holeScore-par[x]>=4)
-							par5QuadBogeyPlusCount++;
-					}
-				}			
-			}
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-		 
+
 	//Calculates the total stats for the specified player
 	private void calculatePlayerStats(int pos){
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-		InputStream filereader2 = null;
-		InputStreamReader inputreader2 = null;
-		BufferedReader bufferedreader2 = null;
-		AssetManager assetManager = getAssets();
-		
-		//Sets all the statistic variables back to 0
-		initializeStatisticVariables();
-	
-		int numberOfPlayers = 0;
-		String fileName = null;
-		
-		try {
-			filereader = openFileInput("pastround"+pastRoundFileNumber+".txt");
-			inputreader = new InputStreamReader(filereader);
-			bufferedreader = new BufferedReader(inputreader);
-			
-			//Saves the course name to be opened later
-			fileName = bufferedreader.readLine();
-			
-			//Disregards unnecessary info
-			for(int x=0;x<2;x++){
-				bufferedreader.readLine();
-			}
-			
-			//Saves the number of players in the round
-			numberOfPlayers = Integer.parseInt(bufferedreader.readLine());
-			
-			//Disregards unnecessary info
-			for(int x=1;x<=18*numberOfPlayers;x++){
-				bufferedreader.readLine();
-			}
-			
-			filereader2 = assetManager.open(fileName);
-			inputreader2 = new InputStreamReader(filereader2);
-			bufferedreader2 = new BufferedReader(inputreader2);
-			
-			//Disregards unnecessary info
-			bufferedreader2.readLine();
-			
-			//Saves the par for each hole on the course
-			getCourseInfo(bufferedreader2);
 
-			//Determines if any of the players in the round are the selected player
-			for(int x=1;x<=numberOfPlayers;x++){
-				if(bufferedreader.readLine().equals(players.get(pos))){
-					//Calculates the stats for the round for the specified player
-					calculateScore(x);
-				}
-			}
-		}catch (FileNotFoundException e) {
-			Log.d("calculatePlayerStats","File Not Found: pastround"+pastRoundFileNumber+".txt");
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+        //Sets all the statistic variables back to 0
+        initializeStatisticVariables();
+
+        StatistisDAO statDAO = new StatistisDAO(PastRoundStats.this);
+        DAOUtilities daoUtil = new DAOUtilities(PastRoundStats.this);
+        PlayerDAO playerDAO = new PlayerDAO(PastRoundStats.this);
+
+        Player player = new Player();
+        long id = playerDAO.readIDFromName(players.get(pos));
+        player.setID(id);
+
+        //Loads the course name from the previous activity
+        Intent myIntent = getIntent();
+        Long roundID = myIntent.getLongExtra("RoundID", -1);
+
+        Round round = new Round();
+        round.setID(roundID);
+
+        // get the number of each holes
+        numberOfPar3Holes = statDAO.getNHolesPar(3, player, round);
+        numberOfPar4Holes = statDAO.getNHolesPar(4, player, round);
+        numberOfPar5Holes = statDAO.getNHolesPar(5, player, round);
+        numberOfHoles = numberOfPar3Holes
+                + numberOfPar4Holes
+                + numberOfPar5Holes;
+
+        // get the counts for par 3's
+        par3EagleCount = statDAO.getNHolesParScore(3, -2, player, round);
+        par3BirdieCount = statDAO.getNHolesParScore(3, -1, player, round);
+        par3ParCount = statDAO.getNHolesParScore(3, 0, player, round);
+        par3BogeyCount = statDAO.getNHolesParScore(3, 1, player, round);
+        par3DoubleBogeyCount = statDAO.getNHolesParScore(3, 2, player, round);
+        par3TripleBogeyCount = statDAO.getNHolesParScore(3, 3, player, round);
+        //\todo this currently only gets +4, get everything >= +4
+        par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player, round);
+
+        // get the counts for par 4's
+        par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player, round);
+        par4EagleCount = statDAO.getNHolesParScore(4, -2, player, round);
+        par4BirdieCount = statDAO.getNHolesParScore(4, -1, player, round);
+        par4ParCount = statDAO.getNHolesParScore(4, 0, player, round);
+        par4BogeyCount = statDAO.getNHolesParScore(4, 1, player, round);
+        par4DoubleBogeyCount = statDAO.getNHolesParScore(4, 2, player, round);
+        par4TripleBogeyCount = statDAO.getNHolesParScore(4, 3, player, round);
+        par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player, round);
+
+        // get the counts for the par 5's
+        par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player, round);
+        par5EagleCount = statDAO.getNHolesParScore(5, -2, player, round);
+        par5BirdieCount = statDAO.getNHolesParScore(5, -1, player, round);
+        par5ParCount = statDAO.getNHolesParScore(5, 0, player, round);
+        par5BogeyCount = statDAO.getNHolesParScore(5, 1, player, round);
+        par5DoubleBogeyCount = statDAO.getNHolesParScore(5, 2, player, round);
+        par5TripleBogeyCount = statDAO.getNHolesParScore(5, 3, player, round);
+        par5QuadBogeyPlusCount = statDAO.getNHolesParScore(5, 4, player, round);
+
+        // sum various scores
+        albatrossCount = par4AlbatrossCount + par5AlbatrossCount;
+        eagleCount = par3EagleCount + par4EagleCount + par5EagleCount;
+        birdieCount = par3BirdieCount + par4BirdieCount + par5BirdieCount;
+        parCount = par3ParCount + par4ParCount + par5ParCount;
+        bogeyCount = par3BogeyCount + par4BogeyCount + par5BogeyCount;
+        doubleBogeyCount = par3DoubleBogeyCount
+                + par4DoubleBogeyCount
+                + par5DoubleBogeyCount;
+        tripleBogeyCount = par3TripleBogeyCount
+                + par4TripleBogeyCount
+                + par5TripleBogeyCount;
+        quadBogeyPlusCount = par3QuadBogeyPlusCount
+                + par4QuadBogeyPlusCount
+                + par5QuadBogeyPlusCount;
+
+
+
+
+
+
 		//Calls the method that displays the stats on the screen
 		fillInList();
 	}
 	
-	//Saves the par for each hole on the course specified
-	private void getCourseInfo(BufferedReader bufferedreader){		    
-		try {
-			for(int x=0;x<19;x++){
-				par[x]=Integer.parseInt(bufferedreader.readLine());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-	}
-	
+
 	//Displays the stats on the screen
 	private void fillInList(){
 		//Displays all unused stats as 0 instead of a division error
@@ -602,42 +486,11 @@ public class PastRoundStats extends ListActivity{
 	}
 	
 	//Creates the list of players to be used by the player spinner
-	private void getPlayerList(){    	    	
-		InputStream filereader = null;
-		InputStreamReader inputreader = null;
-		BufferedReader bufferedreader = null;
-	
-		int numberOfPlayers = 0;
-		
-		//Opens the past round file to get the names of the players
-		
-		try {
-			filereader = openFileInput("pastround"+pastRoundFileNumber+".txt");
-			inputreader = new InputStreamReader(filereader);
-			bufferedreader = new BufferedReader(inputreader);
-			     
-			//Disregards unnecessary info
-			for(int x=0;x<3;x++){
-				bufferedreader.readLine();
-			}
-			
-			//Saves the number of players in the round
-			numberOfPlayers = Integer.parseInt(bufferedreader.readLine());
-			
-			//Disregards unnecessary info
-			for(int x=0;x<18*numberOfPlayers;x++){
-				bufferedreader.readLine();
-			}
-			
-			//Adds the player to the list
-			for(int x=0;x<numberOfPlayers;x++){
-				players.add(bufferedreader.readLine());
-			}
-		}catch (FileNotFoundException e) {
-			Log.d("getPlayerList","File Not Found: pastround"+pastRoundFileNumber+".txt");
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void getPlayerList(){
+
+        PlayerDAO playerDAO = new PlayerDAO(PastRoundStats.this);
+        players = playerDAO.readListofPlayerNameswDefaultFirst();
+
     }
 	
 	//Sets all the statistic variables back to 0

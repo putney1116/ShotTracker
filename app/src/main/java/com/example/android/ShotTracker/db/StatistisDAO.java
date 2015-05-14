@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.Round;
 
 /**
  * Created by damcglinchey on 4/7/15.
@@ -35,6 +36,39 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + " WHERE "
                 + DataBaseHelper.PLAYERID_COLUMN
                 + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+
+        return cursor.getCount();
+    }
+
+    /**
+     * Get the total number of holes with Par=par played by a player in a given round
+     * @param par
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNHolesPar(int par, Player player, Round round) {
+        //build a query to get the total number of holes
+        //player with a certain par
+        String queryPar = "SELECT "
+                + DataBaseHelper.PAR_COLUMN
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "=" + round.getID()
                 + " AND "
                 + DataBaseHelper.PAR_COLUMN
                 + "=" + par;
@@ -119,6 +153,53 @@ public class StatistisDAO extends ShotTrackerDBDAO {
         return cursor.getCount();
     }
 
+    /**
+     * Get the number of holes played by a player in a given round
+     * Where the score is diff and the par is par
+     * @param par
+     * @param diff
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNHolesParScore(int par, int diff, Player player, Round round) {
+        String queryScore = "SELECT "
+                + DataBaseHelper.PAR_COLUMN
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "=" + round.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par
+                + " AND "
+                + DataBaseHelper.SCORE_COLUMN
+                + "-"
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + diff;
+
+        Cursor cursor = database.rawQuery(queryScore, null);
+
+        return cursor.getCount();
+    }
+
+    /**
+     * Get the number of holes played by a given player for a given course
+     * where the score is diff + par and par is par
+     * @param par
+     * @param diff
+     * @param player
+     * @param course
+     * @return
+     */
     public int getNHolesParScore(int par, int diff, Player player, Course course) {
         //build a query to get the total number of holes
         //player with a certain par, given a course ID
