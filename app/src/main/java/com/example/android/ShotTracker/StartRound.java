@@ -172,8 +172,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	//Loads the player names and course information
     	loadCourseInfo();
 
-
-
 		selectLayout();
     	
     	//Initializes the map tab
@@ -202,6 +200,9 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	
     	//Initializes the tab controller
     	tabSetup();
+
+		//Initializes the EditRoundButton
+		EditRoundButtonInitializer();
     }
 	
 	//Loads the player names and course information
