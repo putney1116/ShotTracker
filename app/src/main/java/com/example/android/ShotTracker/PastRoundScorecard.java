@@ -201,9 +201,13 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 
 					if(roundCounter == 1){
 						holeNumber %= 9;
+						if(holeNumber==0)
+							holeNumber = 9;
 					}
 					else{
 						holeNumber %= 9 + 9;
+						if(holeNumber==0)
+							holeNumber = 18;
 					}
 
                     holeScore[player_number][holeNumber] = roundHole.getScore();
