@@ -40,8 +40,8 @@ public class DAOUtilities {
 
 
         // first get a list of rounds
-//        List<Round> rounds = roundDAO.readListofRounds(player);
-        List<Round> rounds = readListofRounds(player);
+        List<Round> rounds = roundDAO.readListofRounds(player);
+//        List<Round> rounds = readListofRounds(player);
 
         // for each round get a list of subrounds
         for (Round round : rounds) {
@@ -52,7 +52,45 @@ public class DAOUtilities {
             }
         }
 
-        return totScore / (float) Nrounds * 2;
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds * 2;
+        else
+            return 0;
+    }
+
+    /**
+     * Get average adjusted score given a player and course
+     * @param player
+     * @param course
+     * @return
+     */
+    public float getAverageAdjustedScorePlayer(Player player, Course course) {
+
+        // setup variables & DAO's
+        float totScore = 0;
+        int Nrounds = 0;
+
+        RoundDAO roundDAO = new RoundDAO(mContext);
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+
+
+        // first get a list of rounds
+//        List<Round> rounds = roundDAO.readListofRounds(player);
+        List<Round> rounds = roundDAO.readListofRounds(player, course);
+
+        // for each round get a list of subrounds
+        for (Round round : rounds) {
+            List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+            for (SubRound subRound : subRounds) {
+                totScore += getAdjustedScoreSubRound(subRound, player);
+                Nrounds++;
+            }
+        }
+
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds * 2;
+        else
+            return 0;
     }
 
     /**
@@ -83,7 +121,44 @@ public class DAOUtilities {
             }
         }
 
-        return totScore / (float) Nrounds;
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds;
+        else
+            return 0;
+    }
+
+    /**
+     * Get the average adjusted score for the first 9 given a player and course
+     * @param player
+     * @param course
+     * @return
+     */
+    public float getAverageAdjustedFrontNineScorePlayer(Player player, Course course) {
+        // setup variables & DAO's
+        float totScore = 0;
+        int Nrounds = 0;
+
+        RoundDAO roundDAO = new RoundDAO(mContext);
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+
+
+        // first get a list of rounds
+        List<Round> rounds = roundDAO.readListofRounds(player, course);
+//        List<Round> rounds = readListofRounds(player);
+
+        // for each round get a list of subrounds
+        for (Round round : rounds) {
+            List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+            if (subRounds.size() > 0) {
+                totScore += getAdjustedScoreSubRound(subRounds.get(0), player);
+                Nrounds++;
+            }
+        }
+
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds;
+        else
+            return 0;
     }
 
     /**
@@ -108,13 +183,50 @@ public class DAOUtilities {
         // for each round get a list of subrounds
         for (Round round : rounds) {
             List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
-            if (subRounds.size() > 0) {
+            if (subRounds.size() > 1) {
                 totScore += getAdjustedScoreSubRound(subRounds.get(1), player);
                 Nrounds++;
             }
         }
 
-        return totScore / (float) Nrounds;
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds;
+        else
+            return 0;
+    }
+
+    /**
+     * Get the average adjusted score for the second 9 in a round given a player and course
+     * @param player
+     * @param course
+     * @return
+     */
+    public float getAverageAdjustedBackNineScorePlayer(Player player, Course course) {
+        // setup variables & DAO's
+        float totScore = 0;
+        int Nrounds = 0;
+
+        RoundDAO roundDAO = new RoundDAO(mContext);
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+
+
+        // first get a list of rounds
+        List<Round> rounds = roundDAO.readListofRounds(player, course);
+//        List<Round> rounds = readListofRounds(player);
+
+        // for each round get a list of subrounds
+        for (Round round : rounds) {
+            List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+            if (subRounds.size() > 1) {
+                totScore += getAdjustedScoreSubRound(subRounds.get(1), player);
+                Nrounds++;
+            }
+        }
+
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds;
+        else
+            return 0;
     }
 
     /**
