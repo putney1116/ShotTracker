@@ -297,11 +297,11 @@ public class Statistics extends ListActivity{
         long cid = courseDAO.readIDFromName(courses.get(coursePos));
         course.setID(cid);
 
-        averageScore = daoUtil.getAverageAdjustedScorePlayer(player);
+        averageScore = daoUtil.getAverageAdjustedScorePlayer(player, course);
         averagePlusMinus = averageScore - 72;
-        averageFront9Score = daoUtil.getAverageAdjustedFrontNineScorePlayer(player);
+        averageFront9Score = daoUtil.getAverageAdjustedFrontNineScorePlayer(player, course);
         averageFront9PlusMinus = averageFront9Score - 36;
-        averageBack9Score = daoUtil.getAverageAdjustedBackNineScorePlayer(player);
+        averageBack9Score = daoUtil.getAverageAdjustedBackNineScorePlayer(player, course);
         averageBack9PlusMinus = averageBack9Score - 36;
         averageHoleScore = averageScore / 18;
         averageHolePlusMinus = averageHoleScore - 4;
@@ -387,27 +387,27 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Total Score");
         map.put("col_2", ""+df.format(averageScore));
-        map.put("col_3", ""+df.format(averagePlusMinus));
+        map.put("col_3", averageScore == 0 ? "-" : "" + df.format(averagePlusMinus));
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Front 9");
         map.put("col_2", ""+df.format(averageFront9Score));
-        map.put("col_3", ""+df.format(averageFront9PlusMinus));
+        map.put("col_3", averageFront9Score == 0 ? "-" : "" + df.format(averageFront9PlusMinus));
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Back 9");
         map.put("col_2", ""+df.format(averageBack9Score));
-        map.put("col_3", ""+df.format(averageBack9PlusMinus));
+        map.put("col_3", averageBack9Score == 0 ? "-" : "" + df.format(averageBack9PlusMinus));
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Score Per Hole");
         map.put("col_2", ""+df.format(averageHoleScore));
-        map.put("col_3", ""+df.format(averageHolePlusMinus));
+        map.put("col_3", averageHoleScore == 0 ? "-" : "" + df.format(averageHolePlusMinus));
         fillMaps.add(map);
-        
+
         map = new HashMap<String, String>();
         map.put("col_1", "Scoring Breakdown");
         map.put("col_2", "Total");
@@ -417,73 +417,49 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Albatross");
         map.put("col_2", ""+df.format(albatrossCount));
-        if (albatrossCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(albatrossCount/numberOfHoles*100)+"%");
+        map.put("col_3", albatrossCount == 0 ? "-" : "" + df.format(albatrossCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Eagle");
         map.put("col_2", ""+df.format(eagleCount));
-        if (eagleCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(eagleCount/numberOfHoles*100)+"%");
+        map.put("col_3", eagleCount == 0 ? "-" : "" + df.format(eagleCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Birdie");
         map.put("col_2", ""+df.format(birdieCount));
-        if (birdieCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(birdieCount/numberOfHoles*100)+"%");
+        map.put("col_3", birdieCount == 0 ? "-" : "" + df.format(birdieCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Par");
         map.put("col_2", ""+df.format(parCount));
-        if (parCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(parCount/numberOfHoles*100)+"%");
+        map.put("col_3", parCount == 0 ? "-" : "" + df.format(parCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Bogey");
         map.put("col_2", ""+df.format(bogeyCount));
-        if (bogeyCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(bogeyCount/numberOfHoles*100)+"%");
+        map.put("col_3", bogeyCount == 0 ? "-" : "" + df.format(bogeyCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Double");
         map.put("col_2", ""+df.format(doubleBogeyCount));
-        if (doubleBogeyCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(doubleBogeyCount/numberOfHoles*100)+"%");
+        map.put("col_3", doubleBogeyCount == 0 ? "-" : "" + df.format(doubleBogeyCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Triple");
         map.put("col_2", ""+df.format(tripleBogeyCount));
-        if (tripleBogeyCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(tripleBogeyCount/numberOfHoles*100)+"%");
+        map.put("col_3", tripleBogeyCount == 0 ? "-" : "" + df.format(tripleBogeyCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Quadruple or Worse");
         map.put("col_2", ""+df.format(quadBogeyPlusCount));
-        if (quadBogeyPlusCount == 0)
-            map.put("col_3", "-");
-        else
-            map.put("col_3", ""+df.format(quadBogeyPlusCount/numberOfHoles*100)+"%");
+        map.put("col_3", quadBogeyPlusCount == 0 ? "-" : "" + df.format(quadBogeyPlusCount / numberOfHoles * 100) + "%");
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -812,7 +788,7 @@ public class Statistics extends ListActivity{
 			TextView t1 = (TextView)view.findViewById(R.id.statisticsitem3);
 			
 			//Sets the +/- stats to a color of red, black, or black and "Even" depending on its value
-			if(position<5&&position>0){
+			if(position<5 && position>0 && t1.getText().toString() != "-"){
 				if(Double.parseDouble(t1.getText().toString())<0){
 					t1.setTextColor(Color.RED);
 				}

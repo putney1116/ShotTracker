@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
 
@@ -105,7 +106,7 @@ public class RoundDAO extends ShotTrackerDBDAO {
         List<Round> rounds = new ArrayList<Round>();
 
        String query = "SELECT "
-               + DataBaseHelper.ROUNDID_COLUMN + " "
+               + DataBaseHelper.ROUNDID_COLUMN + ", "
                + DataBaseHelper.ROUNDDATE_COLUMN
                + " FROM "
                + DataBaseHelper.ROUND_TABLE
@@ -116,6 +117,54 @@ public class RoundDAO extends ShotTrackerDBDAO {
                + " WHERE "
                + DataBaseHelper.PLAYERID_COLUMN
                + "=" + player.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        List<Long> usedIDs = new ArrayList<Long>();
+
+        while(cursor.moveToNext()) {
+            if ( usedIDs.contains(cursor.getLong(0)) ) continue;
+
+            Round newRound = new Round();
+            newRound.setID(cursor.getLong(0));
+            newRound.setDate(new Date(cursor.getLong(1)));
+            rounds.add(newRound);
+
+            usedIDs.add(new Long(newRound.getID()));
+        }
+        cursor.close();
+
+        return rounds;
+    }
+
+    /**
+     * Get a unique list of rounds given a player and course
+     * @param player
+     * @param course
+     * @return
+     */
+    public List<Round> readListofRounds(Player player, Course course) {
+        List<Round> rounds = new ArrayList<Round>();
+
+        String query = "SELECT "
+                + DataBaseHelper.ROUNDID_COLUMN + ", "
+                + DataBaseHelper.ROUNDDATE_COLUMN
+                + " FROM "
+                + DataBaseHelper.ROUND_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "=" + course.getID();
 
         Cursor cursor = database.rawQuery(query, null);
 
