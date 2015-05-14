@@ -20,12 +20,15 @@ public class DAOUtilities {
 
     private Context mContext = null;
 
-    public DAOUtilities(Context context){ mContext = context; }
+    public DAOUtilities(Context context) {
+        mContext = context;
+    }
 
 
     /**
      * Get the average round score for a given player
      * Adjusted to 18 hole par 72 course
+     *
      * @param player
      * @return
      */
@@ -60,6 +63,7 @@ public class DAOUtilities {
 
     /**
      * Get average adjusted score given a player and course
+     *
      * @param player
      * @param course
      * @return
@@ -94,8 +98,37 @@ public class DAOUtilities {
     }
 
     /**
+     * Get the adjusted average score given a player and round
+     *
+     * @param player
+     * @param round
+     * @return
+     */
+    public float getAverageAdjustedScorePlayer(Player player, Round round) {
+
+        // setup variables & DAO's
+        float totScore = 0;
+        int Nrounds = 0;
+
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+
+        // get a list of subrounds for the given round
+        List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+        for (SubRound subRound : subRounds) {
+            totScore += getAdjustedScoreSubRound(subRound, player);
+            Nrounds++;
+        }
+
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds * 2;
+        else
+            return 0;
+    }
+
+    /**
      * Get the average adjusted score for the front 9 given a player.
      * Adjusted to 9 hole par 36
+     *
      * @param player
      * @return
      */
@@ -129,6 +162,7 @@ public class DAOUtilities {
 
     /**
      * Get the average adjusted score for the first 9 given a player and course
+     *
      * @param player
      * @param course
      * @return
@@ -162,8 +196,38 @@ public class DAOUtilities {
     }
 
     /**
+     * Get the average adjusted score for the first 9 given a player and round
+     *
+     * @param player
+     * @param round
+     * @return
+     */
+    public float getAverageAdjustedFrontNineScorePlayer(Player player, Round round) {
+        // setup variables & DAO's
+        float totScore = 0;
+        int Nrounds = 0;
+
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+
+
+        // for each round get a list of subrounds
+        List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+        if (subRounds.size() > 0) {
+            totScore += getAdjustedScoreSubRound(subRounds.get(0), player);
+            Nrounds++;
+        }
+
+
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds;
+        else
+            return 0;
+    }
+
+    /**
      * Get the average adjusted score for the front 9 given a player.
      * Adjusted to 9 hole par 36
+     *
      * @param player
      * @return
      */
@@ -197,6 +261,7 @@ public class DAOUtilities {
 
     /**
      * Get the average adjusted score for the second 9 in a round given a player and course
+     *
      * @param player
      * @param course
      * @return
@@ -230,14 +295,43 @@ public class DAOUtilities {
     }
 
     /**
+     * Get the average adjusted score for the second 9 given a player and round
+     *
+     * @param player
+     * @param round
+     * @return
+     */
+    public float getAverageAdjustedBackNineScorePlayer(Player player, Round round) {
+        // setup variables & DAO's
+        float totScore = 0;
+        int Nrounds = 0;
+
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+
+        // for each round get a list of subrounds
+        List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+        if (subRounds.size() > 1) {
+            totScore += getAdjustedScoreSubRound(subRounds.get(1), player);
+            Nrounds++;
+        }
+
+
+        if (Nrounds > 0)
+            return totScore / (float) Nrounds;
+        else
+            return 0;
+    }
+
+    /**
      * Get the adjusted score for a subround
+     *
      * @param subRound
      * @return
      */
     public float getAdjustedScoreSubRound(SubRound subRound, Player player) {
 
-        float total = (float)getScoreSubRound(subRound, player);
-        float par = (float)getPlayedPar(subRound, player);
+        float total = (float) getScoreSubRound(subRound, player);
+        float par = (float) getPlayedPar(subRound, player);
 
         float adj = total / par * 36;
 
@@ -246,6 +340,7 @@ public class DAOUtilities {
 
     /**
      * Get the total score for a given subround
+     *
      * @param subRound
      * @return
      */
@@ -260,8 +355,8 @@ public class DAOUtilities {
 
         return total;
     }
+
     /**
-     *
      * @param subRound
      * @return
      */
@@ -281,7 +376,6 @@ public class DAOUtilities {
 
         return total;
     }
-
 
 
     public List<Round> readListofRounds(Player player) {
@@ -315,7 +409,7 @@ public class DAOUtilities {
         return rounds;
     }
 
-    public void deleteRound(Round round){
+    public void deleteRound(Round round) {
         RoundDAO roundDAO = new RoundDAO(mContext);
         SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
         RoundHoleDAO roundHoleDAO = new RoundHoleDAO(mContext);
@@ -324,13 +418,13 @@ public class DAOUtilities {
 
         List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
 
-        for (SubRound subRound : subRounds){
+        for (SubRound subRound : subRounds) {
             List<RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRound(subRound);
 
-            for (RoundHole roundHole : roundHoles){
+            for (RoundHole roundHole : roundHoles) {
                 List<Shot> shots = shotDAO.readListofShotsRoundHoleID(roundHole);
 
-                for (Shot shot : shots){
+                for (Shot shot : shots) {
                     shotLinkDAO.deleteAllShotLinksByShot(shot);
 
                     shotDAO.deleteShot(shot);
