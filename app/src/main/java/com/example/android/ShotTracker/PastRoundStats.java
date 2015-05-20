@@ -9,6 +9,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -600,8 +602,23 @@ public class PastRoundStats extends ListActivity{
 	//Creates the list of players to be used by the player spinner
 	private void getPlayerList(){
 
+
         PlayerDAO playerDAO = new PlayerDAO(PastRoundStats.this);
-        players = playerDAO.readListofPlayerNameswDefaultFirst();
+        DAOUtilities daoUtilities = new DAOUtilities(PastRoundStats.this);
+
+        //Loads the course name from the previous activity
+        Intent myIntent = getIntent();
+        Long roundID = myIntent.getLongExtra("RoundID", -1);
+
+        Round round = new Round();
+        round.setID(roundID);
+
+        TreeMap<Long, Player> playerMap = daoUtilities.getUniquePlayerListFromRound(round);
+
+        for (TreeMap.Entry<Long, Player> entry : playerMap.entrySet() ) {
+            if (!players.contains(entry.getValue().getName()))
+                players.add(entry.getValue().getName());
+        }
 
     }
 	
