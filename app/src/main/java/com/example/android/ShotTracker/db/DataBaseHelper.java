@@ -94,6 +94,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String PLAYERNAME_COLUMN = "PlayerName";
     public static final String USRDEF_COLUMN = "UserDefault";
     public static final String PLAYERHANDICAP_COLUMN = "PlayerHandicap";
+    public static final String PLAYERNUMBER_COLUMN = "PlayerNumber";
 
     /**
      * Club, Bag Columns
@@ -162,6 +163,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + ROUNDHOLEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SUBROUNDID_COLUMN + " INTEGER NOT NULL, "
             + PLAYERID_COLUMN + " INTEGER NOT NULL, "
+            + PLAYERNUMBER_COLUMN + " INTEGER NOT NULL, "
             + COURSEHOLEID_COLUMN + " INTEGER NOT NULL, "
             + SCORE_COLUMN + " INT NOT NULL, "
             + PUTTS_COLUMN + " INT, "

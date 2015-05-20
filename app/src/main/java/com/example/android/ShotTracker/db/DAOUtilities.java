@@ -11,7 +11,10 @@ import com.example.android.ShotTracker.objects.Shot;
 import com.example.android.ShotTracker.objects.SubRound;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by damcglinchey on 3/25/15.
@@ -443,17 +446,39 @@ public class DAOUtilities {
     // \todo Course from Round
     // \todo Delete Player (and all player ID's)
 
-    // \todo List of Players given RoundID
-//    public List<Player> getUniquePlayerListFromRound(Round round) {
-//
-//        //first get a list of all subrounds given the round
-//        SubRoundDAO subRoundDAO = new SubRoundDAO(context);
-//        List<SubRound> subRounds = subRoundDAO.readListofSubRoundsRound(round);
-//
-//        //for each subround, get a list of unique players
-//        List<List<Player>> = new ArrayList<ArrayList<Player>>();
-//
-//
-//    }
+    /**
+     * Read a list of players, ordered by the player number, for a given round
+     * @param round
+     * @return
+     */
+    public TreeMap<Long, Player> getUniquePlayerListFromRound(Round round) {
+
+        //first get a list of all subrounds given the round
+        SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
+        RoundHoleDAO roundHoleDAO = new RoundHoleDAO(mContext);
+        PlayerDAO playerDAO = new PlayerDAO(mContext);
+        List<SubRound> subRounds = subRoundDAO.readListofSubRounds(round);
+
+        //for each subround, get a list of unique players
+        TreeMap<Long, Player> playerMap = new TreeMap<Long, Player>();
+
+        for (SubRound subRound : subRounds) {
+            // get a list of all holes associated with this subround
+            List<RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRound(subRound);
+
+            for (RoundHole roundHole : roundHoles) {
+                if ( playerMap.containsKey(roundHole.getPlayerNumber()) )
+                    continue;
+                else {
+                    Player player = new Player();
+                    player.setID(roundHole.getPlayerID());
+                    player = playerDAO.readPlayer(player);
+                    playerMap.put(roundHole.getPlayerNumber(), player);
+                }
+            }
+        }
+
+        return playerMap;
+    }
 
 }

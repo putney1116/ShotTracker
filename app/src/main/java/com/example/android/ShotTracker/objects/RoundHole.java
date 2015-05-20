@@ -12,6 +12,7 @@ public class RoundHole {
     private long mSubRoundID = -1;
     private long mCourseHoleID =-1;
     private long mPlayerID =-1;
+    private long mPlayerNum = -1;
     private int mScore = -1;
     private int mPutts = -1;
     private int mPenalties = -1;
@@ -23,23 +24,25 @@ public class RoundHole {
      */
     public RoundHole() {}
 
-    public RoundHole(long id, SubRound subRound, CourseHole coursehole, Player player,
+    public RoundHole(long id, SubRound subRound, CourseHole coursehole, Player player, long pnum,
                      int score, int putts, int penalties, int fairways) {
         this.mID = id;
         this.mSubRoundID = subRound.getID();
         this.mCourseHoleID = coursehole.getID();
         this.mPlayerID = player.getID();
+        this.mPlayerNum = pnum;
         this.mScore = score;
         this.mPutts = putts;
         this.mPenalties = penalties;
         this.mFairways = fairways;
     }
 
-    public RoundHole(SubRound subRound, CourseHole coursehole, Player player,
+    public RoundHole(SubRound subRound, CourseHole coursehole, Player player, long pnum,
                      int score, int putts, int penalties, int fairways) {
         this.mSubRoundID = subRound.getID();
         this.mCourseHoleID = coursehole.getID();
         this.mPlayerID = player.getID();
+        this.mPlayerNum = pnum;
         this.mScore = score;
         this.mPutts = putts;
         this.mPenalties = penalties;
@@ -64,6 +67,8 @@ public class RoundHole {
     public void setPlayerID(Player player) {
         this.mPlayerID = player.getID();
     }
+
+    public void setPlayerNumber(long pnum) { this.mPlayerNum = pnum; }
 
     public void setScore(int score) {
         this.mScore = score;
@@ -99,6 +104,8 @@ public class RoundHole {
     public long getPlayerID() {
         return this.mPlayerID;
     }
+
+    public long getPlayerNumber() { return this.mPlayerNum; }
 
     public int getScore() {
         return this.mScore;

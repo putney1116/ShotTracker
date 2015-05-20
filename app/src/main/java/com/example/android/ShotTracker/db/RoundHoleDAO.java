@@ -23,6 +23,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
     private static final String WHERE_PLAYERID_EQUALS = DataBaseHelper.PLAYERID_COLUMN
             + "=?";
 
+    private static final String WHERE_PLAYERNUMBER_EQUALS = DataBaseHelper.PLAYERNUMBER_COLUMN
+            + "=?";
+
     private static final String WHERE_SUBROUNDID_EQUALS = DataBaseHelper.SUBROUNDID_COLUMN
             + "=?";
 
@@ -45,6 +48,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         values.put(DataBaseHelper.SUBROUNDID_COLUMN, roundhole.getSubRoundID());
         values.put(DataBaseHelper.COURSEHOLEID_COLUMN, roundhole.getCourseHoleID());
         values.put(DataBaseHelper.PLAYERID_COLUMN, roundhole.getPlayerID());
+        values.put(DataBaseHelper.PLAYERNUMBER_COLUMN, roundhole.getPlayerNumber());
 
         if (roundhole.getScore() > 0) {
             values.put(DataBaseHelper.SCORE_COLUMN, roundhole.getScore());
@@ -77,6 +81,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         values.put(DataBaseHelper.SUBROUNDID_COLUMN, roundhole.getSubRoundID());
         values.put(DataBaseHelper.COURSEHOLEID_COLUMN, roundhole.getCourseHoleID());
         values.put(DataBaseHelper.PLAYERID_COLUMN, roundhole.getPlayerID());
+        values.put(DataBaseHelper.PLAYERNUMBER_COLUMN, roundhole.getPlayerNumber());
 
         if (roundhole.getScore() > 0) {
             values.put(DataBaseHelper.SCORE_COLUMN, roundhole.getScore());
@@ -125,6 +130,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNUMBER_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
@@ -146,10 +152,11 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             Player playernew = new Player();
             playernew.setID(cursor.getLong(3));
             roundHole.setPlayerID(playernew);
-            roundHole.setScore(cursor.getInt(4));
-            roundHole.setPutts(cursor.getInt(5));
-            roundHole.setPenalties(cursor.getInt(6));
-            roundHole.setFairways(cursor.getInt(7));
+            roundHole.setPlayerNumber(cursor.getLong(4));
+            roundHole.setScore(cursor.getInt(5));
+            roundHole.setPutts(cursor.getInt(6));
+            roundHole.setPenalties(cursor.getInt(7));
+            roundHole.setFairways(cursor.getInt(8));
 
             roundHoles.add(roundHole);
         }
@@ -171,6 +178,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNUMBER_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
@@ -192,10 +200,11 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             Player player = new Player();
             player.setID(cursor.getLong(3));
             roundHole.setPlayerID(player);
-            roundHole.setScore(cursor.getInt(4));
-            roundHole.setPutts(cursor.getInt(5));
-            roundHole.setPenalties(cursor.getInt(6));
-            roundHole.setFairways(cursor.getInt(7));
+            roundHole.setPlayerNumber(cursor.getLong(4));
+            roundHole.setScore(cursor.getInt(5));
+            roundHole.setPutts(cursor.getInt(6));
+            roundHole.setPenalties(cursor.getInt(7));
+            roundHole.setFairways(cursor.getInt(8));
 
             roundHoles.add(roundHole);
         }
@@ -218,6 +227,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNUMBER_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
@@ -239,10 +249,11 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             Player player = new Player();
             player.setID(cursor.getLong(3));
             roundHole.setPlayerID(player);
-            roundHole.setScore(cursor.getInt(4));
-            roundHole.setPutts(cursor.getInt(5));
-            roundHole.setPenalties(cursor.getInt(6));
-            roundHole.setFairways(cursor.getInt(7));
+            roundHole.setPlayerNumber(cursor.getLong(4));
+            roundHole.setScore(cursor.getInt(5));
+            roundHole.setPutts(cursor.getInt(6));
+            roundHole.setPenalties(cursor.getInt(7));
+            roundHole.setFairways(cursor.getInt(8));
 
             roundHoles.add(roundHole);
         }
@@ -266,6 +277,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SUBROUNDID_COLUMN,
                         DataBaseHelper.COURSEHOLEID_COLUMN,
                         DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNUMBER_COLUMN,
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
@@ -287,10 +299,61 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             Player playernew = new Player();
             playernew.setID(cursor.getLong(3));
             roundHole.setPlayerID(playernew);
-            roundHole.setScore(cursor.getInt(4));
-            roundHole.setPutts(cursor.getInt(5));
-            roundHole.setPenalties(cursor.getInt(6));
-            roundHole.setFairways(cursor.getInt(7));
+            roundHole.setPlayerNumber(cursor.getLong(4));
+            roundHole.setScore(cursor.getInt(5));
+            roundHole.setPutts(cursor.getInt(6));
+            roundHole.setPenalties(cursor.getInt(7));
+            roundHole.setFairways(cursor.getInt(8));
+
+            roundHoles.add(roundHole);
+        }
+        cursor.close();
+        return roundHoles;
+    }
+
+    /**
+     * Get a list of RoundHoles given a subround and a player number
+     * @param subRound
+     * @param pnum
+     * @return
+     */
+    public List<RoundHole> readListofRoundHoleRoundPlayerNumber(SubRound subRound, long pnum){
+        if (subRound.getID() < 0 || pnum < 0){
+            throw new RuntimeException("RoundID or playerNumber not set in readListofRoundHoleRoundPlayerNumber()");
+        }
+
+        Cursor cursor = database.query(DataBaseHelper.ROUNDHOLE_TABLE,
+                new String[]{DataBaseHelper.ROUNDHOLEID_COLUMN,
+                        DataBaseHelper.SUBROUNDID_COLUMN,
+                        DataBaseHelper.COURSEHOLEID_COLUMN,
+                        DataBaseHelper.PLAYERID_COLUMN,
+                        DataBaseHelper.PLAYERNUMBER_COLUMN,
+                        DataBaseHelper.SCORE_COLUMN,
+                        DataBaseHelper.PUTTS_COLUMN,
+                        DataBaseHelper.PENALTIES_COLUMN,
+                        DataBaseHelper.FAIRWAYS_COLUMN},
+                WHERE_SUBROUNDID_EQUALS + " AND " + WHERE_PLAYERNUMBER_EQUALS,
+                new String[]{String.valueOf(subRound.getID()),String.valueOf(pnum)},
+                null, null, null, null);
+
+        List<RoundHole> roundHoles = new ArrayList<RoundHole>();
+        while (cursor.moveToNext()) {
+            RoundHole roundHole = new RoundHole();
+            roundHole.setID(cursor.getLong(0));
+            SubRound roundnew = new SubRound();
+            roundnew.setID(cursor.getLong(1));
+            roundHole.setSubRoundID(roundnew);
+            CourseHole courseHole = new CourseHole();
+            courseHole.setID(cursor.getLong(2));
+            roundHole.setCourseHoleID(courseHole);
+            Player playernew = new Player();
+            playernew.setID(cursor.getLong(3));
+            roundHole.setPlayerID(playernew);
+            roundHole.setPlayerNumber(cursor.getLong(4));
+            roundHole.setScore(cursor.getInt(5));
+            roundHole.setPutts(cursor.getInt(6));
+            roundHole.setPenalties(cursor.getInt(7));
+            roundHole.setFairways(cursor.getInt(8));
 
             roundHoles.add(roundHole);
         }

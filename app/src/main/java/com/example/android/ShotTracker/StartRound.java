@@ -2902,6 +2902,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
                         roundHole.setScore(playerScore);
                         roundHole.setSubRoundID(subRound);
                         roundHole.setPlayerID(player);
+                        roundHole.setPlayerNumber((long)x);
                         roundHole.setCourseHoleID(courseHoles.get(y - 1));
 
                         roundHole.setID(roundHoleDAO.createRoundHole(roundHole));

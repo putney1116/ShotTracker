@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
+import com.example.android.ShotTracker.db.DAOUtilities;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.RoundDAO;
 import com.example.android.ShotTracker.db.RoundHoleDAO;
@@ -29,6 +30,8 @@ import com.example.android.ShotTracker.objects.SubRound;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class PastRoundScorecard extends Activity implements OnClickListener{
 	
@@ -149,41 +152,18 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
         RoundHoleDAO roundHoleDAO = new RoundHoleDAO(this);
         CourseHoleDAO courseHoleDAO = new CourseHoleDAO(this);
         PlayerDAO playerDAO = new PlayerDAO(this);
+        DAOUtilities daoUtilities = new DAOUtilities(this);
 
-        //\todo Get unique player list here, might want to be for each unique player number, add that player to the list to account for comments below
-        //Issue with just unique player list is if the same player wants to have their name twice. We currently have no way to account for this
-        //We could solve this by adding a player number column to the round hole. it would be 1 - 4.
-        //Also, would make sure players stay in the same order when viewed in past rounds as they were when originally played
-        List <Player> players = new ArrayList<Player>();
-        Long id = playerDAO.readIDFromName("Darren");
-        Player player1 = new Player();
-        player1.setID(id);
-        player1 = playerDAO.readPlayer(player1);
-        players.add(player1);
-        id = playerDAO.readIDFromName("Eric Putney");
-        player1 = new Player();
-        player1.setID(id);
-        player1 = playerDAO.readPlayer(player1);
-        players.add(player1);
-        id = playerDAO.readIDFromName("Erik Jensen");
-        player1 = new Player();
-        player1.setID(id);
-        player1 = playerDAO.readPlayer(player1);
-        players.add(player1);
-        id = playerDAO.readIDFromName("Justin");
-        player1 = new Player();
-        player1.setID(id);
-        player1 = playerDAO.readPlayer(player1);
-        players.add(player1);
+        TreeMap<Long, Player> playerMap = daoUtilities.getUniquePlayerListFromRound(round);
 
-        numberOfPlayers = players.size();
+        numberOfPlayers = playerMap.size();
 
         int player_number = 0;
 
-        for ( Player player : players) {
+        for (Map.Entry<Long, Player> entry : playerMap.entrySet() ) {
             player_number++;
 
-            playerName[player_number] = player.getName();
+            playerName[player_number] = entry.getValue().getName();
 
 			int roundCounter = 0;
 
@@ -191,7 +171,7 @@ public class PastRoundScorecard extends Activity implements OnClickListener{
 
 				roundCounter++;
 
-                List <RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRoundPlayer(subRound, player);
+                List <RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRoundPlayerNumber(subRound, entry.getKey());
 
                 for (RoundHole roundHole : roundHoles){
 
