@@ -1,13 +1,14 @@
 package com.example.android.ShotTracker;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.example.android.ShotTracker.objects.Shot;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 public class ViewEditCurrentRound extends com.google.android.maps.MapActivity implements View.OnClickListener, GoogleMap.OnMapClickListener {
     private Context contextIn;
+    private Activity activityIn;
 
 
     private GoogleMap map;
@@ -32,8 +34,9 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
     //0: Select Shot start; 1: Select shot end
     private int currentHole = 0;
 
-    public ViewEditCurrentRound(Context context){
+    public ViewEditCurrentRound(Context context, Activity activity){
         contextIn = context;
+        activityIn = activity;
 
     }
     public List[] ViewEditCurrentRoundMain(List[] shotList, double[][][] greenLocations, double[][] teeLocations, int currentHole, int[] holeNumberText, boolean eighteenHoleRound){
@@ -42,18 +45,26 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
         //teeLocations[latlng][hole number - same weirdness with indices as greenlocations]
         //When assigning something to shotTableOut(1), type must be List<Shot>
         //Going to need go use List methods to access indicies of arrays, both by hole and by shot within each hole
-        setContentView(R.layout.vieweditcurrentround);
+        Log.d("Test", "This is working2");
+        activityIn.setContentView(R.layout.vieweditcurrentround);
+        Log.d("Test", "This is working3");
         initializeHoleSpinner(holeNumberText, eighteenHoleRound);
         initializeAddShotButton();
         initializeMap();
         populateMap(currentHole);
 
+        //Justin you are going to want to move this to a finish button somewhere. We might have to
+        // re-think how to get the data back to me because you need to stay in this class in order
+        // to wait for user clicks...I think, we need to discuss this
         return shotList;
     }
 
     public void initializeHoleSpinner(int[] holeNumberText, boolean eighteenHoleRound){
-        Spinner holeSpinner = (Spinner) findViewById(R.id.vieweditcurrentroundholespinner);
+        Log.d("Test", "This is working");
+        Spinner holeSpinner = (Spinner) activityIn.findViewById(R.id.vieweditcurrentroundholespinner);
+        Log.d("Test", "This is working4");
         ArrayAdapter<String> adapter;
+
         //\todo set adapter to string list of hole numbers being played in current round
         String[] textHoleNumbers = null;
         if(eighteenHoleRound){
@@ -68,17 +79,17 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
                 textHoleNumbers[x-1] = "Hole " + Integer.toString(holeNumberText[x]);
             }
         }
-        adapter = new ArrayAdapter<String>(ViewEditCurrentRound.this, android.R.layout.simple_spinner_item, textHoleNumbers);
+        adapter = new ArrayAdapter<String>(contextIn, android.R.layout.simple_spinner_item, textHoleNumbers);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holeSpinner.setAdapter(adapter);
 
         holeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 populateMap(pos + 1);
-                if(pos+1 != currentHole)
+                if (pos + 1 != currentHole)
                     addShotState = 0;
 
-                currentHole = pos+1;
+                currentHole = pos + 1;
 
             }
 
@@ -121,7 +132,7 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
 
     public void populateMap(int currentHoleNumber){
 
-        map.clear();
+        //map.clear();
 
     }
 
