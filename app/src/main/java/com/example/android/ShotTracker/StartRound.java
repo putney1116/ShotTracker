@@ -201,8 +201,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	//Initializes the tab controller
     	tabSetup();
 
-		//Initializes the EditRoundButton
-		EditRoundButtonInitializer();
+        EditRoundButtonInitializer();
     }
 	
 	//Loads the player names and course information
@@ -3197,7 +3196,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 		editRoundButton = (Button) findViewById(R.id.caddyEditRoundButton);
 
-		viewEditCurrentRound = new ViewEditCurrentRound(this);
+		viewEditCurrentRound = new ViewEditCurrentRound(this, this);
 
 		editRoundButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -3206,7 +3205,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					shotArray = viewEditCurrentRound.ViewEditCurrentRoundMain(shotArray, greenLocations, teeLocations);
+					shotArray = viewEditCurrentRound.ViewEditCurrentRoundMain(shotArray, greenLocations, teeLocations, holeNumber, holeNumberText, eighteenHoleRound);
 
 				}catch(Exception e) {
 				}
