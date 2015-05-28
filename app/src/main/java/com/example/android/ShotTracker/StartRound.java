@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
@@ -22,6 +23,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -157,10 +162,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     private Course course = null;
     private List<SubCourse> subCourses = null;
 
-	ViewEditCurrentRound viewEditCurrentRound = null;
-	List[] shotArray = null;
-	Button editRoundButton = null;
-
 	private boolean eighteenHoleRound = true;
     
 	public void onCreate(Bundle savedInstanceState) {
@@ -201,8 +202,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	//Initializes the tab controller
     	tabSetup();
 
-		//Initializes the EditRoundButton
-		EditRoundButtonInitializer();
+		//Initializes the caddy screen
+		CaddyScreenInitializer();
     }
 	
 	//Loads the player names and course information
@@ -403,52 +404,52 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			}
     	});
     	
-    	minusButton.setOnClickListener(new OnClickListener() { 
+    	minusButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try{
+				try {
 					//Sets the vibrate time
 					vibe.vibrate(15);
-					
+
 					//Decreases the active player's score if the score is not already 0
-					if(holeScore[playerNumber][holeNumber]!=0){
+					if (holeScore[playerNumber][holeNumber] != 0) {
 						holeScore[playerNumber][holeNumber]--;
-						
+
 						//Displays the decreased number
-						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));  
-						
+						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
 						//Loads the correct view from the scorecard tab
-						setTextViewHoleNumber(playerNumber,holeNumber);
-						
+						setTextViewHoleNumber(playerNumber, holeNumber);
+
 						//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
 						//If so, the scorecard display is updated to show the change in score
-						if(holeNumber<10){
-							if(frontActive){
-								if(holeScore[playerNumber][holeNumber]==0)
-				    				scoreEntryScorecard.setText("");
-				    			else				
-				    				scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
-								
+						if (holeNumber < 10) {
+							if (frontActive) {
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
 								updateScorecardTotals(playerNumber);
 							}
 						}
 						//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
 						//If so, the scorecard display is updated to show the change in score
-						else{
-							if(!frontActive){
-								if(holeScore[playerNumber][holeNumber]==0)
-				    				scoreEntryScorecard.setText("");
-				    			else				
-				    				scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
-								
+						else {
+							if (!frontActive) {
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
 								updateScorecardTotals(playerNumber);
 							}
 						}
 					}
-				}catch(Exception e) {
+				} catch (Exception e) {
 				}
 			}
-    	});
+		});
     	
     	finishButton.setOnClickListener(new OnClickListener() { 
 			@Override
@@ -2296,6 +2297,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    	   					//Sets the maps location if the map view tab is selected
 	    	   					setMapLocation();
 	    	   				}
+							else{
+								if(tabHost.getCurrentTab()==3){
+									//Sets the hole number if the caddy tab is selected
+									CaddyScreenFrontHoleSwitcher();
+								}
+							}
 	    	   			}
     	    	   	}	
     	    	   	
@@ -2784,11 +2791,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
          
         //Sets when the gps location should be updated
         locationManager.requestLocationUpdates(
-        		LocationManager.GPS_PROVIDER,
-                MINIMUM_TIME_BETWEEN_UPDATES,
-                MINIMUM_DISTANCE_CHANGE_FOR_UPDATES,
-                gpsClass
-        );
+				LocationManager.GPS_PROVIDER,
+				MINIMUM_TIME_BETWEEN_UPDATES,
+				MINIMUM_DISTANCE_CHANGE_FOR_UPDATES,
+				gpsClass
+		);
     }
 	
 	//Shows the save round confirmation dialog if the back button is pressed
@@ -2985,6 +2992,34 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				gpsStatusPicture.setImageResource(R.drawable.gpsstatusgood);
 			else
 				gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);
+
+			//Sets the previous shot and next shot location text bars
+			greenDistance = (TextView) findViewById(R.id.caddyMainSectionDistanceToPinText);
+			if(targetNotPin){
+				distance = (int)Math.round(location.distanceTo(targetLocation) * 1.09361);
+				greenDistance.setText("Distance to Map Target: " + distance + " yds");
+			}
+			else {
+				greenDistance.setText("Distance to Middle of Green: " + middleDistance + " yds");
+			}
+
+			greenDistance = (TextView) findViewById(R.id.caddyMainSectionPreviousShoText);
+			if(initialLocationRecorded){
+				distance = (int) Math.round(location.distanceTo(shotStartLocation) * 1.09361);
+				greenDistance.setText("Previous Shot Distance: " + distance + " yds");
+			}
+			else {
+				greenDistance.setText("");
+			}
+
+			greenDistance = (TextView) findViewById(R.id.caddyBottomSectionTitleText);
+			if(initialLocationRecorded){
+				distance = (int) Math.round(location.distanceTo(shotStartLocation) * 1.09361);
+				greenDistance.setText("Past Shot - " + distance + " yds");
+			}
+			else {
+				greenDistance.setText("Next Shot");
+			}
 		}
  
 		//Displays the gps status indicator based on if the current location exists
@@ -3128,63 +3163,153 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	}
 	
 	@Override
-	public void onMapClick(LatLng point){		
+	public void onMapClick(LatLng point) {
 		//Sets the vibrate time
 		vibe.vibrate(15);
-		
-		if(mapClickMarker!=null){
+
+		if (mapClickMarker != null) {
 			mapPolyline.remove();
 			mapClickMarker.remove();
 		}
-		
+
 		tapLocation.setLatitude(point.latitude);
 		tapLocation.setLongitude(point.longitude);
-		
-		distance = (int)Math.round(tapLocation.distanceTo(playerLocation) * 1.09361);
-		middleDistance = (int)Math.round(tapLocation.distanceTo(greenLocation) * 1.09361);
-		
+
+		distance = (int) Math.round(tapLocation.distanceTo(playerLocation) * 1.09361);
+		middleDistance = (int) Math.round(tapLocation.distanceTo(greenLocation) * 1.09361);
+
 		mapClickMarker = map.addMarker(new MarkerOptions()
-		.position(point)
-		.title(distance +" yds away")
-    	.snippet(middleDistance + " yds to pin")
-    	.icon(BitmapDescriptorFactory
-        .fromResource(R.drawable.golfball)));
-		
+				.position(point)
+				.title(distance + " yds away")
+				.snippet(middleDistance + " yds to pin")
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.golfball)));
+
 		mapClickMarker.showInfoWindow();
-		
+
 		mapPolyline = map.addPolyline(new PolylineOptions()
-	    .add(new LatLng(lat[0],lng[0]))
-	    .add(new LatLng(point.latitude, point.longitude))
-	    .add(new LatLng(lat[1],lng[1]))
-	    .color(Color.GRAY)
-	    .width(5));
-		
-		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-			public void onInfoWindowClick(Marker marker){
+				.add(new LatLng(lat[0], lng[0]))
+				.add(new LatLng(point.latitude, point.longitude))
+				.add(new LatLng(lat[1], lng[1]))
+				.color(Color.GRAY)
+				.width(5));
+
+		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			public void onInfoWindowClick(Marker marker) {
 				//Sets the vibrate time
 				vibe.vibrate(15);
-				
+
 				marker.hideInfoWindow();
 			}
 		});
-		
-		map.setOnMarkerClickListener(new OnMarkerClickListener(){
-			public boolean onMarkerClick(Marker marker){
+
+		map.setOnMarkerClickListener(new OnMarkerClickListener() {
+			public boolean onMarkerClick(Marker marker) {
 				//Sets the vibrate time
 				vibe.vibrate(15);
-				
-				if(!marker.equals(mapClickMarker))
+
+				if (!marker.equals(mapClickMarker))
 					marker.showInfoWindow();
-					
+
 				mapClickMarker.remove();
 				mapPolyline.remove();
-				
+
 				return true;
 			}
 		});
 	}
 
-	//\todo Add array of length 18 made up of a list of shots
+	private ViewEditCurrentRound viewEditCurrentRound = null;
+
+	private List[] shotArray = null;
+	private Button editRoundButton = null;
+	private Button changeTargetButton = null;
+	private Button caddyPenaltyButton = null;
+	private Button recordLocationButton = null;
+	private Button countDistanceButton = null;
+	private Button selectClubButton = null;
+	private Button selectResultButton = null;
+	private Button selectLieButton = null;
+	private Button middleClubButton = null;
+	private Button leftClubButton = null;
+	private Button rightClubButton = null;
+	private Button farRightClubButton = null;
+	private Button farLeftClubButton = null;
+	private TextView caddyTitleBarText = null;
+	private TextView caddyHoleNumberText = null;
+	private boolean targetNotPin = false;
+	private boolean initialLocationRecorded = false;
+	private Location targetLocation = null;
+	private Location shotStartLocation = null;
+	private int request_code = 1;
+
+	private List<RoundHole> roundHoles = new ArrayList<RoundHole>();
+
+	//Initialize Caddy Screen
+	private void CaddyScreenInitializer(){
+		//Set the title bar to the course and subcourse name
+		caddyTitleBarText = (TextView) findViewById(R.id.caddyCourseTitle);
+		String subCourseName = subCourses.get(0).getName();
+		caddyTitleBarText.setText(courseName + " - " + subCourseName);
+
+		//Set the hole number to 1
+		caddyHoleNumberText = (TextView) findViewById(R.id.caddyHoleNumber);
+		caddyHoleNumberText.setText("Hole " + holeNumber);
+
+		//Initializes the EditRoundButton
+		EditRoundButtonInitializer();
+
+		//Initializes the ChangeTargetButton
+		ChangeTargetButtonInitializer();
+
+		//Initialize the title bar text
+		CaddyScreenFrontHoleSwitcher();
+
+		//Initialze the CaddyPenaltyButton
+		CaddyPenaltyButtonInitializer();
+
+		//Initialze the RecordLocationButton
+		CaddyRecordLocationButtonInitializer();
+
+		//Initialze the CountDistanceButton
+		CaddyCountDistanceButtonInitializer();
+
+		//Initialze the SelectClubButton
+		CaddySelectClubButtonInitializer();
+
+		//Initialze the SelectClubButton
+		CaddySelectResultButtonInitializer();
+
+		//Initialze the SelectClubButton
+		CaddySelectLieButtonInitializer();
+
+		//Initialize the LeftClubButton
+		CaddyLeftClubButtonInitializer();
+
+		//Initialize the RightClubButton
+		CaddyRightClubButtonInitializer();
+
+		//Initialize the MiddleClubButton
+		CaddyMiddleClubButtonInitializer();
+	}
+
+	//Initialzes the Change Target Button
+	private void ChangeTargetButtonInitializer(){
+		changeTargetButton = (Button) findViewById(R.id.caddyViewMapButton);
+
+		changeTargetButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo call Jensens class for displaying the map and changing the target
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
 
 	//Initializes the View/Edit Round Button
 	private void EditRoundButtonInitializer(){
@@ -3195,23 +3320,564 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			shotArray[x] = new ArrayList<Shot>();
 		}
 
+
+
 		editRoundButton = (Button) findViewById(R.id.caddyEditRoundButton);
 
-		viewEditCurrentRound = new ViewEditCurrentRound(this);
+		viewEditCurrentRound = new ViewEditCurrentRound(this, this);
 
 		editRoundButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try{
+				try {
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					shotArray = viewEditCurrentRound.ViewEditCurrentRoundMain(shotArray, greenLocations, teeLocations);
+					Log.d("Test", "Switching classes...");
 
-				}catch(Exception e) {
+					/*//\todo change all serializable objects to parcelable objects if slow
+					Intent myIntent = new Intent(v.getContext(), ViewEditCurrentRound.class);
+					//\todo Make sure data passing is correct. Might have to implement serializable clas
+					myIntent.putExtra("Round Holes", (Serializable)roundHoles);
+					myIntent.putExtra("Green Locations", greenLocations);
+					myIntent.putExtra("Tee Locations", teeLocations);
+					myIntent.putExtra("Hole Number", holeNumber);
+					myIntent.putExtra("Hole Number Text", holeNumberText);
+					myIntent.putExtra("Eighteen", eighteenHoleRound);
+					myIntent.putExtra("Player Name", playerName[1]);
+
+					//The activity is started
+					startActivityForResult(myIntent, request_code);*/
+
+					shotArray = viewEditCurrentRound.ViewEditCurrentRoundMain(shotArray, greenLocations, teeLocations, holeNumber, holeNumberText, eighteenHoleRound);
+
+					//\todo reset from justin's xml here by calling all initializer methods
+				} catch (Exception e) {
 				}
 			}
 		});
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Check which request we're responding to
+		if (requestCode == request_code) {
+			// Make sure the request was successful
+			if (resultCode == RESULT_OK) {
+				roundHoles = (List<RoundHole>) data.getSerializableExtra("Round Hole List");
+			}
+		}
+	}
+
+	//Initializes the Penalty Round Button
+	private void CaddyPenaltyButtonInitializer(){
+
+		caddyPenaltyButton = (Button) findViewById(R.id.caddyPenaltyButton);
+
+		caddyPenaltyButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo implement keeping track of penalty's and do a +1 here
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Record Location Round Button
+	private void CaddyRecordLocationButtonInitializer(){
+
+		recordLocationButton = (Button) findViewById(R.id.caddyRecordLocationButton);
+
+		recordLocationButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo implement record location button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Count Distance Button
+	private void CaddyCountDistanceButtonInitializer(){
+
+		countDistanceButton = (Button) findViewById(R.id.caddyCountDistanceButton);
+
+		countDistanceButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo implement the count distance button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Select Club Button
+	private void CaddySelectClubButtonInitializer(){
+
+		selectClubButton = (Button) findViewById(R.id.caddyClubButton);
+
+		selectClubButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo implement club button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Select Result Button
+	private void CaddySelectResultButtonInitializer(){
+
+		selectResultButton = (Button) findViewById(R.id.caddyResultButton);
+
+		selectResultButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo implement result button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Select Lie Button
+	private void CaddySelectLieButtonInitializer(){
+
+		selectLieButton = (Button) findViewById(R.id.caddyLieButton);
+
+		selectLieButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//\todo implement the select lie button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Left Club Button
+	private void CaddyLeftClubButtonInitializer(){
+
+		rightClubButton = (Button) findViewById(R.id.caddyRightClubButton);
+		leftClubButton = (Button) findViewById(R.id.caddyLeftClubButton);
+		middleClubButton = (Button) findViewById(R.id.caddyMiddleClubButton);
+		farRightClubButton = (Button) findViewById(R.id.caddyFarRightClubButton);
+		farLeftClubButton = (Button) findViewById(R.id.caddyFarLeftClubButton);
+
+		leftClubButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					int toLocation[] = new int[2];
+					int fromLocation[] = new int[2];
+					middleClubButton.getLocationInWindow(toLocation);
+					leftClubButton.getLocationInWindow(fromLocation);
+
+					int xMove = toLocation[0]-fromLocation[0];
+					int yMove = toLocation[1]-fromLocation[1];
+
+					int toSize[] = new int[2];
+					int fromSize[] = new int[2];
+
+					toSize[0] = middleClubButton.getWidth();
+					toSize[1] = middleClubButton.getHeight();
+					fromSize[0] = leftClubButton.getWidth();
+					fromSize[1] = leftClubButton.getHeight();
+
+					float xChange = (float)toSize[0] / (float)fromSize[0];
+					float yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					leftClubButton.startAnimation(animationSet);
+
+
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					rightClubButton.getLocationInWindow(toLocation);
+					middleClubButton.getLocationInWindow(fromLocation);
+
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
+
+					toSize[0] = rightClubButton.getWidth();
+					toSize[1] = rightClubButton.getHeight();
+					fromSize[0] = middleClubButton.getWidth();
+					fromSize[1] = middleClubButton.getHeight();
+
+					xChange = (float)toSize[0] / (float)fromSize[0];
+					yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					middleClubButton.startAnimation(animationSet);
+
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					leftClubButton.getLocationInWindow(toLocation);
+					farLeftClubButton.getLocationInWindow(fromLocation);
+
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
+
+					toSize[0] = leftClubButton.getWidth();
+					toSize[1] = leftClubButton.getHeight();
+					fromSize[0] = farLeftClubButton.getWidth();
+					fromSize[1] = farLeftClubButton.getHeight();
+
+					xChange = (float)toSize[0] / (float)fromSize[0];
+					yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					farLeftClubButton.startAnimation(animationSet);
+
+
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					farRightClubButton.getLocationInWindow(toLocation);
+					rightClubButton.getLocationInWindow(fromLocation);
+
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
+
+					toSize[0] = farRightClubButton.getWidth();
+					toSize[1] = farRightClubButton.getHeight();
+					fromSize[0] = rightClubButton.getWidth();
+					fromSize[1] = rightClubButton.getHeight();
+
+					xChange = (float)toSize[0] / (float)fromSize[0];
+					yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					animationSet.setAnimationListener(new Animation.AnimationListener() {
+						@Override
+						public void onAnimationEnd(Animation animation) {
+						}
+
+						@Override
+						public void onAnimationRepeat(Animation animation) {
+						}
+
+						@Override
+						public void onAnimationStart(Animation animation) {
+							farRightClubButton.clearAnimation();
+						}
+					});
+					rightClubButton.startAnimation(animationSet);
+
+					//Thread.sleep(1000);
+
+					//farRightClubButton.setVisibility(View.GONE);
+
+
+					leftClubButton.setText("4");
+					//Animation slideOutRight = AnimationUtils.makeOutAnimation(StartRound.this, true);
+					//rightClubButton.startAnimation(slideOutRight);
+
+					//\todo implement the left club button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the Right Club Button
+	private void CaddyRightClubButtonInitializer(){
+
+
+
+		rightClubButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					int toLocation[] = new int[2];
+					int fromLocation[] = new int[2];
+					leftClubButton.getLocationInWindow(toLocation);
+					middleClubButton.getLocationInWindow(fromLocation);
+
+					int xMove = toLocation[0]-fromLocation[0];
+					int yMove = toLocation[1]-fromLocation[1];
+
+					int toSize[] = new int[2];
+					int fromSize[] = new int[2];
+
+					toSize[0] = leftClubButton.getWidth();
+					toSize[1] = leftClubButton.getHeight();
+					fromSize[0] = middleClubButton.getWidth();
+					fromSize[1] = middleClubButton.getHeight();
+
+					float xChange = (float)toSize[0] / (float)fromSize[0];
+					float yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					middleClubButton.startAnimation(animationSet);
+
+
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					middleClubButton.getLocationInWindow(toLocation);
+					rightClubButton.getLocationInWindow(fromLocation);
+
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
+
+					toSize[0] = middleClubButton.getWidth();
+					toSize[1] = middleClubButton.getHeight();
+					fromSize[0] = rightClubButton.getWidth();
+					fromSize[1] = rightClubButton.getHeight();
+
+					xChange = (float)toSize[0] / (float)fromSize[0];
+					yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					rightClubButton.startAnimation(animationSet);
+
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					farLeftClubButton.getLocationInWindow(toLocation);
+					leftClubButton.getLocationInWindow(fromLocation);
+
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
+
+					toSize[0] = farLeftClubButton.getWidth();
+					toSize[1] = farLeftClubButton.getHeight();
+					fromSize[0] = leftClubButton.getWidth();
+					fromSize[1] = leftClubButton.getHeight();
+
+					xChange = (float)toSize[0] / (float)fromSize[0];
+					yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					leftClubButton.startAnimation(animationSet);
+
+
+
+
+					animationSet = new AnimationSet(true);
+					animationSet.setFillAfter(true);
+
+					rightClubButton.getLocationInWindow(toLocation);
+					farRightClubButton.getLocationInWindow(fromLocation);
+
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
+
+					toSize[0] = rightClubButton.getWidth();
+					toSize[1] = rightClubButton.getHeight();
+					fromSize[0] = farRightClubButton.getWidth();
+					fromSize[1] = farRightClubButton.getHeight();
+
+					xChange = (float)toSize[0] / (float)fromSize[0];
+					yChange = (float)toSize[1] / (float)fromSize[1];
+
+					xMove = (int)((float)xMove / xChange);
+					yMove = (int)((float)yMove / yChange);
+
+					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+					translateAnimation.setDuration(1000);
+					translateAnimation.setFillAfter(true);
+					animationSet.addAnimation(translateAnimation);
+
+					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+					scaleAnimation.setDuration(1000);
+					animationSet.addAnimation(scaleAnimation);
+
+					animationSet.setAnimationListener(new Animation.AnimationListener() {
+						@Override
+						public void onAnimationEnd(Animation animation) {
+						}
+
+						@Override
+						public void onAnimationRepeat(Animation animation) {
+						}
+
+						@Override
+						public void onAnimationStart(Animation animation) {
+							farLeftClubButton.clearAnimation();
+						}
+					});
+					farRightClubButton.startAnimation(animationSet);
+
+					//\todo implement the right club button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	private TranslateAnimation translateAnimation = null;
+	private AnimationSet animationSet = null;
+	private ScaleAnimation scaleAnimation = null;
+
+	//Initializes the Middle Club Button
+	private void CaddyMiddleClubButtonInitializer(){
+
+
+
+
+
+		middleClubButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+
+					//\todo implement the middle club button
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Caddy Screen switching from front to back
+	private void CaddyScreenFrontHoleSwitcher(){
+
+		//Set the hole number to the current hole
+		caddyHoleNumberText.setText("Hole " + holeNumberText[holeNumber]);
+
+		//\todo handle if only 9 holes
+		if(holeNumber<10) {
+			String subCourseName = subCourses.get(0).getName();
+			caddyTitleBarText.setText(courseName + " - " + subCourseName);
+		}
+		else{
+			String subCourseName = subCourses.get(1).getName();
+			caddyTitleBarText.setText(courseName + " - " + subCourseName);
+		}
 	}
 }
 
