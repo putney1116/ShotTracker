@@ -1,7 +1,9 @@
 package com.example.android.ShotTracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +35,7 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
     private int addShotState = 0;
     //0: Select Shot start; 1: Select shot end
     private int currentHole = 0;
+    private AlertDialog.Builder deleteNode;
 
     public ViewEditCurrentRound(Context context, Activity activity){
         contextIn = context;
@@ -51,11 +54,16 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
         initializeHoleSpinner(holeNumberText, eighteenHoleRound);
         initializeAddShotButton();
         initializeMap();
+        buildNodeDeleteDialog();
         populateMap(currentHole);
 
         //Justin you are going to want to move this to a finish button somewhere. We might have to
         // re-think how to get the data back to me because you need to stay in this class in order
         // to wait for user clicks...I think, we need to discuss this
+
+        //Current thinking was to save as we go, and just use the back button to get back to the
+        //previous screen. In which case there will be a small state machine in onKeyDown, but yes
+        //this should be moved there.
         return shotList;
     }
 
@@ -85,9 +93,11 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
 
         holeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                populateMap(pos + 1);
-                if (pos + 1 != currentHole)
+
+                if (pos + 1 != currentHole) {
                     addShotState = 0;
+                    populateMap(pos + 1);
+                }
 
                 currentHole = pos + 1;
 
@@ -149,6 +159,7 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
         switch(screenState){
             case 0:
                 //if line, edit shot info
+                
                 //if node, build dialog to delete node
                 //otherwise, ignore
                 break;
@@ -169,7 +180,30 @@ public class ViewEditCurrentRound extends com.google.android.maps.MapActivity im
 
     }
 
-    @Override
+    public void buildNodeDeleteDialog(){
+        deleteNode = new AlertDialog.Builder(ViewEditCurrentRound.this);
+        deleteNode.setMessage("Delete this shot location?");
+        deleteNode.setCancelable(true);
+        deleteNode.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //delete shot location node
+
+                    }
+                }
+
+        );
+
+        deleteNode.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                }
+
+        );
+        }
+
+        @Override
     protected boolean isRouteDisplayed() {
         return false;
     }

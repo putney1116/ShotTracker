@@ -5,12 +5,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.example.android.ShotTracker.db.DataBaseHelper;
 
 public class ShotTracker extends Activity{
 		
@@ -23,6 +26,13 @@ public class ShotTracker extends Activity{
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.homescreen);
+
+		//Initializes the database
+        DataBaseHelper dbHelper;
+        SQLiteDatabase db = null;
+
+        dbHelper = new DataBaseHelper(this);
+        dbHelper.initializeDataBase();
     	
     	//Calls the method that initializes the buttons on the homescreen
     	initializeHomescreen(); 
