@@ -15,6 +15,10 @@ import java.util.List;
  */
 public class BagDAO extends ShotTrackerDBDAO {
 
+    private static final String WHERE_IDS_EQUAL = DataBaseHelper.PLAYERID_COLUMN
+            + "=? AND "
+            + DataBaseHelper.CLUBID_COLUMN + "=?";
+
     public BagDAO(Context context){ super(context); }
 
     /**
@@ -32,6 +36,24 @@ public class BagDAO extends ShotTrackerDBDAO {
         return database.insert(DataBaseHelper.BAG_TABLE, null, values);
     }
 
+    /**
+     * Delete a club from a players bag
+     * @param player
+     * @param club
+     * @return
+     */
+    public int deleteClubFromBag(Player player, Club club) {
+        // check that playerID is set, otherwise we can't delete
+        if (player.getID() < 0)
+            throw new RuntimeException("player ID not set in BagDAO.deleteClubFromBag()");
+
+        // check that clubID is set, otherwise we can't delete
+        if (club.getID() < 0)
+            throw new RuntimeException("club ID not set in BagDAO.deleteClubFromBag()");
+
+        return database.delete(DataBaseHelper.BAG_TABLE,
+                WHERE_IDS_EQUAL, new String[] {player.getID() + "", club.getID() + ""});
+    }
 
     /**
      * read all clubs in a players bag

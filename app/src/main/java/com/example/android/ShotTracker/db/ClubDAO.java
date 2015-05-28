@@ -58,7 +58,7 @@ public class ClubDAO extends ShotTrackerDBDAO {
 
             clubs.add(club);
         }
-
+        cursor.close();
         return clubs;
     }
 

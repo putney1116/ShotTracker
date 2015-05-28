@@ -1,10 +1,10 @@
 package com.example.android.ShotTracker;
 
-// D. McGlinchey - First comment!!
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,7 +23,7 @@ import com.example.android.ShotTracker.objects.Player;
 import java.util.List;
 
 public class Settings extends Activity{
-//hello
+
 	private AlertDialog.Builder builder;
 
     private String playerDefault = null;
@@ -34,123 +34,49 @@ public class Settings extends Activity{
 		super.onCreate(savedInstanceState);
 	    setContentView(R.layout.settings);
 	    	
-	    //Initializes the dialog box that is displayed when the back button is pressed
-	    buildDialog();
-	    
-	    //Sets the hints in the editable text boxes
-	    setDefaultPlayerSpinner();
-	    
-	    //Initializes the button that saves the settings
-	    saveSettingsButtonInitializer();
+        //Initializes the button to manage players
+        managePlayersButtonInitializer();
+
+        //Initializes the button to manage players bag of clubs
+        manageBagButtonInitializer();
+
 	}
 
-    private void saveSettings() {
-        //First get the current default player
-        PlayerDAO playerDAO = new PlayerDAO(this);
-        Player currentdef = playerDAO.readUserDefaultPlayer();
 
-        //Test if if the selected name is different
-        if (currentdef.getName() != playerDefault && playerDefault != null) {
-            // Get the newly selected player
-            long pID = playerDAO.readIDFromName(playerDefault);
-            if (pID > 0) {
-                Player newdef = new Player();
-                newdef.setID(pID);
-                newdef = playerDAO.readPlayer(newdef);
+    //Opens new activity to manage the clubs in a players bag
+    private void managePlayersButtonInitializer() {
+        final Button managePlayersButton = (Button)findViewById(R.id.manageplayers);
 
-                // unset the old default and update
-                currentdef.setUserDefault(false);
-                playerDAO.update(currentdef);
+        managePlayersButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                // set the new default and update
-                newdef.setUserDefault(true);
-                playerDAO.update(newdef);
-            }
-        }
-    }
+                try{
+                    Intent myIntent = new Intent(v.getContext(), ManagePlayers.class);
+                    startActivity(myIntent);
 
-	//Saves the settings and returns to the home screen
-	private void saveSettingsButtonInitializer(){
-		final Button saveSettingsButton = (Button)findViewById(R.id.savesettingsbutton);
-		
-		saveSettingsButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                    saveSettings();
-
-	    			//Closes the present activity and returns the display to the home screen
-			        finish();
-			}
-    	});
-	}
-
-    //Sets the list of players in the spinner
-    private void setDefaultPlayerSpinner() {
-        PlayerDAO playerDAO = new PlayerDAO(this);
-        final List<String> players = playerDAO.readListofPlayerNameswDefaultFirst();
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Settings.this, android.R.layout.simple_spinner_item, players);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        //player 1
-        Spinner spinner1 = (Spinner) findViewById(R.id.defaultplayer);
-        spinner1.setAdapter(adapter);
-
-        //Sets the map location to the correct hole when the hole number is changed
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                playerDefault = players.get(pos);
-            }
-
-            public void onNothingSelected(AdapterView<?> arg0) {
+                }catch(Exception e) {
+                }
             }
         });
     }
 
+    //Opens new activity to manage the clubs in a players bag
+    private void manageBagButtonInitializer() {
+        final Button manageBagsButton = (Button)findViewById(R.id.managebag);
 
-	//If the back button is pressed, the dialog to save the settings is called if changes have been made
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            //If changes have been made, the dialog box asking for save confirmation is displayed
-            builder.show();
+        manageBagsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+                try{
+                    Intent myIntent = new Intent(v.getContext(), ManageBags.class);
+                    startActivity(myIntent);
+
+                }catch(Exception e) {
+                }
+            }
+        });
     }
-    
-    //Dialog asks the user if they would like to save the settings
-    private void buildDialog(){
-		builder = new AlertDialog.Builder(Settings.this);
-    	builder.setMessage("Would you like to save your settings?");
-    	builder.setCancelable(true);
-    	
-    	//If the user would like to save the settings
-    	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-    		public void onClick(DialogInterface dialog, int id){ 
-                saveSettings();
 
-    			//Closes the present activity and returns the display to the home screen
-    			finish();
-    		}
-    	});
-    	
-    	//If the user would not like to save the settings
-    	builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-    		public void onClick(DialogInterface dialog, int id) {
-    			//Closes the present activity and returns the display to the home screen
-    			finish();
-    	    }
-    	});
-    	
-    	//If the user would like to cancel pressing the back button
-    	builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-    		public void onClick(DialogInterface dialog, int id) {
-    			//The dialog is closed
-    			dialog.cancel();
-    	    }
-    	});
-	}
 }
