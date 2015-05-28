@@ -103,17 +103,14 @@
               android:configChanges="keyboardHidden|orientation|screenSize">
 
           </activity>
+
           <activity android:name=".ManagePlayers"
               android:screenOrientation="portrait"
               android:configChanges="keyboardHidden|orientation|screenSize">
 
           </activity>
-          <activity android:name=".ManageBags"
-              android:screenOrientation="portrait"
-              android:configChanges="keyboardHidden|orientation|screenSize">
 
-          </activity>
-          <activity android:name=".TestDatabase"
+          <activity android:name=".ManageBags"
               android:screenOrientation="portrait"
               android:configChanges="keyboardHidden|orientation|screenSize">
 
