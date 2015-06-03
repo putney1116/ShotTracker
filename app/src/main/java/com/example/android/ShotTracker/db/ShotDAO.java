@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.android.ShotTracker.objects.Club;
+import com.example.android.ShotTracker.objects.Course;
+import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.RoundHole;
 import com.example.android.ShotTracker.objects.Shot;
 
@@ -23,6 +25,9 @@ public class ShotDAO extends ShotTrackerDBDAO {
             + "=?";
 
     private static final String WHERE_CLUBID_EQUALS = DataBaseHelper.CLUBID_COLUMN
+            + "=?";
+
+    private static final String WHERE_PLAYERID_EQUALS = DataBaseHelper.PLAYERID_COLUMN
             + "=?";
 
     public ShotDAO(Context context) {
@@ -122,7 +127,7 @@ public class ShotDAO extends ShotTrackerDBDAO {
      */
     public Shot readShot(Shot shot){
         if (shot.getID() < 0){
-            throw new RuntimeException("Shot ID not set in ShotDAO::deleteShot()");
+            throw new RuntimeException("Shot ID not set in ShotDAO::readShot()");
         }
 
         Cursor cursor = database.query(DataBaseHelper.SHOT_TABLE,
@@ -156,7 +161,7 @@ public class ShotDAO extends ShotTrackerDBDAO {
 
     /**
      * returns a list of all shots
-     * @return
+     * @return List of Shot objects
      */
     public List<Shot> readListofShots(){
         List<Shot> shots = new ArrayList<Shot>();
@@ -196,11 +201,12 @@ public class ShotDAO extends ShotTrackerDBDAO {
     /**
      * returns a list of shots given a roundhole ID
      * @param roundHole
-     * @return
+     * @return List of Shot objects
      */
-    public List<Shot> readListofShotsRoundHoleID(RoundHole roundHole){
+    public List<Shot> readListofShots(RoundHole roundHole){
         if (roundHole.getID() < 0){
-            throw new RuntimeException("RoundHole ID not set in ShotDAO::readListofShotsRoundHole()");
+            throw new RuntimeException("RoundHole ID not set in "
+                    + "ShotDAO::readListofShots(RoundHole)");
         }
 
         Cursor cursor = database.query(DataBaseHelper.SHOT_TABLE,
@@ -242,11 +248,12 @@ public class ShotDAO extends ShotTrackerDBDAO {
     /**
      * returns list of shots given a club ID
      * @param club
-     * @return
+     * @return List of Shot objects
      */
-    public List<Shot> readListofShotsClubID(Club club){
+    public List<Shot> readListofShots(Club club){
         if (club.getID() < 0){
-            throw new RuntimeException("Club ID not set in ShotDAO::readListofShotsRoundHole()");
+            throw new RuntimeException("Club ID not set in "
+                    + "ShotDAO::readListofShots(Club)");
         }
 
         Cursor cursor = database.query(DataBaseHelper.SHOT_TABLE,
@@ -270,7 +277,7 @@ public class ShotDAO extends ShotTrackerDBDAO {
             RoundHole roundHole = new RoundHole();
             roundHole.setID(cursor.getLong(1));
             shot.setRoundHoleID(roundHole);
-            //I got lazy... used the passed in roundHole for its ID
+            //I got lazy... used the passed in club for its ID
             shot.setClubID(club);
             shot.setYards(cursor.getInt(3));
             shot.setShotStartLat(cursor.getDouble(4));
@@ -284,6 +291,147 @@ public class ShotDAO extends ShotTrackerDBDAO {
 
         return shots;
     }
+
+    /**
+     * Read a list of shots given a club and player
+     * @param club
+     * @param player
+     * @return List of Shot objects
+     */
+    public List<Shot> readListofShots(Club club, Player player){
+        if (club.getID() < 0){
+            throw new RuntimeException("Club ID not set in "
+                    + "ShotDAO::readListofShots(Club, Player)");
+        }
+        if (player.getID() < 0){
+            throw new RuntimeException("Player ID not set in "
+                    + "ShotDAO::readListofShots(Club, Player)");
+        }
+
+        String query = "SELECT "
+                + DataBaseHelper.SHOTID_COLUMN + ", "
+                + DataBaseHelper.ROUNDHOLEID_COLUMN + ", "
+                + DataBaseHelper.CLUBID_COLUMN + ", "
+                + DataBaseHelper.YARDS_COLUMN + ", "
+                + DataBaseHelper.SHOTSTARTLAT_COLUMN + ", "
+                + DataBaseHelper.SHOTSTARTLONG_COLUMN + ", "
+                + DataBaseHelper.SHOTENDLAT_COLUMN + ", "
+                + DataBaseHelper.SHOTENDLONG_COLUMN
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        List<Shot> shots = new ArrayList<Shot>();
+
+        while (cursor.moveToNext()){
+            Shot shot = new Shot();
+            shot.setID(cursor.getLong(0));
+            RoundHole roundHole = new RoundHole();
+            roundHole.setID(cursor.getLong(1));
+            shot.setRoundHoleID(roundHole);
+            //I got lazy... used the passed in club for its ID
+            shot.setClubID(club);
+            shot.setYards(cursor.getInt(3));
+            shot.setShotStartLat(cursor.getDouble(4));
+            shot.setShotStartLong(cursor.getDouble(5));
+            shot.setShotEndLat(cursor.getDouble(6));
+            shot.setShotEndLong(cursor.getDouble(7));
+
+            shots.add(shot);
+        }
+        cursor.close();
+
+        return shots;
+    }
+
+    /**
+     * Read a list of shots given a club, player, and course
+     * @param club
+     * @param player
+     * @param course
+     * @return List of Shot objects
+     */
+    public List<Shot> readListofShots(Club club, Player player, Course course){
+        if (club.getID() < 0){
+            throw new RuntimeException("Club ID not set in "
+                    + "ShotDAO::readListofShots(Club, Player, Course)");
+        }
+        if (player.getID() < 0){
+            throw new RuntimeException("Player ID not set in "
+                    + "ShotDAO::readListofShots(Club, Player, Course)");
+        }
+        if (course.getID() < 0){
+            throw new RuntimeException("Course ID not set in "
+                    + "ShotDAO::readListofShots(Club, Player, Course)");
+        }
+
+
+        String query = "SELECT "
+                + DataBaseHelper.SHOTID_COLUMN + ", "
+                + DataBaseHelper.ROUNDHOLEID_COLUMN + ", "
+                + DataBaseHelper.CLUBID_COLUMN + ", "
+                + DataBaseHelper.YARDS_COLUMN + ", "
+                + DataBaseHelper.SHOTSTARTLAT_COLUMN + ", "
+                + DataBaseHelper.SHOTSTARTLONG_COLUMN + ", "
+                + DataBaseHelper.SHOTENDLAT_COLUMN + ", "
+                + DataBaseHelper.SHOTENDLONG_COLUMN
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " WHERE "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "=" + course.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        List<Shot> shots = new ArrayList<Shot>();
+
+        while (cursor.moveToNext()){
+            Shot shot = new Shot();
+            shot.setID(cursor.getLong(0));
+            RoundHole roundHole = new RoundHole();
+            roundHole.setID(cursor.getLong(1));
+            shot.setRoundHoleID(roundHole);
+            //I got lazy... used the passed in club for its ID
+            shot.setClubID(club);
+            shot.setYards(cursor.getInt(3));
+            shot.setShotStartLat(cursor.getDouble(4));
+            shot.setShotStartLong(cursor.getDouble(5));
+            shot.setShotEndLat(cursor.getDouble(6));
+            shot.setShotEndLong(cursor.getDouble(7));
+
+            shots.add(shot);
+        }
+        cursor.close();
+
+        return shots;
+    }
+
+
+
+
+
+
 }
 
 

@@ -425,7 +425,7 @@ public class DAOUtilities {
             List<RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRound(subRound);
 
             for (RoundHole roundHole : roundHoles) {
-                List<Shot> shots = shotDAO.readListofShotsRoundHoleID(roundHole);
+                List<Shot> shots = shotDAO.readListofShots(roundHole);
 
                 for (Shot shot : shots) {
                     shotLinkDAO.deleteAllShotLinksByShot(shot);
