@@ -202,7 +202,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SHOTTYPE_TABLE + "("
             + SHOTTYPEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SHOTTYPE_COLUMN + " TEXT NOT NULL, "
-            + SHOTISPRE_COLIMN + " BOOLEAN NOT NULL"
+            + SHOTISPRE_COLIMN + " BOOLEAN NOT NULL DEFAULT 0"
             + ");";
 
     private static final String CREATE_SHOTLINK_TABLE = "CREATE TABLE "
