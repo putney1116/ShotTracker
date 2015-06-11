@@ -17,6 +17,9 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
     private static final String WHERE_SHOTTYPEID_EQUALS = DataBaseHelper.SHOTTYPEID_COLUMN
             + "=?";
 
+    private static final String WHERE_SHOTISPRE_EQUALS = DataBaseHelper.SHOTISPRE_COLIMN
+            + "=?";
+
     public ShotTypeDAO(Context context){ super(context);}
 
     /**
@@ -28,6 +31,7 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
         ContentValues values = new ContentValues();
 
         values.put(DataBaseHelper.SHOTTYPE_COLUMN, shotType.getType());
+        values.put(DataBaseHelper.SHOTISPRE_COLIMN, shotType.getIsPre());
 
         return database.insert(DataBaseHelper.SHOTTYPE_TABLE, null, values);
     }
@@ -45,6 +49,7 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
         ContentValues values =  new ContentValues();
 
         values.put(DataBaseHelper.SHOTTYPE_COLUMN, shotType.getType());
+        values.put(DataBaseHelper.SHOTISPRE_COLIMN, shotType.getIsPre());
 
         return database.update(DataBaseHelper.SHOTTYPE_TABLE, values,
                 WHERE_SHOTTYPEID_EQUALS,
@@ -77,7 +82,8 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
 
         Cursor cursor = database.query(DataBaseHelper.SHOTTYPE_TABLE,
                 new String[]{DataBaseHelper.SHOTTYPEID_COLUMN,
-                    DataBaseHelper.SHOTTYPE_COLUMN},
+                    DataBaseHelper.SHOTTYPE_COLUMN,
+                DataBaseHelper.SHOTISPRE_COLIMN},
                 WHERE_SHOTTYPEID_EQUALS,
                 new String[]{String.valueOf(shotType.getID())},
                 null,null,null);
@@ -88,6 +94,7 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
         }
 
         shotType.setType(cursor.getString(1));
+        shotType.setIsPre(cursor.getInt(2) == 1);
         cursor.close();
 
         return shotType;
@@ -102,13 +109,44 @@ public class ShotTypeDAO extends ShotTrackerDBDAO {
 
         Cursor cursor = database.query(DataBaseHelper.SHOTTYPE_TABLE,
                 new String[]{DataBaseHelper.SHOTTYPEID_COLUMN,
-                        DataBaseHelper.SHOTTYPE_COLUMN},
+                        DataBaseHelper.SHOTTYPE_COLUMN,
+                DataBaseHelper.SHOTISPRE_COLIMN},
                 null,null,null,null,null);
 
         while (cursor.moveToNext()){
             ShotType shotType = new ShotType();
             shotType.setID(cursor.getLong(0));
             shotType.setType(cursor.getString(1));
+            shotType.setIsPre(cursor.getInt(2) == 1);
+
+            shotTypes.add(shotType);
+        }
+        cursor.close();
+
+        return shotTypes;
+    }
+
+    /**
+     * Get a list of shotTypes for either pre shot lie (true) or post shot (false)
+     * @param isPre
+     * @return
+     */
+    public List<ShotType> readListShotTypesIsPre(boolean isPre) {
+        List<ShotType> shotTypes = new ArrayList<ShotType>();
+
+        Cursor cursor = database.query(DataBaseHelper.SHOTTYPE_TABLE,
+                new String[]{DataBaseHelper.SHOTTYPEID_COLUMN,
+                DataBaseHelper.SHOTTYPE_COLUMN,
+                DataBaseHelper.SHOTISPRE_COLIMN},
+                WHERE_SHOTISPRE_EQUALS,
+                new String[] {String.valueOf(isPre)},
+                null, null, null);
+
+        while (cursor.moveToNext()) {
+            ShotType shotType = new ShotType();
+            shotType.setID(cursor.getLong(0));
+            shotType.setType(cursor.getString(1));
+            shotType.setIsPre(cursor.getInt(2) == 1);
 
             shotTypes.add(shotType);
         }

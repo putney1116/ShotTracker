@@ -174,6 +174,8 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return players;
     }
 
+
+
     /**
      * Get the players name and handicap given an ID
      * @param player Player object. ID must be filled
@@ -237,6 +239,10 @@ public class PlayerDAO extends ShotTrackerDBDAO {
         return playerID;
     }
 
+    /**
+     * Get the default player from the DB
+     * @return
+     */
     public Player readUserDefaultPlayer() {
 
         Cursor cursor = database.query(DataBaseHelper.PLAYER_TABLE,

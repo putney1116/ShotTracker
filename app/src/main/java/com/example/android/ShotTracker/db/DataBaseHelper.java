@@ -98,6 +98,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String SHOTTYPEID_COLUMN = "ShotTypeID";
     public static final String SHOTTYPE_COLUMN = "ShotType";
+    public static final String SHOTISPRE_COLIMN = "ShotIsPre";
 
     public static final String SHOTLINKID_COLUMN = "ShotLinkID";
 
@@ -200,7 +201,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_SHOTTYPE_TABLE = "CREATE TABLE "
             + SHOTTYPE_TABLE + "("
             + SHOTTYPEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + SHOTTYPE_COLUMN + " TEXT NOT NULL"
+            + SHOTTYPE_COLUMN + " TEXT NOT NULL, "
+            + SHOTISPRE_COLIMN + " BOOLEAN NOT NULL"
             + ");";
 
     private static final String CREATE_SHOTLINK_TABLE = "CREATE TABLE "

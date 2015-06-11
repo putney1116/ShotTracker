@@ -7,6 +7,7 @@ public class ShotType {
 
     private long mID = -1;
     private String mType = "";
+    private boolean mIsPre = false;
 
     /**
      * Default Constructor
@@ -19,9 +20,10 @@ public class ShotType {
      * @param id Unique ShotType ID
      * @param type ShotType explanation
      */
-    public ShotType(long id, String type) {
+    public ShotType(long id, String type, boolean isPre) {
         this.mID = id;
         this.mType = type;
+        this.mIsPre = isPre;
     }
 
     /**
@@ -31,6 +33,16 @@ public class ShotType {
      */
     public ShotType(String type) {
         this.mType = type;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param type ShotType explanation
+     */
+    public ShotType(String type, boolean isPre) {
+        this.mType = type;
+        this.mIsPre = isPre;
     }
 
     /**
@@ -44,6 +56,8 @@ public class ShotType {
         this.mType = type;
     }
 
+    public void setIsPre(boolean isPre) { this.mIsPre = isPre; }
+
     /**
      * Getters
      */
@@ -54,5 +68,7 @@ public class ShotType {
     public String getType() {
         return this.mType;
     }
+
+    public boolean getIsPre() { return this.mIsPre; }
 
 }
