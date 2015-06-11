@@ -195,7 +195,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/addplayerbutton"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="45dp"
             android:maxLength="15"
             android:inputType="textCapWords"
             />
