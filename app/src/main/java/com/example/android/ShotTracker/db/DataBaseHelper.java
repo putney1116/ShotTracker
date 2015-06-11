@@ -98,7 +98,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String SHOTTYPEID_COLUMN = "ShotTypeID";
     public static final String SHOTTYPE_COLUMN = "ShotType";
-    public static final String SHOTISPRE_COLIMN = "ShotIsPre";
+    public static final String SHOTISPRE_COLIMN = "ShotTypeIsPre";
 
     public static final String SHOTLINKID_COLUMN = "ShotLinkID";
 
