@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.ShotTracker.db.BagDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
@@ -177,8 +178,13 @@ public class EnterPlayers extends Activity{
 
                         //Try uploading to the DB
                         PlayerDAO playerDAO = new PlayerDAO(EnterPlayers.this);
+                        BagDAO bagDAO = new BagDAO(EnterPlayers.this);
+						long pID = -1;
                         try {
-                            playerDAO.create(player);
+                            pID = playerDAO.create(player);
+                            // Add default clubs to the new players bag
+                            player.setID(pID);
+                            bagDAO.createDefaultBag(player);
                             input.setText("");
                             setPlayerSpinners(true);
 
