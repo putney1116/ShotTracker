@@ -8,6 +8,7 @@ import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class BagDAO extends ShotTrackerDBDAO {
             throw new RuntimeException("club ID not set in BagDAO.deleteClubFromBag()");
 
         return database.delete(DataBaseHelper.BAG_TABLE,
-                WHERE_IDS_EQUAL, new String[] {player.getID() + "", club.getID() + ""});
+                WHERE_IDS_EQUAL, new String[]{player.getID() + "", club.getID() + ""});
     }
 
     /**
@@ -90,5 +91,26 @@ public class BagDAO extends ShotTrackerDBDAO {
         return clubs;
     }
 
+    /**
+     * Populate a players bag with a default
+     * @param player
+     * @return
+     */
+    public long createDefaultBag(Player player) {
+        List<Integer> clubIDs = Arrays.asList(
+                1, 3, 5, //woods
+                15, 16, 17, 18, 19, 20, 21, //irons
+                22, 24, 25, //wedges
+                26); //putter
+
+        long retval = -1;
+        for (long clubID : clubIDs) {
+            Club club = new Club();
+            club.setID(clubID);
+            retval = createClubToBag(player, club);
+        }
+
+        return retval;
+    }
 
 }
