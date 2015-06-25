@@ -88,6 +88,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String PUTTS_COLUMN = "Putts";
     public static final String PENALTIES_COLUMN = "Penalties";
     public static final String FAIRWAYS_COLUMN = "Fairways";
+    public static final String CHIPS_COLUMN = "Chips";
+    public static final String GIR_COLUMN = "GiR";
 
     public static final String SHOTID_COLUMN = "ShotID";
     public static final String YARDS_COLUMN = "Yards";
@@ -183,7 +185,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SCORE_COLUMN + " INT NOT NULL, "
             + PUTTS_COLUMN + " INT, "
             + PENALTIES_COLUMN + " INT, "
-            + FAIRWAYS_COLUMN + " INT"
+            + FAIRWAYS_COLUMN + " INT DEFAULT 0, "
+            + CHIPS_COLUMN + " INT, "
+            + GIR_COLUMN + " BOOLEAN NOT NULL DEFAULT 0"
             + ");";
 
     private static final String CREATE_SHOT_TABLE = "CREATE TABLE "

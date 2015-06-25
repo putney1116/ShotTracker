@@ -3,6 +3,7 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.Player;
@@ -56,13 +57,17 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         if (roundhole.getPutts() > 0) {
             values.put(DataBaseHelper.PUTTS_COLUMN, roundhole.getPutts());
         }
-        //\todo change score_column to penalties
         if (roundhole.getPenalties() > 0) {
-            values.put(DataBaseHelper.SCORE_COLUMN, roundhole.getPenalties());
+            values.put(DataBaseHelper.PENALTIES_COLUMN, roundhole.getPenalties());
         }
-        if (roundhole.getFairways() > 0) {
-            values.put(DataBaseHelper.PUTTS_COLUMN, roundhole.getFairways());
+
+        values.put(DataBaseHelper.PUTTS_COLUMN, roundhole.getFairways());
+
+        if (roundhole.getChips() > 0) {
+            values.put(DataBaseHelper.CHIPS_COLUMN, roundhole.getChips());
         }
+
+        values.put(DataBaseHelper.GIR_COLUMN, roundhole.getGiR());
 
         return database.insert(DataBaseHelper.ROUNDHOLE_TABLE, null, values);
     }
@@ -92,9 +97,14 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
         if (roundhole.getPenalties() > 0) {
             values.put(DataBaseHelper.SCORE_COLUMN, roundhole.getPenalties());
         }
-        if (roundhole.getFairways() > 0) {
-            values.put(DataBaseHelper.PUTTS_COLUMN, roundhole.getFairways());
+
+        values.put(DataBaseHelper.FAIRWAYS_COLUMN, roundhole.getFairways());
+
+        if (roundhole.getChips() > 0) {
+            values.put(DataBaseHelper.CHIPS_COLUMN, roundhole.getChips());
         }
+
+        values.put(DataBaseHelper.GIR_COLUMN, roundhole.getGiR());
 
         return database.update(DataBaseHelper.ROUNDHOLE_TABLE,
                 values,
@@ -134,7 +144,10 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
-                        DataBaseHelper.FAIRWAYS_COLUMN},
+                        DataBaseHelper.FAIRWAYS_COLUMN,
+                        DataBaseHelper.CHIPS_COLUMN,
+                        DataBaseHelper.GIR_COLUMN
+                },
                 WHERE_PLAYERID_EQUALS,
                 new String[]{String.valueOf(player.getID())},
                 null, null, null, null);
@@ -156,7 +169,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             roundHole.setScore(cursor.getInt(5));
             roundHole.setPutts(cursor.getInt(6));
             roundHole.setPenalties(cursor.getInt(7));
-            roundHole.setFairways(cursor.getInt(8));
+            roundHole.setFairways(cursor.getInt(8) == 1);
+            roundHole.setChips(cursor.getInt(9));
+            roundHole.setGiR(cursor.getInt(10) == 1);
 
             roundHoles.add(roundHole);
         }
@@ -182,7 +197,10 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
-                        DataBaseHelper.FAIRWAYS_COLUMN},
+                        DataBaseHelper.FAIRWAYS_COLUMN,
+                        DataBaseHelper.CHIPS_COLUMN,
+                        DataBaseHelper.GIR_COLUMN
+                },
                 WHERE_SUBROUNDID_EQUALS,
                 new String[]{String.valueOf(subRound.getID())},
                 null, null, null, null);
@@ -204,7 +222,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             roundHole.setScore(cursor.getInt(5));
             roundHole.setPutts(cursor.getInt(6));
             roundHole.setPenalties(cursor.getInt(7));
-            roundHole.setFairways(cursor.getInt(8));
+            roundHole.setFairways(cursor.getInt(8) == 1);
+            roundHole.setChips(cursor.getInt(9));
+            roundHole.setGiR(cursor.getInt(10) == 1);
 
             roundHoles.add(roundHole);
         }
@@ -231,7 +251,10 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
-                        DataBaseHelper.FAIRWAYS_COLUMN},
+                        DataBaseHelper.FAIRWAYS_COLUMN,
+                        DataBaseHelper.CHIPS_COLUMN,
+                        DataBaseHelper.GIR_COLUMN
+                },
                 WHERE_COURSEHOLEID_EQUALS,
                 new String[]{String.valueOf(courseHole.getID())},
                 null, null, null, null);
@@ -253,7 +276,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             roundHole.setScore(cursor.getInt(5));
             roundHole.setPutts(cursor.getInt(6));
             roundHole.setPenalties(cursor.getInt(7));
-            roundHole.setFairways(cursor.getInt(8));
+            roundHole.setFairways(cursor.getInt(8) == 1);
+            roundHole.setChips(cursor.getInt(9));
+            roundHole.setGiR(cursor.getInt(10) == 1);
 
             roundHoles.add(roundHole);
         }
@@ -281,7 +306,10 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
-                        DataBaseHelper.FAIRWAYS_COLUMN},
+                        DataBaseHelper.FAIRWAYS_COLUMN,
+                        DataBaseHelper.CHIPS_COLUMN,
+                        DataBaseHelper.GIR_COLUMN
+                },
                 WHERE_SUBROUNDID_EQUALS + " AND " + WHERE_PLAYERID_EQUALS,
                 new String[]{String.valueOf(subRound.getID()),String.valueOf(player.getID())},
                 null, null, null, null);
@@ -303,7 +331,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             roundHole.setScore(cursor.getInt(5));
             roundHole.setPutts(cursor.getInt(6));
             roundHole.setPenalties(cursor.getInt(7));
-            roundHole.setFairways(cursor.getInt(8));
+            roundHole.setFairways(cursor.getInt(8) == 1);
+            roundHole.setChips(cursor.getInt(9));
+            roundHole.setGiR(cursor.getInt(10) == 1);
 
             roundHoles.add(roundHole);
         }
@@ -331,7 +361,10 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
                         DataBaseHelper.SCORE_COLUMN,
                         DataBaseHelper.PUTTS_COLUMN,
                         DataBaseHelper.PENALTIES_COLUMN,
-                        DataBaseHelper.FAIRWAYS_COLUMN},
+                        DataBaseHelper.FAIRWAYS_COLUMN,
+                        DataBaseHelper.CHIPS_COLUMN,
+                        DataBaseHelper.GIR_COLUMN
+                },
                 WHERE_SUBROUNDID_EQUALS + " AND " + WHERE_PLAYERNUMBER_EQUALS,
                 new String[]{String.valueOf(subRound.getID()),String.valueOf(pnum)},
                 null, null, null, null);
@@ -353,7 +386,9 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             roundHole.setScore(cursor.getInt(5));
             roundHole.setPutts(cursor.getInt(6));
             roundHole.setPenalties(cursor.getInt(7));
-            roundHole.setFairways(cursor.getInt(8));
+            roundHole.setFairways(cursor.getInt(8) == 1);
+            roundHole.setChips(cursor.getInt(9));
+            roundHole.setGiR(cursor.getInt(10) == 1);
 
             roundHoles.add(roundHole);
         }

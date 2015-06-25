@@ -16,7 +16,9 @@ public class RoundHole {
     private int mScore = -1;
     private int mPutts = -1;
     private int mPenalties = -1;
-    private int mFairways = -1;
+    private boolean mFairways = false;
+    private int mChips = -1;
+    private boolean mGiR = false;
     private List<Shot> mShotList = null;
 
     /**
@@ -25,7 +27,8 @@ public class RoundHole {
     public RoundHole() {}
 
     public RoundHole(long id, SubRound subRound, CourseHole coursehole, Player player, long pnum,
-                     int score, int putts, int penalties, int fairways) {
+                     int score, int putts, int penalties,
+                     boolean fairways, int chips, boolean gir) {
         this.mID = id;
         this.mSubRoundID = subRound.getID();
         this.mCourseHoleID = coursehole.getID();
@@ -35,10 +38,13 @@ public class RoundHole {
         this.mPutts = putts;
         this.mPenalties = penalties;
         this.mFairways = fairways;
+        this.mChips = chips;
+        this.mGiR = gir;
     }
 
     public RoundHole(SubRound subRound, CourseHole coursehole, Player player, long pnum,
-                     int score, int putts, int penalties, int fairways) {
+                     int score, int putts, int penalties,
+                     boolean fairways, int chips, boolean gir) {
         this.mSubRoundID = subRound.getID();
         this.mCourseHoleID = coursehole.getID();
         this.mPlayerID = player.getID();
@@ -47,6 +53,8 @@ public class RoundHole {
         this.mPutts = putts;
         this.mPenalties = penalties;
         this.mFairways = fairways;
+        this.mChips = chips;
+        this.mGiR = gir;
     }
 
     /**
@@ -82,9 +90,13 @@ public class RoundHole {
         this.mPenalties = penalties;
     }
 
-    public void setFairways(int fairways) {
+    public void setFairways(boolean fairways) {
         this.mFairways = fairways;
     }
+
+    public void setChips(int chips) {this.mChips = chips; }
+
+    public void setGiR(boolean gir) {this.mGiR = gir; }
 
     /**
      * Getters
@@ -119,9 +131,13 @@ public class RoundHole {
         return this.mPenalties;
     }
 
-    public int getFairways() {
+    public boolean getFairways() {
         return this.mFairways;
     }
+
+    public int getChips() { return this.mChips; }
+
+    public boolean getGiR() { return this.mGiR; }
 
     /**
      * List of Shot's
