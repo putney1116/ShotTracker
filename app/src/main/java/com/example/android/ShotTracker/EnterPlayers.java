@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -82,6 +83,7 @@ public class EnterPlayers extends Activity{
     private void setPlayerSpinners(boolean onAddPlayer){
         PlayerDAO playerDAO = new PlayerDAO(this);
         final List<String> players = playerDAO.readListofPlayerNameswDefaultFirst();
+		Log.e("Test","Lengh of List: " + players.size());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(EnterPlayers.this, android.R.layout.simple_spinner_item, players);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -175,31 +177,32 @@ public class EnterPlayers extends Activity{
                     } else {
                         Player player = new Player();
                         player.setName(input.getText().toString());
-
+						player.setUserDefault(false);
+						//\todo make UserDefault "Not Nullable"
                         //Try uploading to the DB
                         PlayerDAO playerDAO = new PlayerDAO(EnterPlayers.this);
                         BagDAO bagDAO = new BagDAO(EnterPlayers.this);
 						long pID = -1;
-                        try {
-                            pID = playerDAO.create(player);
-                            // Add default clubs to the new players bag
-                            player.setID(pID);
-                            bagDAO.createDefaultBag(player);
-                            input.setText("");
-                            setPlayerSpinners(true);
+                        if (playerDAO.readIDFromName(player.getName()) > -1) {
+							CharSequence text = "Name already exists. Please enter a unique name.";
+							int duration = Toast.LENGTH_SHORT;
 
-                        } catch (Exception e) {
-                            CharSequence text = "Name already exists. Please enter a unique name.";
-                            int duration = Toast.LENGTH_SHORT;
+							Toast toast = Toast.makeText(EnterPlayers.this, text, duration);
+							toast.show();
 
-                            Toast toast = Toast.makeText(EnterPlayers.this, text, duration);
-                            toast.show();
+							input.setText("");
 
-                            input.setText("");
-
+                        } else {
+							pID = playerDAO.create(player);
+							// Add default clubs to the new players bag
+							player.setID(pID);
+							bagDAO.createDefaultBag(player);
+							input.setText("");
+							setPlayerSpinners(true);
                         }
                     }
                 } catch (Exception e) {
+					Log.e("TEST","" + e);
                 }
             }
         });

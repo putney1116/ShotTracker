@@ -40,8 +40,7 @@ public class PlayerDAO extends ShotTrackerDBDAO {
 
         values.put(DataBaseHelper.PLAYERNAME_COLUMN, player.getName());
 
-        if (player.getUserDefault())
-            values.put(DataBaseHelper.USRDEF_COLUMN, player.getUserDefault() ? 1 : 0);
+        values.put(DataBaseHelper.USRDEF_COLUMN, player.getUserDefault() ? 1 : 0);
 
         if (player.getHandicap() > 0)
             values.put(DataBaseHelper.PLAYERHANDICAP_COLUMN, player.getHandicap());
