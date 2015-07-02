@@ -536,6 +536,175 @@ public class StatistisDAO extends ShotTrackerDBDAO {
         return numChips;
     }
 
+    /**
+     *
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNumofPutts(Player player, Round round){
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PUTTS_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "="
+                + round.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param par
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNumofPutts(int par, Player player, Round round){
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PUTTS_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "="
+                + round.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNumofPutts(Player player, Course course) {
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PUTTS_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + "="
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "="
+                + course.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param par
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNumofPutts(int par, Player player, Course course) {
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PUTTS_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + "="
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "="
+                + course.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
 
     /**
      *
@@ -592,6 +761,176 @@ public class StatistisDAO extends ShotTrackerDBDAO {
 
         if(cursor.moveToNext()){
             numChips = cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNumofPenalties(Player player, Round round){
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PENALTIES_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "="
+                + round.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param par
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNumofPenalties(int par, Player player, Round round){
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PENALTIES_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "="
+                + round.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNumofPenalties(Player player, Course course) {
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PENALTIES_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + "="
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "="
+                + course.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param par
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNumofPenalties(int par, Player player, Course course) {
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PENALTIES_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + "="
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "="
+                + course.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            numChips=cursor.getInt(0);
         }
 
         cursor.close();
