@@ -243,7 +243,7 @@ public class StatistisDAO extends ShotTrackerDBDAO {
     }
 
     /**
-     *
+     * Get the number of chips for the given player
      * @param player
      * @return
      */
