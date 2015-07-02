@@ -667,7 +667,7 @@ public class StatistisDAO extends ShotTrackerDBDAO {
     public int getNFairways(Player player, Course course) {
 
         int nFairways = -1;
-        String query = "SELECT *"
+        String query = "SELECT count(*)"
                 + " FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
                 + " LEFT JOIN "
@@ -878,7 +878,7 @@ public class StatistisDAO extends ShotTrackerDBDAO {
     public int getNGiR(Player player, Course course) {
 
         int nGiR = -1;
-        String query = "SELECT *"
+        String query = "SELECT count(*)"
                 + " FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
                 + " LEFT JOIN "

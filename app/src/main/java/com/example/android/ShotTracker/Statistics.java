@@ -147,7 +147,7 @@ public class Statistics extends ListActivity{
     				spinner.setVisibility(View.GONE);
     				spinner = (Spinner) findViewById(R.id.PlayerSpinner);
     				spinner.setVisibility(View.GONE);
-    				
+
     				calculatePlayerStats(0);
     			}
     			//Spinner position is "By Course". Shows the course spinner
@@ -166,7 +166,7 @@ public class Statistics extends ListActivity{
     				spinner.setVisibility(View.GONE);
     				spinner = (Spinner) findViewById(R.id.PlayerSpinner);
     				spinner.setVisibility(View.VISIBLE);
-    				
+
     				calculatePlayerStats(playerSpinnerPosition);
     			}
     		}
@@ -222,6 +222,7 @@ public class Statistics extends ListActivity{
 	//Calculates the total stats for the default first player
 	private void calculatePlayerStats(int pos) {
 
+        initializeStatisticVariables();
         StatistisDAO statDAO = new StatistisDAO(Statistics.this);
         DAOUtilities daoUtil = new DAOUtilities(Statistics.this);
         PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
@@ -251,11 +252,19 @@ public class Statistics extends ListActivity{
         // get the hole stats
         float nfairwayholes = numberOfPar4Holes + numberOfPar5Holes;
         fairways = nfairwayholes<=0 ? 0 : statDAO.getNFairways(player) / nfairwayholes * 100.;
-        girs = numberOfHoles<=0 ? 0 : statDAO.getNGiR(player) / (float)numberOfHoles * 100.;
+        if (numberOfHoles > 0) {
+            girs = statDAO.getNGiR(player) / (float) numberOfHoles * 100.;
+            chips = statDAO.getNumofChips(player) / (float) numberOfHoles;
+            putts = statDAO.getNumofPutts(player) / (float) numberOfHoles;
+            penalties = statDAO.getNumofPenalties(player) / (float) numberOfHoles * 18.;
+        }
 
         // get the counts for par 3's
         if (numberOfPar3Holes > 0) {
             par3Girs = statDAO.getNGiR(3, player) / (float)numberOfPar3Holes * 100.;
+            par3Chips = statDAO.getNumofChips(3, player) / (float) numberOfPar3Holes;
+            par3Putts = statDAO.getNumofPutts(3, player) / (float) numberOfPar3Holes;
+            par3Penalties = statDAO.getNumofPenalties(3, player) / (float) numberOfPar3Holes;
         }
         par3EagleCount = statDAO.getNHolesParScore(3, -2, player);
         par3BirdieCount = statDAO.getNHolesParScore(3, -1, player);
@@ -270,6 +279,9 @@ public class Statistics extends ListActivity{
         if (numberOfPar4Holes > 0) {
             par4Fairways = statDAO.getNFairways(4, player) / (float) numberOfPar4Holes * 100.;
             par4Girs = statDAO.getNGiR(4, player) / (float) numberOfPar4Holes * 100.;
+            par4Chips = statDAO.getNumofChips(4, player) / (float) numberOfPar4Holes;
+            par4Putts = statDAO.getNumofPutts(4, player) / (float) numberOfPar4Holes;
+            par4Penalties = statDAO.getNumofPenalties(4, player) / (float) numberOfPar4Holes;
         }
         par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player);
         par4EagleCount = statDAO.getNHolesParScore(4, -2, player);
@@ -284,6 +296,9 @@ public class Statistics extends ListActivity{
         if (numberOfPar5Holes > 0) {
             par5Fairways = statDAO.getNFairways(5, player) / (float) numberOfPar5Holes * 100.;
             par5Girs = statDAO.getNGiR(5, player) / (float) numberOfPar5Holes * 100.;
+            par5Putts = statDAO.getNumofPutts(5, player) / (float) numberOfPar5Holes;
+            par5Chips = statDAO.getNumofChips(5, player) / (float) numberOfPar5Holes;
+            par5Penalties = statDAO.getNumofPenalties(5, player) / (float) numberOfPar5Holes;
         }
         par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player);
         par5EagleCount = statDAO.getNHolesParScore(5, -2, player);
@@ -320,6 +335,7 @@ public class Statistics extends ListActivity{
 	//Calculates the stats for the default first player on specific courses
 	private void calculateCourseStats(int coursePos, int playerPos){
 
+        initializeStatisticVariables();
         StatistisDAO statDAO = new StatistisDAO(Statistics.this);
         DAOUtilities daoUtil = new DAOUtilities(Statistics.this);
         PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
@@ -351,7 +367,23 @@ public class Statistics extends ListActivity{
                 + numberOfPar4Holes
                 + numberOfPar5Holes;
 
+        // get the hole stats
+        float nfairwayholes = numberOfPar4Holes + numberOfPar5Holes;
+        fairways = nfairwayholes<=0 ? 0 : statDAO.getNFairways(player) / nfairwayholes * 100.;
+        if (numberOfHoles > 0) {
+            girs = statDAO.getNGiR(player, course) / (float) numberOfHoles * 100.;
+            chips = statDAO.getNumofChips(player, course) / (float) numberOfHoles;
+//            putts = statDAO.getNumofPutts(player, course) / (float) numberOfHoles;
+//            penalties = statDAO.getNumofPenalties(player, course) / (float) numberOfHoles * 18.;
+        }
+
         // get the counts for par 3's
+        if (numberOfPar3Holes > 0) {
+            par3Girs = statDAO.getNGiR(3, player, course) / (float)numberOfPar3Holes * 100.;
+            par3Chips = statDAO.getNumofChips(3, player, course) / (float) numberOfPar3Holes;
+//            par3Putts = statDAO.getNumofPutts(3, player, course) / (float) numberOfPar3Holes;
+//            par3Penalties = statDAO.getNumofPenalties(3, player, course) / (float) numberOfPar3Holes;
+        }
         par3EagleCount = statDAO.getNHolesParScore(3, -2, player, course);
         par3BirdieCount = statDAO.getNHolesParScore(3, -1, player, course);
         par3ParCount = statDAO.getNHolesParScore(3, 0, player, course);
@@ -362,6 +394,12 @@ public class Statistics extends ListActivity{
         par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player, course);
 
         // get the counts for par 4's
+        if (numberOfPar4Holes > 0) {
+            par4Girs = statDAO.getNGiR(4, player, course) / (float)numberOfPar4Holes * 100.;
+            par4Chips = statDAO.getNumofChips(4, player, course) / (float) numberOfPar4Holes;
+//            par4Putts = statDAO.getNumofPutts(4, player, course) / (float) numberOfPar4Holes;
+//            par4Penalties = statDAO.getNumofPenalties(4, player, course) / (float) numberOfPar4Holes;
+        }
         par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player, course);
         par4EagleCount = statDAO.getNHolesParScore(4, -2, player, course);
         par4BirdieCount = statDAO.getNHolesParScore(4, -1, player, course);
@@ -372,6 +410,12 @@ public class Statistics extends ListActivity{
         par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player, course);
 
         // get the counts for the par 5's
+        if (numberOfPar5Holes > 0) {
+            par5Girs = statDAO.getNGiR(5, player, course) / (float)numberOfPar5Holes * 100.;
+            par5Chips = statDAO.getNumofChips(5, player, course) / (float) numberOfPar5Holes;
+//            par5Putts = statDAO.getNumofPutts(5, player, course) / (float) numberOfPar5Holes;
+//            par5Penalties = statDAO.getNumofPenalties(5, player, course) / (float) numberOfPar5Holes;
+        }
         par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player, course);
         par5EagleCount = statDAO.getNHolesParScore(5, -2, player, course);
         par5BirdieCount = statDAO.getNHolesParScore(5, -1, player, course);
@@ -465,19 +509,19 @@ public class Statistics extends ListActivity{
         map = new HashMap<String, String>();
         map.put("col_1", "Putts / Hole");
         map.put("col_2", "");
-        map.put("col_3", "1.73");
+        map.put("col_3", putts == 0 ? "-" : "" + df.format(putts));
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Chips / Hole");
         map.put("col_2", "");
-        map.put("col_3", "0.52");
+        map.put("col_3", chips == 0 ? "-" : "" + df.format(chips));
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Penalties / Round");
         map.put("col_2", "");
-        map.put("col_3", "1.20");
+        map.put("col_3", penalties == 0 ? "-" : "" + df.format(penalties));
         fillMaps.add(map);
 
 
@@ -551,20 +595,20 @@ public class Statistics extends ListActivity{
 
         map = new HashMap<String, String>();
         map.put("col_1", "Putts / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par3Putts==0 ? "-" : "" + df.format(par3Putts) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Chips / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par3Chips==0 ? "-" : "" + df.format(par3Chips) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Penalties / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par3Penalties==0 ? "-" : "" + df.format(par3Penalties) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
@@ -653,20 +697,20 @@ public class Statistics extends ListActivity{
 
         map = new HashMap<String, String>();
         map.put("col_1", "Putts / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par4Putts == 0 ? "-" : "" + df.format(par4Putts) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Chips / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par4Chips == 0 ? "-" : "" + df.format(par4Chips) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Penalties / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par4Penalties == 0 ? "-" : "" + df.format(par4Penalties) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
@@ -762,20 +806,20 @@ public class Statistics extends ListActivity{
 
         map = new HashMap<String, String>();
         map.put("col_1", "Putts / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par5Putts == 0 ? "-" : "" + df.format(par5Putts) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Chips / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par5Chips == 0 ? "-" : "" + df.format(par5Chips) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
         map.put("col_1", "Penalties / Hole");
-        map.put("col_2", "-");
-        map.put("col_3", "");
+        map.put("col_2", "");
+        map.put("col_3", par5Penalties == 0 ? "-" : "" + df.format(par5Penalties) );
         fillMaps.add(map);
 
         map = new HashMap<String, String>();
