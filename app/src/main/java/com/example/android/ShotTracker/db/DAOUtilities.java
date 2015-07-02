@@ -448,6 +448,7 @@ public class DAOUtilities {
 
     /**
      * Read a list of players, ordered by the player number, for a given round
+     *
      * @param round
      * @return
      */
@@ -467,7 +468,7 @@ public class DAOUtilities {
             List<RoundHole> roundHoles = roundHoleDAO.readListofRoundHoleRound(subRound);
 
             for (RoundHole roundHole : roundHoles) {
-                if ( playerMap.containsKey(roundHole.getPlayerNumber()) )
+                if (playerMap.containsKey(roundHole.getPlayerNumber()))
                     continue;
                 else {
                     Player player = new Player();
@@ -480,5 +481,4 @@ public class DAOUtilities {
 
         return playerMap;
     }
-
 }
