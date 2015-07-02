@@ -5,7 +5,7 @@ android {
         config {
         }
     }
-    compileSdkVersion 'Google Inc.:Google APIs:17'
+    compileSdkVersion 'Google Inc.:Google APIs:21'
     buildToolsVersion "20.0.0"
     defaultConfig {
         applicationId "com.example.android.ShotTracker"
@@ -18,6 +18,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
+            debuggable true
         }
     }
 }

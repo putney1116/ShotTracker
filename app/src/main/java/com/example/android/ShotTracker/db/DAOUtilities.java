@@ -1,6 +1,7 @@
 package com.example.android.ShotTracker.db;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
@@ -481,4 +482,5 @@ public class DAOUtilities {
 
         return playerMap;
     }
+
 }

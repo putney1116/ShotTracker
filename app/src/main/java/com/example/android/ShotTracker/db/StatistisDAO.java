@@ -599,5 +599,426 @@ public class StatistisDAO extends ShotTrackerDBDAO {
         return numChips;
     }
 
+    /**
+     * Count the number of Fairways hit by given player
+     * Note that this is a total sum, not per round or hole
+     * @param player
+     * @return
+     */
+    public int getNFairways(Player player) {
+
+        int nFairways = -1;
+        String query = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.FAIRWAYS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if (cursor.moveToFirst())
+            nFairways = cursor.getInt(0);
+        cursor.close();
+        return nFairways;
+    }
+
+    /**
+     * Get the number of fairways for a given par and player
+     * @param par
+     * @param player
+     * @return
+     */
+    public int getNFairways(int par, Player player) {
+
+        int nFairways = -1;
+        String queryPar = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par
+                + " AND "
+                + DataBaseHelper.FAIRWAYS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+        if (cursor.moveToFirst())
+            nFairways = cursor.getInt(0);
+        cursor.close();
+        return nFairways;
+
+    }
+
+    /**
+     * Get the number of fairways hit by a given player
+     * for a given course
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNFairways(Player player, Course course) {
+
+        int nFairways = -1;
+        String query = "SELECT *"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + " = " + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + " = " + course.getID()
+                + " AND "
+                + DataBaseHelper.FAIRWAYS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if ( cursor.moveToFirst() )
+            nFairways = cursor.getInt(0);
+        cursor.close();
+        return nFairways;
+    }
+
+    /**
+     * Get the number of fairways hit by a player for a given par on a given course
+     * @param par
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNFairways(int par, Player player, Course course) {
+
+        int nFairways = -1;
+        String queryPar = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PAR_COLUMN
+                + " = " + par
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + " = " + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + " = " + course.getID()
+                + " AND "
+                + DataBaseHelper.FAIRWAYS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+        if ( cursor.moveToFirst() )
+            nFairways = cursor.getInt(0);
+        cursor.close();
+        return nFairways;
+    }
+
+    /**
+     * Get the number of fairways hit by the player in the given round
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNFairways(Player player, Round round) {
+        int nFairways = -1;
+        String queryScore = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "=" + round.getID()
+                + " AND "
+                + DataBaseHelper.FAIRWAYS_COLUMN
+                + ">0";
+        Cursor cursor = database.rawQuery(queryScore, null);
+        if ( cursor.moveToFirst() )
+            nFairways = cursor.getInt(0);
+        cursor.close();
+        return nFairways;
+    }
+
+    /**
+     * Get the number of fairways hit by a player in a given round for a given par
+     * @param par
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNFairways(int par, Player player, Round round) {
+        int nFairways = -1;
+        String queryScore = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "=" + round.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par
+                + " AND "
+                + DataBaseHelper.FAIRWAYS_COLUMN
+                + ">0";
+        Cursor cursor = database.rawQuery(queryScore, null);
+        if ( cursor.moveToFirst() )
+            nFairways = cursor.getInt(0);
+        cursor.close();
+        return nFairways;
+    }
+
+
+
+
+    /**
+     * Get the number of greens in regulation for the given player
+     * @param player
+     * @return
+     */
+    public int getNGiR(Player player) {
+
+        int nGiR = -1;
+        String query = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.GIR_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if (cursor.moveToFirst())
+            nGiR = cursor.getInt(0);
+        cursor.close();
+        return nGiR;
+    }
+
+    /**
+     * Get the greens in regulation for a given player and par
+     * @param par
+     * @param player
+     * @return
+     */
+    public int getNGiR(int par, Player player) {
+
+        int nGiR = -1;
+        String queryPar = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par
+                + " AND "
+                + DataBaseHelper.GIR_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+        if (cursor.moveToFirst())
+            nGiR = cursor.getInt(0);
+        cursor.close();
+        return nGiR;
+    }
+
+    /**
+     * Get the number of greens in regulation for the given player and course
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNGiR(Player player, Course course) {
+
+        int nGiR = -1;
+        String query = "SELECT *"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + " = " + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + " = " + course.getID()
+                + " AND "
+                + DataBaseHelper.GIR_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if ( cursor.moveToFirst() )
+            nGiR = cursor.getInt(0);
+        cursor.close();
+        return nGiR;
+    }
+
+    /**
+     * Get the number of greens in regulation for the given par, player, and course
+     * @param par
+     * @param player
+     * @param course
+     * @return
+     */
+    public int getNGiR(int par, Player player, Course course) {
+
+        int nGiR = -1;
+        String queryPar = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PAR_COLUMN
+                + " = " + par
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + " = " + player.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + " = " + course.getID()
+                + " AND "
+                + DataBaseHelper.GIR_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+        if ( cursor.moveToFirst() )
+            nGiR = cursor.getInt(0);
+        cursor.close();
+        return nGiR;
+    }
+
+    /**
+     * Get the number of greens in regulation for the given player and round
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNGiR(Player player, Round round) {
+        int nGiR = -1;
+        String queryScore = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "=" + round.getID()
+                + " AND "
+                + DataBaseHelper.GIR_COLUMN
+                + ">0";
+        Cursor cursor = database.rawQuery(queryScore, null);
+        if ( cursor.moveToFirst() )
+            nGiR = cursor.getInt(0);
+        cursor.close();
+        return nGiR;
+    }
+
+    /**
+     * Get the number of greens in regulation for the given player, par, and round
+     * @param par
+     * @param player
+     * @param round
+     * @return
+     */
+    public int getNGiR(int par, Player player, Round round) {
+        int nGiR = -1;
+        String queryScore = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.ROUNDID_COLUMN
+                + "=" + round.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par
+                + " AND "
+                + DataBaseHelper.GIR_COLUMN
+                + ">0";
+        Cursor cursor = database.rawQuery(queryScore, null);
+        if ( cursor.moveToFirst() )
+            nGiR = cursor.getInt(0);
+        cursor.close();
+        return nGiR;
+    }
 
 }
