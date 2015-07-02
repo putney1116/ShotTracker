@@ -270,6 +270,12 @@ public class StatistisDAO extends ShotTrackerDBDAO {
         return numChips;
     }
 
+    /**
+     *
+     * @param par
+     * @param player
+     * @return
+     */
     public int getNumofChips(int par, Player player) {
 
         int numChips = -1;
@@ -461,6 +467,131 @@ public class StatistisDAO extends ShotTrackerDBDAO {
 
         if(cursor.moveToFirst()){
             numChips=cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param player
+     * @return
+     */
+    public int getNumofPutts(Player player) {
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PUTTS_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToNext()){
+            numChips = cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param par
+     * @param player
+     * @return
+     */
+    public int getNumofPutts(int par, Player player) {
+
+        int numChips = -1;
+
+        String queryPar = "SELECT SUM("
+                + DataBaseHelper.PUTTS_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+
+        if(cursor.moveToNext()){
+            numChips = cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+
+    /**
+     *
+     * @param player
+     * @return
+     */
+    public int getNumofPenalties(Player player) {
+
+        int numChips = -1;
+
+        String query = "SELECT SUM("
+                + DataBaseHelper.PENALTIES_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToNext()){
+            numChips = cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return numChips;
+    }
+
+    /**
+     *
+     * @param par
+     * @param player
+     * @return
+     */
+    public int getNumofPenalties(int par, Player player) {
+
+        int numChips = -1;
+
+        String queryPar = "SELECT SUM("
+                + DataBaseHelper.PENALTIES_COLUMN
+                + ") FROM "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.PAR_COLUMN
+                + "=" + par;
+
+        Cursor cursor = database.rawQuery(queryPar, null);
+
+        if(cursor.moveToNext()){
+            numChips = cursor.getInt(0);
         }
 
         cursor.close();
