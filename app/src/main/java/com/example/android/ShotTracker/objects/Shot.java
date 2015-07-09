@@ -146,6 +146,19 @@ public class Shot {
     public void clearShotTypes() { mShotType.clear(); }
 
     /**
+     * Remove a shottype from the list
+     * @param idx
+     */
+    public void removeShotType(int idx) {
+        if (idx < mShotType.size()) {
+            mShotType.remove(idx);
+        }
+        else {
+            //\todo add error message
+        }
+    }
+
+    /**
      * Function to calculate the yards between the shots start and end points.
      * Requires lat,long of start and end points to be set.
      */
