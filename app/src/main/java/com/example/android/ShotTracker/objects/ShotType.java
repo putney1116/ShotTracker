@@ -92,4 +92,5 @@ public class ShotType {
         }
     }
 
+    //\todo override hashCode since we overrode equals()?
 }

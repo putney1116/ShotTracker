@@ -12,7 +12,8 @@ public class Shot {
     private long mID = -1;
     private long mRoundHoleID = -1;
     private long mClubID = -1;
-    private List<ShotType> mShotType;
+    private List<ShotType> mShotTypePre;
+    private List<ShotType> mShotTypePost;
     private int mYards = -1;
     private double mShotStartLat = -1;
     private double mShotStartLong = -1;
@@ -23,34 +24,8 @@ public class Shot {
      * Default Constructor
      */
     public Shot() {
-        mShotType = new ArrayList<ShotType>();
-    }
-
-    public Shot(long id, RoundHole roundhole, Club club,
-                List<ShotType> shottype, int yds, double sslat,
-                double sslong, double selat, double selong){
-        this.mID = id;
-        this.mRoundHoleID = roundhole.getID();
-        this.mClubID = club.getID();
-        this.mShotType = shottype;
-        this.mYards = yds;
-        this.mShotStartLat = sslat;
-        this.mShotStartLong = sslong;
-        this.mShotEndLat = selat;
-        this.mShotEndLong = selong;
-    }
-
-    public Shot(RoundHole roundhole, Club club,
-                List<ShotType> shottype, int yds, double sslat,
-                double sslong, double selat, double selong){
-        this.mRoundHoleID = roundhole.getID();
-        this.mClubID = club.getID();
-        this.mShotType = shottype;
-        this.mYards = yds;
-        this.mShotStartLat = sslat;
-        this.mShotStartLong = sslong;
-        this.mShotEndLat = selat;
-        this.mShotEndLong = selong;
+        mShotTypePre = new ArrayList<ShotType>();
+        mShotTypePost = new ArrayList<ShotType>();
     }
 
     /**
@@ -98,9 +73,14 @@ public class Shot {
         this.mShotEndLong = longitude;
     }
 
-    public void addShotType(ShotType shottype) {
-        this.mShotType.add(shottype);
+    public void addShotTypePre(ShotType shottypepre) {
+        this.mShotTypePre.add(shottypepre);
     }
+
+    public void addShotTypePost(ShotType shottypepost) {
+        this.mShotTypePost.add(shottypepost);
+    }
+
     /**
      * Getters
      */
@@ -116,8 +96,12 @@ public class Shot {
         return this.mClubID;
     }
 
-    public List<ShotType> getShotTypeList() {
-        return this.mShotType;
+    public List<ShotType> getShotTypePreList() {
+        return this.mShotTypePre;
+    }
+
+    public List<ShotType> getShotTypePostList() {
+        return this.mShotTypePost;
     }
 
     public int getYards() {
@@ -143,15 +127,22 @@ public class Shot {
     /**
      * clear the list of shot types
      */
-    public void clearShotTypes() { mShotType.clear(); }
+    public void clearShotTypesPre() { mShotTypePre.clear(); }
+
+    public void clearShotTypesPost() { mShotTypePost.clear(); }
 
     /**
      * Remove a shottype from the list
      * @param idx
      */
-    public void removeShotType(int idx) {
+    public void removeShotTypePre(int idx) {
         //\todo add bounds checking
-        mShotType.remove(idx);
+        mShotTypePre.remove(idx);
+    }
+
+    public void removeShotTypePost(int idx) {
+        //\todo add bounds checking
+        mShotTypePost.remove(idx);
     }
 
     /**
