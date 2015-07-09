@@ -373,16 +373,16 @@ public class Statistics extends ListActivity{
         if (numberOfHoles > 0) {
             girs = statDAO.getNGiR(player, course) / (float) numberOfHoles * 100.;
             chips = statDAO.getNumofChips(player, course) / (float) numberOfHoles;
-//            putts = statDAO.getNumofPutts(player, course) / (float) numberOfHoles;
-//            penalties = statDAO.getNumofPenalties(player, course) / (float) numberOfHoles * 18.;
+            putts = statDAO.getNumofPutts(player, course) / (float) numberOfHoles;
+            penalties = statDAO.getNumofPenalties(player, course) / (float) numberOfHoles * 18.;
         }
 
         // get the counts for par 3's
         if (numberOfPar3Holes > 0) {
             par3Girs = statDAO.getNGiR(3, player, course) / (float)numberOfPar3Holes * 100.;
             par3Chips = statDAO.getNumofChips(3, player, course) / (float) numberOfPar3Holes;
-//            par3Putts = statDAO.getNumofPutts(3, player, course) / (float) numberOfPar3Holes;
-//            par3Penalties = statDAO.getNumofPenalties(3, player, course) / (float) numberOfPar3Holes;
+            par3Putts = statDAO.getNumofPutts(3, player, course) / (float) numberOfPar3Holes;
+            par3Penalties = statDAO.getNumofPenalties(3, player, course) / (float) numberOfPar3Holes;
         }
         par3EagleCount = statDAO.getNHolesParScore(3, -2, player, course);
         par3BirdieCount = statDAO.getNHolesParScore(3, -1, player, course);
@@ -397,8 +397,8 @@ public class Statistics extends ListActivity{
         if (numberOfPar4Holes > 0) {
             par4Girs = statDAO.getNGiR(4, player, course) / (float)numberOfPar4Holes * 100.;
             par4Chips = statDAO.getNumofChips(4, player, course) / (float) numberOfPar4Holes;
-//            par4Putts = statDAO.getNumofPutts(4, player, course) / (float) numberOfPar4Holes;
-//            par4Penalties = statDAO.getNumofPenalties(4, player, course) / (float) numberOfPar4Holes;
+            par4Putts = statDAO.getNumofPutts(4, player, course) / (float) numberOfPar4Holes;
+            par4Penalties = statDAO.getNumofPenalties(4, player, course) / (float) numberOfPar4Holes;
         }
         par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player, course);
         par4EagleCount = statDAO.getNHolesParScore(4, -2, player, course);
@@ -413,8 +413,8 @@ public class Statistics extends ListActivity{
         if (numberOfPar5Holes > 0) {
             par5Girs = statDAO.getNGiR(5, player, course) / (float)numberOfPar5Holes * 100.;
             par5Chips = statDAO.getNumofChips(5, player, course) / (float) numberOfPar5Holes;
-//            par5Putts = statDAO.getNumofPutts(5, player, course) / (float) numberOfPar5Holes;
-//            par5Penalties = statDAO.getNumofPenalties(5, player, course) / (float) numberOfPar5Holes;
+            par5Putts = statDAO.getNumofPutts(5, player, course) / (float) numberOfPar5Holes;
+            par5Penalties = statDAO.getNumofPenalties(5, player, course) / (float) numberOfPar5Holes;
         }
         par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player, course);
         par5EagleCount = statDAO.getNHolesParScore(5, -2, player, course);
