@@ -73,9 +73,7 @@ public class Shot {
         this.mShotEndLong = longitude;
     }
 
-    public void addShotTypePre(ShotType shottypepre) {
-        this.mShotTypePre.add(shottypepre);
-    }
+    public void addShotTypePre(ShotType shottypepre) { this.mShotTypePre.add(shottypepre); }
 
     public void addShotTypePost(ShotType shottypepost) {
         this.mShotTypePost.add(shottypepost);
@@ -96,9 +94,7 @@ public class Shot {
         return this.mClubID;
     }
 
-    public List<ShotType> getShotTypePreList() {
-        return this.mShotTypePre;
-    }
+    public List<ShotType> getShotTypePreList() { return this.mShotTypePre; }
 
     public List<ShotType> getShotTypePostList() {
         return this.mShotTypePost;
@@ -145,11 +141,4 @@ public class Shot {
         mShotTypePost.remove(idx);
     }
 
-    /**
-     * Function to calculate the yards between the shots start and end points.
-     * Requires lat,long of start and end points to be set.
-     */
-    public void calcYards() {
-        /// \todo Add code for calculating the yards based on lat, long
-    }
 }
