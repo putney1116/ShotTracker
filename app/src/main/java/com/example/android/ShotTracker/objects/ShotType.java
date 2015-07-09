@@ -71,4 +71,25 @@ public class ShotType {
 
     public boolean getIsPre() { return this.mIsPre; }
 
+
+    /**
+     * override Object.equals
+     */
+    public boolean equals(Object obj) {
+        if(obj instanceof ShotType)
+        {
+            ShotType sobj = (ShotType) obj;
+            if (mID == sobj.getID())
+                return true;
+            else if (mType.equals(sobj.getType()))
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }
