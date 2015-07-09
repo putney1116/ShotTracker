@@ -50,6 +50,11 @@ public class PastRoundStats extends ListActivity{
 	private double averageBack9PlusMinus = 0;
     private double averageHoleScore = 0;
     private double averageHolePlusMinus = 0;
+    private double fairways = 0;
+    private double girs = 0;
+    private double chips = 0;
+    private double putts = 0;
+    private double penalties = 0;
 	private int numberOfHoles = 0;
 	private int numberOfPar3Holes = 0;
 	private int numberOfPar4Holes = 0;
@@ -62,6 +67,11 @@ public class PastRoundStats extends ListActivity{
 	private double doubleBogeyCount = 0;
 	private double tripleBogeyCount = 0;
 	private double quadBogeyPlusCount = 0;
+    private double par3Fairways = 0;
+    private double par3Girs = 0;
+    private double par3Putts = 0;
+    private double par3Chips = 0;
+    private double par3Penalties = 0;
 	private double par3EagleCount = 0;
 	private double par3BirdieCount = 0;
 	private double par3ParCount = 0;
@@ -69,6 +79,11 @@ public class PastRoundStats extends ListActivity{
 	private double par3DoubleBogeyCount = 0;
 	private double par3TripleBogeyCount = 0;
 	private double par3QuadBogeyPlusCount = 0;
+    private double par4Fairways = 0;
+    private double par4Girs = 0;
+    private double par4Putts = 0;
+    private double par4Chips = 0;
+    private double par4Penalties = 0;
 	private double par4AlbatrossCount = 0;
 	private double par4EagleCount = 0;
 	private double par4BirdieCount = 0;
@@ -77,6 +92,11 @@ public class PastRoundStats extends ListActivity{
 	private double par4DoubleBogeyCount = 0;
 	private double par4TripleBogeyCount = 0;
 	private double par4QuadBogeyPlusCount = 0;
+    private double par5Fairways = 0;
+    private double par5Girs = 0;
+    private double par5Putts = 0;
+    private double par5Chips = 0;
+    private double par5Penalties = 0;
 	private double par5AlbatrossCount = 0;
 	private double par5EagleCount = 0;
 	private double par5BirdieCount = 0;
@@ -167,7 +187,22 @@ public class PastRoundStats extends ListActivity{
                 + numberOfPar4Holes
                 + numberOfPar5Holes;
 
+        float nfairwayholes = numberOfPar4Holes + numberOfPar5Holes;
+        fairways = nfairwayholes<=0 ? 0 : statDAO.getNFairways(player) / nfairwayholes * 100.;
+        if (numberOfHoles > 0) {
+            girs = statDAO.getNGiR(player, round) / (float) numberOfHoles * 100.;
+            chips = statDAO.getNumofChips(player, round) / (float) numberOfHoles;
+            putts = statDAO.getNumofPutts(player, round) / (float) numberOfHoles;
+            penalties = statDAO.getNumofPenalties(player, round) / (float) numberOfHoles * 18.;
+        }
+
         // get the counts for par 3's
+        if (numberOfPar3Holes > 0) {
+            par3Girs = statDAO.getNGiR(3, player, round) / (float)numberOfPar3Holes * 100.;
+            par3Chips = statDAO.getNumofChips(3, player, round) / (float) numberOfPar3Holes;
+            par3Putts = statDAO.getNumofPutts(3, player, round) / (float) numberOfPar3Holes;
+            par3Penalties = statDAO.getNumofPenalties(3, player, round) / (float) numberOfPar3Holes;
+        }
         par3EagleCount = statDAO.getNHolesParScore(3, -2, player, round);
         par3BirdieCount = statDAO.getNHolesParScore(3, -1, player, round);
         par3ParCount = statDAO.getNHolesParScore(3, 0, player, round);
@@ -178,6 +213,13 @@ public class PastRoundStats extends ListActivity{
         par3QuadBogeyPlusCount = statDAO.getNHolesParScore(3, 4, player, round);
 
         // get the counts for par 4's
+        if (numberOfPar4Holes > 0) {
+            par4Fairways = statDAO.getNFairways(4, player, round) / (float) numberOfPar4Holes * 100.;
+            par4Girs = statDAO.getNGiR(4, player, round) / (float) numberOfPar4Holes * 100.;
+            par4Chips = statDAO.getNumofChips(4, player, round) / (float) numberOfPar4Holes;
+            par4Putts = statDAO.getNumofPutts(4, player, round) / (float) numberOfPar4Holes;
+            par4Penalties = statDAO.getNumofPenalties(4, player, round) / (float) numberOfPar4Holes;
+        }
         par4AlbatrossCount = statDAO.getNHolesParScore(4, -3, player, round);
         par4EagleCount = statDAO.getNHolesParScore(4, -2, player, round);
         par4BirdieCount = statDAO.getNHolesParScore(4, -1, player, round);
@@ -188,6 +230,13 @@ public class PastRoundStats extends ListActivity{
         par4QuadBogeyPlusCount = statDAO.getNHolesParScore(4, 4, player, round);
 
         // get the counts for the par 5's
+        if (numberOfPar5Holes > 0) {
+            par5Fairways = statDAO.getNFairways(5, player, round) / (float) numberOfPar5Holes * 100.;
+            par5Girs = statDAO.getNGiR(5, player, round) / (float) numberOfPar5Holes * 100.;
+            par5Putts = statDAO.getNumofPutts(5, player, round) / (float) numberOfPar5Holes;
+            par5Chips = statDAO.getNumofChips(5, player, round) / (float) numberOfPar5Holes;
+            par5Penalties = statDAO.getNumofPenalties(5, player, round) / (float) numberOfPar5Holes;
+        }
         par5AlbatrossCount = statDAO.getNHolesParScore(5, -3, player, round);
         par5EagleCount = statDAO.getNHolesParScore(5, -2, player, round);
         par5BirdieCount = statDAO.getNHolesParScore(5, -1, player, round);
@@ -283,7 +332,43 @@ public class PastRoundStats extends ListActivity{
         else
             map.put("col_3", ""+df.format(averageHolePlusMinus));
         fillMaps.add(map);
-        
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Hole Stats");
+        map.put("col_2", "");
+        map.put("col_3", "");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Fairways");
+        map.put("col_2", "");
+        map.put("col_3", fairways == 0 ? "-" : "" + df.format(fairways) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "GIR");
+        map.put("col_2", "");
+        map.put("col_3", girs == 0 ? "-" : "" + df.format(girs) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Putts / Hole");
+        map.put("col_2", "");
+        map.put("col_3", putts == 0 ? "-" : "" + df.format(putts));
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Chips / Hole");
+        map.put("col_2", "");
+        map.put("col_3", chips == 0 ? "-" : "" + df.format(chips));
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Penalties / Round");
+        map.put("col_2", "");
+        map.put("col_3", penalties == 0 ? "-" : "" + df.format(penalties));
+        fillMaps.add(map);
+
         map = new HashMap<String, String>();
         map.put("col_1", "Scoring Breakdown");
         map.put("col_2", "Total");
@@ -367,6 +452,30 @@ public class PastRoundStats extends ListActivity{
         map.put("col_2", "Total");
         map.put("col_3", "%");
         fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "GIR");
+        map.put("col_2", "");
+        map.put("col_3", par3Girs==0 ? "-" : "" + df.format(par3Girs) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Putts / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par3Putts==0 ? "-" : "" + df.format(par3Putts) );
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Chips / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par3Chips==0 ? "-" : "" + df.format(par3Chips) );
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Penalties / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par3Penalties==0 ? "-" : "" + df.format(par3Penalties) );
+        fillMaps.add(map);
         
         map = new HashMap<String, String>();
         map.put("col_1", "Hole In One");
@@ -435,6 +544,36 @@ public class PastRoundStats extends ListActivity{
         map.put("col_1", "Par 4");
         map.put("col_2", "Total");
         map.put("col_3", "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Fairways");
+        map.put("col_2", "");
+        map.put("col_3", par4Fairways == 0 ? "-" : "" + df.format(par4Fairways) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "GIR");
+        map.put("col_2", "");
+        map.put("col_3", par4Girs == 0 ? "-" : "" + df.format(par4Girs) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Putts / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par4Putts == 0 ? "-" : "" + df.format(par4Putts) );
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Chips / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par4Chips == 0 ? "-" : "" + df.format(par4Chips) );
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Penalties / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par4Penalties == 0 ? "-" : "" + df.format(par4Penalties) );
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -513,6 +652,36 @@ public class PastRoundStats extends ListActivity{
         map.put("col_1", "Par 5");
         map.put("col_2", "Total");
         map.put("col_3", "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Fairways");
+        map.put("col_2", "");
+        map.put("col_3", par5Fairways == 0 ? "-" : "" + df.format(par5Fairways) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "GIR");
+        map.put("col_2", "");
+        map.put("col_3", par5Girs == 0 ? "-" : "" + df.format(par5Girs) + "%");
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Putts / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par5Putts == 0 ? "-" : "" + df.format(par5Putts) );
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Chips / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par5Chips == 0 ? "-" : "" + df.format(par5Chips) );
+        fillMaps.add(map);
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Penalties / Hole");
+        map.put("col_2", "");
+        map.put("col_3", par5Penalties == 0 ? "-" : "" + df.format(par5Penalties) );
         fillMaps.add(map);
         
         map = new HashMap<String, String>();
@@ -710,7 +879,12 @@ public class PastRoundStats extends ListActivity{
 			}
 			
 			//Sets the header rows to have a green background with gray bold text
-			if (position==0 || position==5 || position==14 || position==22 || position==31){
+			if (position==0 ||
+                    position==5 ||
+                    position==11 ||
+                    position==20 ||
+                    position==32 ||
+                    position==46){
 				view.setBackgroundColor(0xff347c12);
 				
 				t1 = (TextView)view.findViewById(R.id.statisticsitem1);
