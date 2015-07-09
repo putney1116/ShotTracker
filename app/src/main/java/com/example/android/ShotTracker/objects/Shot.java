@@ -1,5 +1,6 @@
 package com.example.android.ShotTracker.objects;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -10,7 +11,7 @@ public class Shot {
     private long mID = -1;
     private long mRoundHoleID = -1;
     private long mClubID = -1;
-    private Vector<ShotType> mShotType;
+    private List<ShotType> mShotType;
     private int mYards = -1;
     private double mShotStartLat = -1;
     private double mShotStartLong = -1;
@@ -21,11 +22,11 @@ public class Shot {
      * Default Constructor
      */
     public Shot() {
-        mShotType = new Vector<ShotType>();
+        mShotType = new List<ShotType>();
     }
 
     public Shot(long id, RoundHole roundhole, Club club,
-                Vector<ShotType> shottype, int yds, double sslat,
+                List<ShotType> shottype, int yds, double sslat,
                 double sslong, double selat, double selong){
         this.mID = id;
         this.mRoundHoleID = roundhole.getID();
@@ -39,7 +40,7 @@ public class Shot {
     }
 
     public Shot(RoundHole roundhole, Club club,
-                Vector<ShotType> shottype, int yds, double sslat,
+                List<ShotType> shottype, int yds, double sslat,
                 double sslong, double selat, double selong){
         this.mRoundHoleID = roundhole.getID();
         this.mClubID = club.getID();
@@ -97,7 +98,7 @@ public class Shot {
     }
 
     public void addShotType(ShotType shottype) {
-        this.mShotType.addElement(shottype);
+        this.mShotType.add(shottype);
     }
     /**
      * Getters
@@ -114,7 +115,7 @@ public class Shot {
         return this.mClubID;
     }
 
-    public Vector<ShotType> getShotTypeList() {
+    public List<ShotType> getShotTypeList() {
         return this.mShotType;
     }
 
