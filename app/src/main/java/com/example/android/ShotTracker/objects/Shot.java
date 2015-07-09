@@ -140,6 +140,10 @@ public class Shot {
         return this.mShotEndLong;
     }
 
+    /**
+     * clear the list of shot types
+     */
+    public void clearShotTypes() { mShotType.clear(); }
 
     /**
      * Function to calculate the yards between the shots start and end points.
