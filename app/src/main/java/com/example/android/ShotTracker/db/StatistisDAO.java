@@ -319,14 +319,16 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.CHIPS_COLUMN
                 + ") FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
                 + " WHERE "
-                + DataBaseHelper.PLAYERID_COLUMN
-                + "="
-                + player.getID()
-                + " AND "
                 + DataBaseHelper.ROUNDID_COLUMN
                 + "="
-                + round.getID();
+                + round.getID()
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID();
 
         Cursor cursor = database.rawQuery(query, null);
 
@@ -354,6 +356,8 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.CHIPS_COLUMN
                 + ") FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
                 + " NATURAL JOIN "
                 + DataBaseHelper.COURSEHOLE_TABLE
                 + " WHERE "
@@ -551,14 +555,16 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.PUTTS_COLUMN
                 + ") FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
                 + " WHERE "
-                + DataBaseHelper.PLAYERID_COLUMN
-                + "="
-                + player.getID()
-                + " AND "
                 + DataBaseHelper.ROUNDID_COLUMN
                 + "="
-                + round.getID();
+                + round.getID()
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID();
 
         Cursor cursor = database.rawQuery(query, null);
 
@@ -586,6 +592,8 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.PUTTS_COLUMN
                 + ") FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
                 + " NATURAL JOIN "
                 + DataBaseHelper.COURSEHOLE_TABLE
                 + " WHERE "
@@ -783,14 +791,17 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.PENALTIES_COLUMN
                 + ") FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
                 + " WHERE "
-                + DataBaseHelper.PLAYERID_COLUMN
-                + "="
-                + player.getID()
-                + " AND "
                 + DataBaseHelper.ROUNDID_COLUMN
                 + "="
-                + round.getID();
+                + round.getID()
+                + " AND "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "="
+                + player.getID();
+
 
         Cursor cursor = database.rawQuery(query, null);
 
@@ -818,6 +829,8 @@ public class StatistisDAO extends ShotTrackerDBDAO {
                 + DataBaseHelper.PENALTIES_COLUMN
                 + ") FROM "
                 + DataBaseHelper.ROUNDHOLE_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.SUBROUND_TABLE
                 + " NATURAL JOIN "
                 + DataBaseHelper.COURSEHOLE_TABLE
                 + " WHERE "
