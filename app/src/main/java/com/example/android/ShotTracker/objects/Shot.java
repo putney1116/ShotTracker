@@ -150,12 +150,8 @@ public class Shot {
      * @param idx
      */
     public void removeShotType(int idx) {
-        if (idx < mShotType.size()) {
-            mShotType.remove(idx);
-        }
-        else {
-            //\todo add error message
-        }
+        //\todo add bounds checking
+        mShotType.remove(idx);
     }
 
     /**
