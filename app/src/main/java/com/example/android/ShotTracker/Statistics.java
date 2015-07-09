@@ -332,6 +332,17 @@ public class Statistics extends ListActivity{
 
 
         clubs = bagDAO.readClubsInBag(player);
+        // Remove the putter
+        int idx = 0;
+        int pidx = -1;
+        for (Club club : clubs) {
+            if (club.getClub().equals("Putter"))
+                pidx = idx;
+            idx++;
+        }
+        if (pidx >= 0)
+            clubs.remove(pidx);
+        // Fill the distances and accuracy
         for (Club club : clubs) {
             club.setAvgDist(statDAO.getClubAvgDist(player, club));
             club.setAccuracy(statDAO.getClubAccuracy(player, club, (float) 10));
@@ -456,6 +467,17 @@ public class Statistics extends ListActivity{
                 + par5QuadBogeyPlusCount;
 
         clubs = bagDAO.readClubsInBag(player);
+        // Remove the putter
+        int idx = 0;
+        int pidx = -1;
+        for (Club club : clubs) {
+            if (club.getClub().equals("Putter"))
+                pidx = idx;
+            idx++;
+        }
+        if (pidx >= 0)
+            clubs.remove(pidx);
+        // Fill the distances and accuracy
         for (Club club : clubs) {
             club.setAvgDist(statDAO.getClubAvgDist(player, club, course));
             club.setAccuracy(statDAO.getClubAccuracy(player, club, course, (float)10));
