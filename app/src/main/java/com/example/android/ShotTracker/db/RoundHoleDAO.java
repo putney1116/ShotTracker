@@ -3,7 +3,6 @@ package com.example.android.ShotTracker.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.Player;
@@ -61,7 +60,7 @@ public class RoundHoleDAO extends ShotTrackerDBDAO {
             values.put(DataBaseHelper.PENALTIES_COLUMN, roundhole.getPenalties());
         }
 
-        values.put(DataBaseHelper.PUTTS_COLUMN, roundhole.getFairways());
+        values.put(DataBaseHelper.FAIRWAYS_COLUMN, roundhole.getFairways());
 
         if (roundhole.getChips() > 0) {
             values.put(DataBaseHelper.CHIPS_COLUMN, roundhole.getChips());

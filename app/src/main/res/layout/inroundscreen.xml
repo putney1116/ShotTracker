@@ -18,7 +18,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     	android:padding="0dp"
         android:layout_weight="1"
     	>  
-    		<RelativeLayout
+    		<LinearLayout
 			android:layout_width="fill_parent"
     		android:layout_height="fill_parent"
     		android:id="@+id/tab1"
@@ -26,147 +26,543 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     		android:background="@drawable/greenandsky"
     		>
 
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					>
 
-    			<TextView
-    			android:id="@+id/coursename"
-    			android:layout_width="150dp"
-    			android:layout_height="wrap_content"
-    			android:layout_alignParentLeft="true"
-    			android:layout_alignParentBottom="true"
-    			android:text=""
-    			android:textColor="#FFFFFF"
-    			android:textStyle="bold"
-    			android:layout_marginBottom="20dp"
-    			android:layout_marginLeft="0dp" 
-    			android:gravity="center"
-    			/>
-    			<TextView android:id="@+id/playername"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text=""
-    			android:textColor="#000000"
-    			android:textSize="20sp"
-    			android:textStyle="bold"
-    			android:layout_alignParentTop="true"
-    			android:layout_centerInParent="true"
-    			android:layout_marginTop="20dp"
-    			android:layout_marginBottom="10dp"
-    			/>
-    			<TextView  android:id="@+id/scoreentry"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content" 
-    			android:text="0"
-    			android:textColor="#000000"
-   				android:textSize="20sp"
-   				android:textStyle="bold"
-    			android:layout_below="@id/playername"
-    			android:layout_centerInParent="true"
-    			android:layout_marginTop="18dp"
-    			android:layout_marginLeft="10dp"
-    			android:layout_marginRight="10dp"
-  				/>
-    			<Button  android:id="@+id/minusbutton"
-   				android:layout_width="60dp"
-    			android:layout_height="wrap_content" 
-    			android:text="-"
-    			android:layout_below="@id/playername"
-    			android:layout_toLeftOf="@id/scoreentry"
-    			android:layout_marginTop="5dp"
-    			android:padding="17dp"
-                android:minWidth="0dp"
-    			/>
-    			<Button  android:id="@+id/plusbutton"
-    			android:layout_width="60dp"
-    			android:layout_height="wrap_content" 
-    			android:text="+"
-    			android:layout_below="@id/playername"
-    			android:layout_toRightOf="@id/scoreentry"
-    			android:layout_marginTop="5dp"
-    			android:padding="17dp"
-                android:minWidth="0dp"
-    			/>
-                <Button android:id="@+id/finishbutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Finish Round"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="25dp"
-                android:layout_marginBottom="5dp"
-                />
-    			<TextView android:id="@+id/holenumber"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text=""
-    			android:textColor="#000000"
-    			android:textSize="20sp"
-    			android:layout_below="@id/playername"
-    			android:layout_toLeftOf="@id/minusbutton"
-    			android:layout_marginTop="18dp"
-    			android:layout_marginRight="20dp"
-    			/>
-    			<TextView android:id="@+id/parnumber"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text=""
-    			android:textColor="#000000"
-    			android:textSize="20sp"
-    			android:layout_below="@id/playername"
-    			android:layout_toRightOf="@id/plusbutton"
-    			android:layout_marginTop="18dp"
-    			android:layout_marginLeft="20dp"
-    			/>
-    			<TextView android:id="@+id/greenbackdistance"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text="---"
-    			android:textColor="#FFFFFF"
-    			android:textSize="20sp"
-    			android:layout_below="@id/scoreentry"
-    			android:layout_centerInParent="true"
-    			android:layout_marginTop="75dp"
-    			/>
-    			<TextView android:id="@+id/greenmiddledistance"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text="---"
-    			android:textStyle="bold"
-    			android:textColor="#FFFFFF"
-    			android:textSize="20sp"
-    			android:layout_below="@id/greenbackdistance"
-    			android:layout_centerInParent="true"
-    			android:paddingTop="0dp"
-    			android:layout_marginTop="25dp"
-    			/>
-    			<TextView android:id="@+id/greenfrontdistance"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text="---"
-    			android:textColor="#FFFFFF"
-    			android:textSize="20sp"
-    			android:layout_below="@id/greenmiddledistance"
-    			android:layout_centerInParent="true"
-    			android:paddingTop="28dp"
-    			/>
-    			<ImageView android:id="@+id/gpsstatusindicator"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:layout_below="@id/greenfrontdistance"
-    			android:layout_centerInParent="true"
-    			android:layout_marginTop="40dp"
-    			android:src="@drawable/gpsstatusbad"
-    			/>
-    			<TextView android:id="@+id/gpsstatustext"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:text="GPS Status"
-    			android:textColor="#FFFFFF"
-    			android:textSize="6sp"
-    			android:layout_below="@id/gpsstatusindicator"
-    			android:layout_centerInParent="true"
-    			android:paddingTop="0dp"
-    			/>
-			</RelativeLayout>
+					<TextView android:id="@+id/playername"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Player Name"
+						android:gravity="center"
+						android:textColor="#000000"
+						android:textSize="20sp"
+						android:textStyle="bold"
+						android:layout_weight="1"
+					/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="1"
+					>
+					<TextView  android:id="@+id/scoretitlebar"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Shot"
+						android:textColor="#000000"
+						android:textSize="15sp"
+						android:textStyle="bold"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="3"
+					>
+					<TextView android:id="@+id/holenumber"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Hole #"
+						android:textColor="#000000"
+						android:textSize="20sp"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+					<Button  android:id="@+id/minusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="-"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<TextView  android:id="@+id/scoreentry"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="0"
+						android:textColor="#000000"
+						android:textSize="20sp"
+						android:textStyle="bold"
+						android:gravity="center"
+						android:layout_weight="1"
+					/>
+
+					<Button  android:id="@+id/plusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="+"
+						android:gravity="center"
+						android:layout_weight="2"
+					/>
+					<TextView android:id="@+id/ScoreText"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Score"
+						android:textColor="#000000"
+						android:textSize="20sp"
+						android:gravity="center"
+						android:layout_weight="3"
+					/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="1"
+					>
+					<TextView  android:id="@+id/parnumber"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Par #"
+						android:textColor="#000000"
+						android:textSize="20sp"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<TextView  android:id="@+id/puttstitlebar"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Putt"
+						android:textColor="#000000"
+						android:textSize="15sp"
+						android:textStyle="bold"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<TextView  android:id="@+id/totalscore"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="0"
+						android:textColor="#000000"
+						android:textSize="21sp"
+						android:textStyle="bold"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+					<Button  android:id="@+id/puttminusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="-"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<TextView  android:id="@+id/puttscoreentry"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="0"
+						android:textColor="#000000"
+						android:textSize="15sp"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+
+					<Button  android:id="@+id/puttplusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="+"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<TextView  android:id="@+id/penaltytitlebar"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Penalty"
+						android:textSize="15sp"
+						android:textStyle="bold"
+						android:textColor="#000000"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="5"
+						/>
+
+					<TextView  android:id="@+id/chiptitlebar"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="Chip"
+						android:textSize="15sp"
+						android:textStyle="bold"
+						android:textColor="#000000"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<Button  android:id="@+id/penaltyplusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="+"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<TextView android:id="@+id/greenbackdistance"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="---"
+						android:textColor="#FFFFFF"
+						android:textSize="18sp"
+						android:gravity="center"
+						android:layout_weight="3"
+					/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+
+					<Button  android:id="@+id/chipplusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="+"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<TextView  android:id="@+id/penaltyscoreentry"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="0"
+						android:textColor="#000000"
+						android:textSize="15sp"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<TextView android:id="@+id/greenmiddledistance"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="---"
+						android:textStyle="bold"
+						android:textColor="#FFFFFF"
+						android:textSize="22sp"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+
+					<TextView  android:id="@+id/chipscoreentry"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="0"
+						android:textColor="#000000"
+						android:textSize="15sp"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="top"
+					android:layout_weight="2"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<Button  android:id="@+id/penaltyminusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="-"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<TextView android:id="@+id/greenfrontdistance"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="---"
+						android:textColor="#FFFFFF"
+						android:textSize="18sp"
+						android:gravity="center"
+						android:layout_weight="3"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+
+					<Button  android:id="@+id/chipminusbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="-"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					/>
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="2"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="top"
+						android:layout_weight="1"
+						/>
+					<Button android:id="@+id/fairwayhitbutton"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="Fairway Hit"
+						android:layout_gravity="center_horizontal|top"
+						android:layout_weight="3"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="2"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:orientation="vertical"
+						android:gravity="center"
+						android:layout_weight="2"
+						>
+						<ImageView android:id="@+id/gpsstatusindicator"
+							android:layout_width="wrap_content"
+							android:layout_height="0dp"
+							android:gravity="center"
+							android:src="@drawable/gpsstatusbad"
+							android:layout_weight="1"
+							/>
+						<TextView android:id="@+id/gpsstatustext"
+							android:layout_width="wrap_content"
+							android:layout_height="0dp"
+							android:text="GPS Status"
+							android:textColor="#FFFFFF"
+							android:textSize="6sp"
+							android:gravity="center"
+							android:layout_weight="1"
+							/>
+					</LinearLayout>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_weight="3"
+					>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<TextView
+						android:id="@+id/coursename"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Course Name"
+						android:textColor="#FFFFFF"
+						android:textStyle="bold"
+						android:gravity="center"
+						android:layout_weight="8"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+					<Button android:id="@+id/finishbutton"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Finish Round"
+						android:gravity="center"
+						android:layout_weight="6"
+						/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center"
+						android:layout_weight="1"
+						/>
+				</LinearLayout>
+			</LinearLayout>
 			<RelativeLayout
 			android:orientation="vertical"
 			android:layout_width="fill_parent"
@@ -3092,7 +3488,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 						android:orientation="vertical"
 						android:layout_weight="2">
 						<TextView
-							android:id="@+id/caddyMainSectionPreviousShoText"
+							android:id="@+id/caddyMainSectionPreviousShotText"
 							android:layout_width="fill_parent"
 							android:layout_height="0dp"
 							android:text=""
@@ -3144,7 +3540,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 								android:id="@+id/caddyFarLeftClubButton"
 								android:layout_width="0dp"
 								android:layout_height="fill_parent"
-								android:text="6"
+								android:text=""
 								android:lineSpacingExtra="10dp"
 								android:layout_marginLeft="-100dp"
 								android:layout_marginTop="40dp"
@@ -3154,7 +3550,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 								android:id="@+id/caddyLeftClubButton"
 								android:layout_width="0dp"
 								android:layout_height="fill_parent"
-								android:text="7&#10;75%&#10;160"
+								android:text=""
 								android:lineSpacingExtra="10dp"
 								android:layout_marginLeft="10dp"
 								android:layout_marginTop="40dp"
@@ -3164,7 +3560,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 								android:id="@+id/caddyMiddleClubButton"
 								android:layout_width="0dp"
 								android:layout_height="fill_parent"
-								android:text="8&#10;Hit %: 80%&#10;145 155 165"
+								android:text=""
 								android:lineSpacingExtra="20dp"
 								android:layout_marginLeft="10dp"
 								android:layout_marginRight="10dp"
@@ -3175,7 +3571,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 								android:id="@+id/caddyRightClubButton"
 								android:layout_width="0dp"
 								android:layout_height="fill_parent"
-								android:text="9&#10;85%&#10;140"
+								android:text=""
 								android:lineSpacingExtra="10dp"
 								android:layout_marginRight="10dp"
 								android:layout_marginTop="40dp"
@@ -3185,7 +3581,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 								android:id="@+id/caddyFarRightClubButton"
 								android:layout_width="0dp"
 								android:layout_height="fill_parent"
-								android:text="PW"
+								android:text=""
 								android:lineSpacingExtra="10dp"
 								android:layout_marginRight="-100dp"
 								android:layout_marginTop="40dp"
@@ -3289,23 +3685,24 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 							android:layout_height="wrap_content"
 							android:text="Count Distance"
 							android:layout_marginLeft="10dp"
+							android:layout_gravity="center"
 							android:layout_weight="4"/>
 						<Button
 							android:id="@+id/caddyRecordLocationButton"
 							android:layout_width="0dp"
 							android:layout_height="fill_parent"
-							android:text="Record Location"
+							android:text="Start Shot"
 							android:layout_marginLeft="10dp"
 							android:layout_marginRight="10dp"
 							android:layout_weight="5"/>
 						<Button
-							android:id="@+id/caddyPenaltyButton"
+							android:id="@+id/caddyFinishHoleButton"
 							android:layout_width="0dp"
 							android:layout_height="wrap_content"
-							android:text="Penalty Stroke"
+							android:text="Finish Hole"
 							android:layout_marginRight="10dp"
+							android:layout_gravity="center"
 							android:layout_weight="4"/>
-
 					</LinearLayout>
 				</LinearLayout>
 			</LinearLayout>

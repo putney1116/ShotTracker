@@ -1,8 +1,9 @@
 package com.example.android.ShotTracker.objects;
 
+import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Class holding Shot information
@@ -127,6 +128,13 @@ public class Shot {
 
     public void clearShotTypesPost() { mShotTypePost.clear(); }
 
+    public Location getShotStartLocation() {
+        Location location = new Location("");
+        location.setLatitude(mShotStartLat);
+        location.setLongitude(mShotStartLong);
+
+        return location;
+    }
     /**
      * Remove a shottype from the list
      * @param idx

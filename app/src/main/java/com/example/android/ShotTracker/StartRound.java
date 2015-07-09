@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +38,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.ShotTracker.db.BagDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.CourseHoleInfoDAO;
@@ -44,8 +47,11 @@ import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.RoundDAO;
 import com.example.android.ShotTracker.db.RoundHoleDAO;
 import com.example.android.ShotTracker.db.ShotDAO;
+import com.example.android.ShotTracker.db.ShotLinkDAO;
+import com.example.android.ShotTracker.db.ShotTypeDAO;
 import com.example.android.ShotTracker.db.SubCourseDAO;
 import com.example.android.ShotTracker.db.SubRoundDAO;
+import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.CourseHole;
 import com.example.android.ShotTracker.objects.CourseHoleInfo;
@@ -53,6 +59,7 @@ import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
 import com.example.android.ShotTracker.objects.RoundHole;
 import com.example.android.ShotTracker.objects.Shot;
+import com.example.android.ShotTracker.objects.ShotType;
 import com.example.android.ShotTracker.objects.SubCourse;
 import com.example.android.ShotTracker.objects.SubRound;
 import com.google.android.gms.maps.CameraUpdate;
@@ -83,7 +90,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	//\todo Copy xml changes to inroundscreen2
 	
 	private TabHost tabHost;
-	private TextView scoreEntryGreen; 
+	private TextView scoreEntryGreen;
+	private TextView scoreEntryGreenShots;
+	private TextView scoreEntryGreenPutts;
+	private TextView scoreEntryGreenChips;
+	private TextView scoreEntryGreenPenalty;
 	private TextView scoreEntryScorecard; 
 	private TextView scorecardTotalText;
 	private TextView scorecardPlusMinusText;
@@ -100,6 +111,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private boolean frontActive = true;
 	private boolean buttonsVisible = false;
 	private int holeScore[][] = new int[5][19];
+	private int shotScore[][] = new int[5][19];
+	private int puttScore[][] = new int[5][19];
+	private int chipScore[][] = new int[5][19];
+	private int penaltyScore[][] = new int[5][19];
+	private boolean fairwayHit[][] = new boolean[5][19];
 	String playerName[] = {"","","","",""};
 	
 	View.OnTouchListener gestureListener;
@@ -158,11 +174,16 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     private SubRoundDAO subRoundDAO = null;
     private RoundHoleDAO roundHoleDAO = null;
     private ShotDAO shotDAO = null;
+	private ShotLinkDAO shotLinkDAO = null;
+	private BagDAO bagDAO = null;
+	private ShotTypeDAO shotTypeDAO = null;
 
     private Course course = null;
     private List<SubCourse> subCourses = null;
 
 	private boolean eighteenHoleRound = true;
+
+	private int caddyPlayerNumber = 0;
     
 	public void onCreate(Bundle savedInstanceState) {
 		//Remove title bar
@@ -354,8 +375,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	Button plusButton = (Button)findViewById(R.id.plusbutton);
     	Button minusButton = (Button)findViewById(R.id.minusbutton);
     	Button finishButton = (Button)findViewById(R.id.finishbutton);
+		final Button fairwayButton = (Button)findViewById(R.id.fairwayhitbutton);
     		
-    	scoreEntryGreen = (TextView)findViewById(R.id.scoreentry);
+    	scoreEntryGreen = (TextView)findViewById(R.id.totalscore);
+
+		scoreEntryGreenShots = (TextView)findViewById(R.id.scoreentry);
     	
     	//Initialize Vibrate
     	vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -367,23 +391,25 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	plusButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try{
+				try {
 					//Sets the vibrate time
 					vibe.vibrate(15);
-					
+
 					//Increases the active player's score
+					shotScore[playerNumber][holeNumber]++;
 					holeScore[playerNumber][holeNumber]++;
-					
+
 					//Displays the increased number
-					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));    
-					
+					scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
 					//Loads the correct view from the scorecard tab
 					setTextViewHoleNumber(playerNumber, holeNumber);
 
 					//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
 					//If so, the scorecard display is updated to show the change in score
-					if(holeNumber<10){
-						if(frontActive){
+					if (holeNumber < 10) {
+						if (frontActive) {
 							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
 
 							updateScorecardTotals(playerNumber);
@@ -391,18 +417,18 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					}
 					//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
 					//If so, the scorecard display is updated to show the change in score
-					else{
-						if(!frontActive){
+					else {
+						if (!frontActive) {
 							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
 
 							updateScorecardTotals(playerNumber);
 						}
 					}
-					
-				}catch(Exception e) {
+
+				} catch (Exception e) {
 				}
 			}
-    	});
+		});
     	
     	minusButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -412,10 +438,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					vibe.vibrate(15);
 
 					//Decreases the active player's score if the score is not already 0
-					if (holeScore[playerNumber][holeNumber] != 0) {
+					if (shotScore[playerNumber][holeNumber] != 0) {
+						shotScore[playerNumber][holeNumber]--;
 						holeScore[playerNumber][holeNumber]--;
 
 						//Displays the decreased number
+						scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
 						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
 
 						//Loads the correct view from the scorecard tab
@@ -450,6 +478,312 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				}
 			}
 		});
+
+
+
+		scoreEntryGreenPutts = (TextView)findViewById(R.id.puttscoreentry);
+
+		//\todo handle for 9 holes. Need to port caddy screen changes over to inroundscreen2
+		plusButton = (Button)findViewById(R.id.puttplusbutton);
+		minusButton = (Button)findViewById(R.id.puttminusbutton);
+
+		plusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//Increases the active player's score
+					puttScore[playerNumber][holeNumber]++;
+					holeScore[playerNumber][holeNumber]++;
+
+					//Displays the increased number
+					scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+					//Loads the correct view from the scorecard tab
+					setTextViewHoleNumber(playerNumber, holeNumber);
+
+					//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+					//If so, the scorecard display is updated to show the change in score
+					if (holeNumber < 10) {
+						if (frontActive) {
+
+							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							updateScorecardTotals(playerNumber);
+						}
+					}
+					//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+					//If so, the scorecard display is updated to show the change in score
+					else {
+						if (!frontActive) {
+
+							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							updateScorecardTotals(playerNumber);
+						}
+					}
+
+				} catch (Exception e) {
+				}
+			}
+		});
+
+		minusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//Decreases the active player's score if the score is not already 0
+					if (puttScore[playerNumber][holeNumber] != 0) {
+						puttScore[playerNumber][holeNumber]--;
+						holeScore[playerNumber][holeNumber]--;
+
+						//Displays the decreased number
+						scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+						//Loads the correct view from the scorecard tab
+						setTextViewHoleNumber(playerNumber, holeNumber);
+
+						//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+						//If so, the scorecard display is updated to show the change in score
+						if (holeNumber < 10) {
+							if (frontActive) {
+
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+								updateScorecardTotals(playerNumber);
+							}
+						}
+						//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+						//If so, the scorecard display is updated to show the change in score
+						else {
+							if (!frontActive) {
+
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+								updateScorecardTotals(playerNumber);
+							}
+						}
+					}
+				} catch (Exception e) {
+				}
+			}
+		});
+
+
+		scoreEntryGreenChips = (TextView)findViewById(R.id.chipscoreentry);
+
+		plusButton = (Button)findViewById(R.id.chipplusbutton);
+		minusButton = (Button)findViewById(R.id.chipminusbutton);
+
+		plusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//Increases the active player's score
+					chipScore[playerNumber][holeNumber]++;
+					holeScore[playerNumber][holeNumber]++;
+
+					//Displays the increased number
+					scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+					//Loads the correct view from the scorecard tab
+					setTextViewHoleNumber(playerNumber, holeNumber);
+
+					//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+					//If so, the scorecard display is updated to show the change in score
+					if (holeNumber < 10) {
+						if (frontActive) {
+
+							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							updateScorecardTotals(playerNumber);
+						}
+					}
+					//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+					//If so, the scorecard display is updated to show the change in score
+					else {
+						if (!frontActive) {
+
+							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							updateScorecardTotals(playerNumber);
+						}
+					}
+
+				} catch (Exception e) {
+				}
+			}
+		});
+
+		minusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//Decreases the active player's score if the score is not already 0
+					if (chipScore[playerNumber][holeNumber] != 0) {
+						chipScore[playerNumber][holeNumber]--;
+						holeScore[playerNumber][holeNumber]--;
+
+						//Displays the decreased number
+						scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+						//Loads the correct view from the scorecard tab
+						setTextViewHoleNumber(playerNumber, holeNumber);
+
+						//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+						//If so, the scorecard display is updated to show the change in score
+						if (holeNumber < 10) {
+							if (frontActive) {
+
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+								updateScorecardTotals(playerNumber);
+							}
+						}
+						//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+						//If so, the scorecard display is updated to show the change in score
+						else {
+							if (!frontActive) {
+
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+								updateScorecardTotals(playerNumber);
+							}
+						}
+					}
+				} catch (Exception e) {
+				}
+			}
+		});
+
+
+
+		scoreEntryGreenPenalty = (TextView)findViewById(R.id.penaltyscoreentry);
+
+		plusButton = (Button)findViewById(R.id.penaltyplusbutton);
+		minusButton = (Button)findViewById(R.id.penaltyminusbutton);
+
+		plusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//Increases the active player's score
+					penaltyScore[playerNumber][holeNumber]++;
+					holeScore[playerNumber][holeNumber]++;
+
+					//Displays the increased number
+					scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
+					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+					//Loads the correct view from the scorecard tab
+					setTextViewHoleNumber(playerNumber, holeNumber);
+
+					//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+					//If so, the scorecard display is updated to show the change in score
+					if (holeNumber < 10) {
+						if (frontActive) {
+
+							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							updateScorecardTotals(playerNumber);
+						}
+					}
+					//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+					//If so, the scorecard display is updated to show the change in score
+					else {
+						if (!frontActive) {
+
+							scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+							updateScorecardTotals(playerNumber);
+						}
+					}
+
+				} catch (Exception e) {
+				}
+			}
+		});
+
+		minusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					//Decreases the active player's score if the score is not already 0
+					if (penaltyScore[playerNumber][holeNumber] != 0) {
+						penaltyScore[playerNumber][holeNumber]--;
+						holeScore[playerNumber][holeNumber]--;
+
+						//Displays the decreased number
+						scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
+						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+						//Loads the correct view from the scorecard tab
+						setTextViewHoleNumber(playerNumber, holeNumber);
+
+						//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+						//If so, the scorecard display is updated to show the change in score
+						if (holeNumber < 10) {
+							if (frontActive) {
+
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+								updateScorecardTotals(playerNumber);
+							}
+						}
+						//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+						//If so, the scorecard display is updated to show the change in score
+						else {
+							if (!frontActive) {
+
+								if (holeScore[playerNumber][holeNumber] == 0)
+									scoreEntryScorecard.setText("");
+								else
+									scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+								updateScorecardTotals(playerNumber);
+							}
+						}
+					}
+				} catch (Exception e) {
+				}
+			}
+		});
     	
     	finishButton.setOnClickListener(new OnClickListener() { 
 			@Override
@@ -464,7 +798,47 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				catch(Exception e) {
 				}
 			}
-    	});
+	    	});
+
+
+		for (int x = 1; x < 19; x++) {
+			for (int y = 1; y < 5; y++) {
+				fairwayHit[y][x] = false;
+			}
+		}
+
+		if(par[holeNumber] != 3) {
+			fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+			fairwayButton.setEnabled(true);
+		}
+		else {
+			fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+			fairwayButton.setEnabled(false);
+		}
+
+		fairwayButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+
+					if(par[holeNumber] != 3){
+						//Sets the vibrate time
+						vibe.vibrate(15);
+
+						if (fairwayHit[playerNumber][holeNumber]) {
+							fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+							fairwayHit[playerNumber][holeNumber] = false;
+						} else {
+							fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							fairwayHit[playerNumber][holeNumber] = true;
+						}
+					}
+
+				}
+				catch(Exception e) {
+				}
+			}
+		});
     }
     
     //Updates the player score values on the scorecard tab
@@ -508,7 +882,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			for(int x=1;x<=9;x++){
 				if(holeScore[playerNumber][x]!=0)
 					parTotal += par[x];
-			
+
 				nineHoles+=holeScore[playerNumber][x];
 			}
 		}
@@ -517,7 +891,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			for(int x=10;x<=18;x++){
 				if(holeScore[playerNumber][x]!=0)
 					parTotal += par[x];
-				
+
 				nineHoles+=holeScore[playerNumber][x];
 			}
 		}
@@ -598,6 +972,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					
 					//Increases the score
 					holeScore[playerNumber][holeNumber]++;
+					shotScore[playerNumber][holeNumber]++;
 					
 					//Displays the increased score
 					scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -618,9 +993,10 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					vibe.vibrate(15);
 					
 					//Decreases the score if it is greater than 0
-					if(holeScore[playerNumber][holeNumber]!=0){
+					if(shotScore[playerNumber][holeNumber]!=0){
 						holeScore[playerNumber][holeNumber]--;
-							
+						shotScore[playerNumber][holeNumber]--;
+
 						//Displays the decreased score
 						if(holeScore[playerNumber][holeNumber]==0)
 							scoreEntryScorecard.setText("");
@@ -644,10 +1020,18 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     		playerNumber = 1;
     	
     		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 1;
-	    	else
-	    		holeNumber = 10;
+	    	if(frontActive) {
+				if(holeNumber!=1) {
+					holeNumber = 1;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=10) {
+					holeNumber = 10;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -664,12 +1048,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 1;
-	    	else
-	    		holeNumber = 10;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=1) {
+					holeNumber = 1;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=10) {
+					holeNumber = 10;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -686,12 +1078,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 1;
-	    	else
-	    		holeNumber = 10;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=1) {
+					holeNumber = 1;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=10) {
+					holeNumber = 10;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -708,12 +1108,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 1;
-	    	else
-	    		holeNumber = 10;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=1) {
+					holeNumber = 1;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=10) {
+					holeNumber = 10;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -730,12 +1138,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 2;
-	    	else
-	    		holeNumber = 11;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=2) {
+					holeNumber = 2;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=11) {
+					holeNumber = 11;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -752,12 +1168,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 2;
-	    	else
-	    		holeNumber = 11;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=2) {
+					holeNumber = 2;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=11) {
+					holeNumber = 11;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -774,12 +1198,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 2;
-	    	else
-	    		holeNumber = 11;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=2) {
+					holeNumber = 2;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=11) {
+					holeNumber = 11;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -796,12 +1228,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 2;
-	    	else
-	    		holeNumber = 11;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=2) {
+					holeNumber = 2;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=11) {
+					holeNumber = 11;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -818,12 +1258,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 3;
-	    	else
-	    		holeNumber = 12;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=3) {
+					holeNumber = 3;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=12) {
+					holeNumber = 12;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -840,12 +1288,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 3;
-	    	else
-	    		holeNumber = 12;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=3) {
+					holeNumber = 3;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=12) {
+					holeNumber = 12;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -862,12 +1318,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 3;
-	    	else
-	    		holeNumber = 12;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=3) {
+					holeNumber = 3;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=12) {
+					holeNumber = 12;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -884,12 +1348,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 3;
-	    	else
-	    		holeNumber = 12;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=3) {
+					holeNumber = 3;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=12) {
+					holeNumber = 12;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -906,12 +1378,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 4;
-	    	else
-	    		holeNumber = 13;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=4) {
+					holeNumber = 4;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=13) {
+					holeNumber = 13;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -928,12 +1408,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 4;
-	    	else
-	    		holeNumber = 13;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=4) {
+					holeNumber = 4;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=13) {
+					holeNumber = 13;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -950,12 +1438,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 4;
-	    	else
-	    		holeNumber = 13;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=4) {
+					holeNumber = 4;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=13) {
+					holeNumber = 13;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -972,12 +1468,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 4;
-	    	else
-	    		holeNumber = 13;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=4) {
+					holeNumber = 4;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=13) {
+					holeNumber = 13;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -994,12 +1498,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 5;
-	    	else
-	    		holeNumber = 14;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=5) {
+					holeNumber = 5;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=14) {
+					holeNumber = 14;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1016,12 +1528,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 5;
-	    	else
-	    		holeNumber = 14;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=5) {
+					holeNumber = 5;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=14) {
+					holeNumber = 14;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1038,12 +1558,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 5;
-	    	else
-	    		holeNumber = 14;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=5) {
+					holeNumber = 5;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=14) {
+					holeNumber = 14;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1060,12 +1588,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 5;
-	    	else
-	    		holeNumber = 14;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=5) {
+					holeNumber = 5;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=14) {
+					holeNumber = 14;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1082,12 +1618,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 6;
-	    	else
-	    		holeNumber = 15;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=6) {
+					holeNumber = 6;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=15) {
+					holeNumber = 15;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1104,12 +1648,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 6;
-	    	else
-	    		holeNumber = 15;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=6) {
+					holeNumber = 6;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=15) {
+					holeNumber = 15;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1126,12 +1678,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 6;
-	    	else
-	    		holeNumber = 15;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=6) {
+					holeNumber = 6;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=15) {
+					holeNumber = 15;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1148,12 +1708,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 6;
-	    	else
-	    		holeNumber = 15;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=6) {
+					holeNumber = 6;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=15) {
+					holeNumber = 15;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1170,12 +1738,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 7;
-	    	else
-	    		holeNumber = 16;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=7) {
+					holeNumber = 7;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=16) {
+					holeNumber = 16;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1192,12 +1768,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 7;
-	    	else
-	    		holeNumber = 16;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=7) {
+					holeNumber = 7;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=16) {
+					holeNumber = 16;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1214,12 +1798,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=3){
     		//Sets the current player number
     		playerNumber = 3;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 7;
-	    	else
-	    		holeNumber = 16;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=7) {
+					holeNumber = 7;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=16) {
+					holeNumber = 16;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1236,12 +1828,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=4){
     		//Sets the current player number
     		playerNumber = 4;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 7;
-	    	else
-	    		holeNumber = 16;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=7) {
+					holeNumber = 7;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=16) {
+					holeNumber = 16;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1258,12 +1858,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 8;
-	    	else
-	    		holeNumber = 17;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=8) {
+					holeNumber = 8;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=17) {
+					holeNumber = 17;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1280,12 +1888,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=2){
     		//Sets the current player number
     		playerNumber = 2;
-    	
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 8;
-	    	else
-	    		holeNumber = 17;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=8) {
+					holeNumber = 8;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=17) {
+					holeNumber = 17;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1303,11 +1919,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     		//Sets the current player number
     		playerNumber = 3;
 
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 8;
-	    	else
-	    		holeNumber = 17;
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=8) {
+					holeNumber = 8;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=17) {
+					holeNumber = 17;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1325,11 +1949,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     		//Sets the current player number
     		playerNumber = 4;
 
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 8;
-	    	else
-	    		holeNumber = 17;
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=8) {
+					holeNumber = 8;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=17) {
+					holeNumber = 17;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1346,12 +1978,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	if(numberOfPlayers>=1){
     		//Sets the current player number
     		playerNumber = 1;
-   
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 9;
-	    	else
-	    		holeNumber = 18;
+
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=9) {
+					holeNumber = 9;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=18) {
+					holeNumber = 18;
+					CaddyScreenResetShot();
+				}
+			}
     	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1369,11 +2009,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     		//Sets the current player number
     		playerNumber = 2;
 
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 9;
-	    	else
-	    		holeNumber = 18;
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=9) {
+					holeNumber = 9;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=18) {
+					holeNumber = 18;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1391,11 +2039,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     		//Sets the current player number
     		playerNumber = 3;
 
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 9;
-	    	else
-	    		holeNumber = 18;
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=9) {
+					holeNumber = 9;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=18) {
+					holeNumber = 18;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -1413,11 +2069,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     		//Sets the current player number
     		playerNumber = 4;
 
-    		//Sets the current hole number
-	    	if(frontActive)
-	    		holeNumber = 9;
-	    	else
-	    		holeNumber = 18;
+			//Sets the current hole number
+			if(frontActive) {
+				if(holeNumber!=9) {
+					holeNumber = 9;
+					CaddyScreenResetShot();
+				}
+			}
+			else{
+				if(holeNumber!=18) {
+					holeNumber = 18;
+					CaddyScreenResetShot();
+				}
+			}
 	    	
 	    	//Runs the generic handler with the current player and hole number
 	    	playerScoreHandler();
@@ -2283,9 +2947,28 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    	   			if(tabHost.getCurrentTab()==0){
 	    	   				//Displays the current hole number, par, player name, and score if the main screen tab is selected
 	    	   				scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
 	    	   				holeNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
 	    	   				parText.setText("Par " + par[holeNumber]);
     						playerNameText.setText(playerName[playerNumber]);
+
+							Button fairwayButton = (Button)findViewById(R.id.fairwayhitbutton);
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
     						
     						//Gets the location and calls the method that calculates the distance to the green
 	    	   				Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -2342,6 +3025,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	private TextView greenHoleNumberTextView = (TextView)findViewById(R.id.holenumber);
     	private TextView greenParText = (TextView)findViewById(R.id.parnumber);
     	private TextView greenPlayerNameText = (TextView)findViewById(R.id.playername);
+		private Button fairwayButton = (Button)findViewById(R.id.fairwayhitbutton);
     	 
     	@Override
     	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
@@ -2360,8 +3044,22 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 						} else {
 							//Increases the current hole and displays the increase
 							holeNumber++;
+							CaddyScreenResetShot();
 							greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
 							greenParText.setText("Par " + par[holeNumber]);
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
 
 							//Updates the scorecard display if the increase goes from the front to the back
 							if (holeNumber == 10) {
@@ -2375,6 +3073,10 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 							//Loads the current hole's score
 							scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
 
 							//Gets the location and calls the method that calculates the distance to the green
 							Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -2394,8 +3096,22 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     					else {
     						//Decreases the current hole and displays the decrease
     						holeNumber--;
+							CaddyScreenResetShot();
     						greenHoleNumberTextView.setText("Hole " + Integer.toString(holeNumberText[holeNumber]));
     						greenParText.setText("Par " + par[holeNumber]);
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
     						
     						//Updates the scorecard display if the decrease goes from the back to the front
     						if(holeNumber==9){
@@ -2409,6 +3125,10 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						
     						//Loads the current hole's score
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
     						
     						//Gets the location and calls the method that calculates the distance to the green
     						Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -2430,6 +3150,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						else{ 
     							//Increases the current hole and displays the increase
     							holeNumber++;
+								CaddyScreenResetShot();
     							
     							//Gets the location and calls the method that calculates the distance to the green
     							Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -2454,6 +3175,23 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
     					}
     					else{   
     						//Runs if the current player is not the last player
@@ -2464,6 +3202,23 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
     					}
     				}
     				
@@ -2480,6 +3235,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						else{ 
     							//Decreases the current hole and displays the decrease
     							holeNumber--;
+								CaddyScreenResetShot();
     							
     							//Gets the location and calls the method that calculates the distance to the green
     							Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -2504,6 +3260,23 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
     					}
     					else{
     						//Runs if the current player is not the first player
@@ -2514,6 +3287,23 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     						greenParText.setText("Par " + par[holeNumber]);
     						greenPlayerNameText.setText(playerName[playerNumber]);
     						scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+							scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
+							scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
+							scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
+							scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
+
+							if(par[holeNumber] == 3){
+								fairwayButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+								fairwayButton.setEnabled(false);
+							}
+							else {
+								fairwayButton.setEnabled(true);
+								if (fairwayHit[playerNumber][holeNumber]) {
+									fairwayButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+								} else {
+									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+								}
+							}
     					}  
     				}
     			} 
@@ -2546,6 +3336,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         						if(buttonsVisible){
         							//Increases the current hole number
         							holeNumber++;
+									CaddyScreenResetShot();
         						
         							//Updates the scorecard display if the increase goes from the front to the back
         							if(holeNumber==10){
@@ -2592,6 +3383,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	        					if(buttonsVisible){
 	        						//Decreases the current hole number
         							holeNumber--;
+									CaddyScreenResetShot();
         						
         							//Updates the scorecard display if the decrease goes from the back to the front
         							if(holeNumber==9){
@@ -2641,6 +3433,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	        							//Increases the current hole number and sets the current player to the first player
 	        							playerNumber = 1;
 	        							holeNumber++;
+										CaddyScreenResetShot();
 	        						
 	        							//Updates the scorecard display if the increase goes from the front to the back
 	        							if(holeNumber==10){
@@ -2702,6 +3495,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	        							//Decreases the current hole number and sets the current player to the last player
 	        							playerNumber = numberOfPlayers;
 		        						holeNumber--;
+										CaddyScreenResetShot();
 		        						
 		        						//Updates the scorecard display if the decrease goes from the back to the front
 		        						if(holeNumber==9){
@@ -2864,19 +3658,15 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         subRoundDAO = new SubRoundDAO(this);
         roundHoleDAO = new RoundHoleDAO(this);
         shotDAO = new ShotDAO(this);
+		shotLinkDAO = new ShotLinkDAO(this);
 
         //Writes the date of the round to the file
         Calendar cal = Calendar.getInstance();
 
-        Round round = null;
-        SubRound subRound = null;
-        RoundHole roundHole = null;
-        Player player = null;
         List<CourseHole> courseHoles = null;
-
-        round = new Round();
-
-        round.setDate(cal.getTime());
+		Player player = null;
+		SubRound subRound = null;
+		RoundHole roundHole = null;
 
         round.setID(roundDAO.createRound(round));
 
@@ -2886,7 +3676,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
             courseHoles = courseHoleDAO.readListofCourseHoles(subCourses.get(subCourseNumber));
 
-            subRound = new SubRound();
+			subRound = round.getSubRoundList().get(subCourseNumber);
 
             subRound.setSubCourseID(subCourses.get(subCourseNumber));
             subRound.setRoundID(round);
@@ -2899,20 +3689,42 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
                 player.setID(playerDAO.readIDFromName(playerName[x]));
 
                 for (int y = 1; y < 10; y++) {
-                    int playerScore = holeScore[x][9*(subCourseNumber) + y];
-
-                    if (playerScore > 0) {
+					if (holeScore[x][9*(subCourseNumber) + y] > 0) {
                         totalRoundNull = false;
 
-                        roundHole = new RoundHole();
+						roundHole = subRound.getRoundHoleList().get(((x-1) * 9) + (y-1));
 
-                        roundHole.setScore(playerScore);
-                        roundHole.setSubRoundID(subRound);
+                        roundHole.setScore(holeScore[x][9*(subCourseNumber) + y]);
+						roundHole.setPenalties(penaltyScore[x][9 * (subCourseNumber) + y]);
+						roundHole.setPutts(puttScore[x][9 * (subCourseNumber) + y]);
+						roundHole.setChips(chipScore[x][9 * (subCourseNumber) + y]);
+						roundHole.setFairways(fairwayHit[x][9*(subCourseNumber) + y]);
+						if(holeScore[x][9*(subCourseNumber)+y] - puttScore[x][9*(subCourseNumber)+y] <= par[9*(subCourseNumber)+y] - 2)
+							roundHole.setGiR(true);
+						else
+							roundHole.setGiR(false);
+						//\todo Add code so that GIR is an array similar to fairways and can be called by other parts of the code
+						roundHole.setSubRoundID(subRound);
                         roundHole.setPlayerID(player);
                         roundHole.setPlayerNumber((long)x);
                         roundHole.setCourseHoleID(courseHoles.get(y - 1));
 
                         roundHole.setID(roundHoleDAO.createRoundHole(roundHole));
+
+						for(Shot shot : roundHole.getShotList()){
+
+							shot.setRoundHoleID(roundHole);
+
+							shot.setID(shotDAO.createShot(shot));
+
+							for(ShotType shotType : shot.getShotTypePreList()){
+								shotLinkDAO.createShotLink(shot, shotType);
+							}
+
+							for(ShotType shotType : shot.getShotTypePostList()){
+								shotLinkDAO.createShotLink(shot, shotType);
+							}
+						}
                     }
                 }
             }
@@ -2962,6 +3774,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     //Handles the change in gps coordinates 
 	private class MyLocationListener implements LocationListener {
 
+		//\todo Map screen needs to update on the fly if location is changing
+
 		@SuppressWarnings("unused")
 		//Run when the location of the gps is requested or has changed
 		public void onLocationChanged(Location location){
@@ -3003,22 +3817,13 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				greenDistance.setText("Distance to Middle of Green: " + middleDistance + " yds");
 			}
 
-			greenDistance = (TextView) findViewById(R.id.caddyMainSectionPreviousShoText);
+			greenDistance = (TextView) findViewById(R.id.caddyMainSectionPreviousShotText);
 			if(initialLocationRecorded){
-				distance = (int) Math.round(location.distanceTo(shotStartLocation) * 1.09361);
+				distance = (int) Math.round(location.distanceTo(shot.getShotStartLocation()) * 1.09361);
 				greenDistance.setText("Previous Shot Distance: " + distance + " yds");
 			}
 			else {
 				greenDistance.setText("");
-			}
-
-			greenDistance = (TextView) findViewById(R.id.caddyBottomSectionTitleText);
-			if(initialLocationRecorded){
-				distance = (int) Math.round(location.distanceTo(shotStartLocation) * 1.09361);
-				greenDistance.setText("Past Shot - " + distance + " yds");
-			}
-			else {
-				greenDistance.setText("Next Shot");
 			}
 		}
  
@@ -3224,7 +4029,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private List[] shotArray = null;
 	private Button editRoundButton = null;
 	private Button changeTargetButton = null;
-	private Button caddyPenaltyButton = null;
+	private Button finishHoleButton = null;
 	private Button recordLocationButton = null;
 	private Button countDistanceButton = null;
 	private Button selectClubButton = null;
@@ -3242,8 +4047,25 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private Location targetLocation = null;
 	private Location shotStartLocation = null;
 	private int request_code = 1;
+	private boolean countDistance = true;
+
+	private TextView finishHoleShotScore = null;
+	private TextView finishHolePuttScore = null;
+	private TextView finishHoleChipScore = null;
+	private TextView finishHolePenaltyScore = null;
+	private TextView finishHoleTotalScore = null;
 
 	private List<RoundHole> roundHoles = new ArrayList<RoundHole>();
+
+	private List<Club> clubs = null;
+
+	private int currentMainClubListIndex;
+	private int clubListLength;
+
+	AlertDialog.Builder clubBuilder = null;
+	AlertDialog.Builder resultBuilder = null;
+	AlertDialog.Builder lieBuilder = null;
+	AlertDialog.Builder finishHoleDialog = null;
 
 	//Initialize Caddy Screen
 	private void CaddyScreenInitializer(){
@@ -3256,6 +4078,50 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		caddyHoleNumberText = (TextView) findViewById(R.id.caddyHoleNumber);
 		caddyHoleNumberText.setText("Hole " + holeNumber);
 
+		bagDAO = new BagDAO(this);
+		playerDAO = new PlayerDAO(this);
+		shotTypeDAO = new ShotTypeDAO(this);
+
+		Player defaultPlayer = playerDAO.readUserDefaultPlayer();
+
+		boolean defaultPlayerExists = false;
+
+		for(int x = 1; x <= numberOfPlayers;x++){
+			if(defaultPlayer.getName().equals(playerName[x])){
+				defaultPlayerExists = true;
+				caddyPlayerNumber = x;
+				break;
+			}
+		}
+
+		if(!defaultPlayerExists){
+			Long id = playerDAO.readIDFromName(playerName[1]);
+			Player player = new Player();
+			player.setID(id);
+			defaultPlayer = playerDAO.readPlayer(player);
+			caddyPlayerNumber = 1;
+		}
+
+
+		clubs = bagDAO.readClubsInBag(defaultPlayer);
+
+		clubListLength = clubs.size();
+
+		//\todo set this index based on current distance to target
+		currentMainClubListIndex = 6;
+
+		rightClubButton = (Button) findViewById(R.id.caddyRightClubButton);
+		leftClubButton = (Button) findViewById(R.id.caddyLeftClubButton);
+		middleClubButton = (Button) findViewById(R.id.caddyMiddleClubButton);
+		farRightClubButton = (Button) findViewById(R.id.caddyFarRightClubButton);
+		farLeftClubButton = (Button) findViewById(R.id.caddyFarLeftClubButton);
+
+		farRightClubButton.setText(clubs.get(currentMainClubListIndex-2).getClub());
+		rightClubButton.setText(clubs.get(currentMainClubListIndex-1).getClub());
+		middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+		leftClubButton.setText(clubs.get(currentMainClubListIndex+1).getClub());
+		farLeftClubButton.setText(clubs.get(currentMainClubListIndex+2).getClub());
+
 		//Initializes the EditRoundButton
 		EditRoundButtonInitializer();
 
@@ -3265,11 +4131,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		//Initialize the title bar text
 		CaddyScreenFrontHoleSwitcher();
 
-		//Initialze the CaddyPenaltyButton
-		CaddyPenaltyButtonInitializer();
-
 		//Initialze the RecordLocationButton
 		CaddyRecordLocationButtonInitializer();
+
+		//Initialze the FinishHoleButton
+		CaddyFinishHoleButtonInitializer();
 
 		//Initialze the CountDistanceButton
 		CaddyCountDistanceButtonInitializer();
@@ -3291,6 +4157,9 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 		//Initialize the MiddleClubButton
 		CaddyMiddleClubButtonInitializer();
+
+		//Sets up the round to be used by the caddy screen and to later be saved
+		CaddySetUpRound();
 	}
 
 	//Initialzes the Change Target Button
@@ -3369,23 +4238,36 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		}
 	}
 
-	//Initializes the Penalty Round Button
-	private void CaddyPenaltyButtonInitializer(){
+	private Round round = null;
+	private Shot shot = new Shot();
 
-		caddyPenaltyButton = (Button) findViewById(R.id.caddyPenaltyButton);
+	//Sets up the Round
+	private void CaddySetUpRound(){
+		//Writes the date of the round to the file
+		Calendar cal = Calendar.getInstance();
 
-		caddyPenaltyButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try {
-					//Sets the vibrate time
-					vibe.vibrate(15);
+		SubRound subRound = null;
+		RoundHole roundHole = null;
 
-					//\todo implement keeping track of penalty's and do a +1 here
-				} catch (Exception e) {
+		round = new Round();
+
+		round.setDate(cal.getTime());
+
+		for (int subCourseNumber = 0; subCourseNumber < subCourses.size(); subCourseNumber++) {
+
+			subRound = new SubRound();
+
+			for (int x = 1; x <= numberOfPlayers; x++) {
+
+				for (int y = 1; y < 10; y++) {
+					roundHole = new RoundHole();
+
+					subRound.addRoundHole(roundHole);
 				}
 			}
-		});
+
+			round.addSubRound(subRound);
+		}
 	}
 
 	//Initializes the Record Location Round Button
@@ -3400,8 +4282,587 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					//\todo implement record location button
+					//Gets the current location
+					location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+					if(!initialLocationRecorded){
+
+						shot.setShotStartLatLong(location.getLatitude(), location.getLongitude());
+
+						initialLocationRecorded = true;
+
+						recordLocationButton.setText("At Ball");
+
+						TextView previousShotTitleText = (TextView) findViewById(R.id.caddyBottomSectionTitleText);
+						previousShotTitleText.setText("Previous Shot");
+
+						TextView previousShotDistanceText = (TextView) findViewById(R.id.caddyMainSectionPreviousShotText);
+						previousShotDistanceText.setText("Previous Shot Distance: " + (int)Math.round(location.distanceTo(shot.getShotStartLocation())* 1.09361) + " yds");
+					}
+					else{
+
+						int subRoundNumber;
+						int subRoundHoleNumber;
+
+						if(holeNumber < 10) {
+							subRoundNumber = 0;
+							subRoundHoleNumber = holeNumber;
+						}
+						else{
+							subRoundNumber = 1;
+							subRoundHoleNumber = holeNumber - 9;
+						}
+
+						int roundHoleNumber = ((caddyPlayerNumber-1) * 9) + (subRoundHoleNumber-1);
+
+						shot.setShotEndLatLong(location.getLatitude(), location.getLongitude());
+
+						if(countDistance) {
+							Location startLocation = new Location("");
+							startLocation.setLatitude(shot.getShotStartLat());
+							startLocation.setLongitude(shot.getShotStartLong());
+
+							Location endLocation = new Location("");
+							endLocation.setLatitude(shot.getShotEndLat());
+							endLocation.setLongitude(shot.getShotEndLong());
+
+							shot.setYards((int)Math.round(startLocation.distanceTo(endLocation) * 1.09361));
+						}
+
+						round.getSubRoundList().get(subRoundNumber).getRoundHoleList().get(roundHoleNumber).addShot(shot);
+
+						shotScore[caddyPlayerNumber][holeNumber]++;
+						holeScore[caddyPlayerNumber][holeNumber]++;
+
+						shot = new Shot();
+						shot.setShotStartLatLong(location.getLatitude(), location.getLongitude());
+
+						TextView previousShotDistanceText = (TextView) findViewById(R.id.caddyMainSectionPreviousShotText);
+						previousShotDistanceText.setText("Previous Shot Distance: " + (int)Math.round(location.distanceTo(shot.getShotStartLocation())* 1.09361) + " yds");
+
+						//\todo Need to pick the index based off how far from the middle of the green and the club distances
+						currentMainClubListIndex = 9;
+
+						if(clubListLength - currentMainClubListIndex < 2){
+							farRightClubButton.setText(clubs.get(currentMainClubListIndex-2).getClub());
+							rightClubButton.setText(clubs.get(currentMainClubListIndex-1).getClub());
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							leftClubButton.setVisibility(View.INVISIBLE);
+							farLeftClubButton.setVisibility(View.INVISIBLE);
+
+							farRightClubButton.setVisibility(View.VISIBLE);
+							rightClubButton.setVisibility(View.VISIBLE);
+						}
+						else if(clubListLength - currentMainClubListIndex < 3){
+							farRightClubButton.setText(clubs.get(currentMainClubListIndex-2).getClub());
+							rightClubButton.setText(clubs.get(currentMainClubListIndex-1).getClub());
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							leftClubButton.setText(clubs.get(currentMainClubListIndex+1).getClub());
+							farLeftClubButton.setVisibility(View.INVISIBLE);
+
+							farRightClubButton.setVisibility(View.VISIBLE);
+							rightClubButton.setVisibility(View.VISIBLE);
+							leftClubButton.setVisibility(View.VISIBLE);
+						}
+						else if(currentMainClubListIndex == 0){
+							farRightClubButton.setVisibility(View.INVISIBLE);
+							rightClubButton.setVisibility(View.INVISIBLE);
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+							farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+
+							farLeftClubButton.setVisibility(View.VISIBLE);
+							leftClubButton.setVisibility(View.VISIBLE);
+						}
+						else if(currentMainClubListIndex == 1){
+							farRightClubButton.setVisibility(View.INVISIBLE);
+							rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+							farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+
+							rightClubButton.setVisibility(View.VISIBLE);
+							farLeftClubButton.setVisibility(View.VISIBLE);
+							leftClubButton.setVisibility(View.VISIBLE);
+						}
+						else {
+							farRightClubButton.setText(clubs.get(currentMainClubListIndex - 2).getClub());
+							rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+							farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+
+							farRightClubButton.setVisibility(View.VISIBLE);
+							rightClubButton.setVisibility(View.VISIBLE);
+							farLeftClubButton.setVisibility(View.VISIBLE);
+							leftClubButton.setVisibility(View.VISIBLE);
+						}
+					}
 				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the finish hole Button
+	private void CaddyFinishHoleButtonInitializer(){
+
+		finishHoleButton = (Button) findViewById(R.id.caddyFinishHoleButton);
+
+		finishHoleButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					finishHoleDialog = new AlertDialog.Builder(StartRound.this);
+					// Get the layout inflater
+					LayoutInflater inflater = StartRound.this.getLayoutInflater();
+
+					View dialogView = inflater.inflate(R.layout.finishholedialoglayout, null);
+
+					// Inflate and set the layout for the dialog
+					// Pass null as the parent view because its going in the dialog layout
+					finishHoleDialog.setView(dialogView)
+							// Add action buttons
+							.setTitle("Add scores")
+							.setPositiveButton("Next Hole>", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									if(eighteenHoleRound) {
+										if(holeNumber < 18) {
+											holeNumber++;
+											CaddyScreenResetShot();
+											CaddyScreenFrontHoleSwitcher();
+										}
+										else{
+											Toast.makeText(StartRound.this, "This is the last hole", Toast.LENGTH_SHORT).show();
+										}
+									}
+									else{
+										if(holeNumber<9){
+											holeNumber++;
+											CaddyScreenResetShot();
+											CaddyScreenFrontHoleSwitcher();
+										}
+										else{
+											Toast.makeText(StartRound.this, "This is the last hole", Toast.LENGTH_SHORT).show();
+										}
+									}
+								}
+							})
+							.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+
+								}
+							});
+
+					finishHoleTotalScore = (TextView)dialogView.findViewById(R.id.caddyFinishHoleTotalScore);
+					finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+					finishHoleShotScore = (TextView)dialogView.findViewById(R.id.caddyFinishHoleShotScore);
+					finishHoleShotScore.setText(Integer.toString(shotScore[caddyPlayerNumber][holeNumber]));
+
+					Button plusButton = (Button)dialogView.findViewById(R.id.caddyFinishHoleShotPlusButton);
+					Button minusButton = (Button)dialogView.findViewById(R.id.caddyFinishHoleShotMinusButton);
+
+					plusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Increases the active player's score
+								shotScore[caddyPlayerNumber][holeNumber]++;
+								holeScore[caddyPlayerNumber][holeNumber]++;
+
+								//Displays the increased number
+								finishHoleShotScore.setText(Integer.toString(shotScore[caddyPlayerNumber][holeNumber]));
+								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+								//Loads the correct view from the scorecard tab
+								setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+								//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								if (holeNumber < 10) {
+									if (frontActive) {
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+								//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								else {
+									if (!frontActive) {
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					minusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Decreases the active player's score if the score is not already 0
+								if (shotScore[caddyPlayerNumber][holeNumber] != 0) {
+									shotScore[caddyPlayerNumber][holeNumber]--;
+									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									finishHoleShotScore.setText(Integer.toString(shotScore[caddyPlayerNumber][holeNumber]));
+									finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+									//Loads the correct view from the scorecard tab
+									setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+									//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									if (holeNumber < 10) {
+										if (frontActive) {
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+									//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									else {
+										if (!frontActive) {
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+								}
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					finishHolePuttScore = (TextView)dialogView.findViewById(R.id.caddyFinishHolePuttScore);
+					finishHolePuttScore.setText(Integer.toString(puttScore[caddyPlayerNumber][holeNumber]));
+
+					plusButton = (Button)dialogView.findViewById(R.id.caddyFinishHolePuttPlusButton);
+					minusButton = (Button)dialogView.findViewById(R.id.caddyFinishHolePuttMinusButton);
+
+					plusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Increases the active player's score
+								puttScore[caddyPlayerNumber][holeNumber]++;
+								holeScore[caddyPlayerNumber][holeNumber]++;
+
+								//Displays the increased number
+								finishHolePuttScore.setText(Integer.toString(puttScore[caddyPlayerNumber][holeNumber]));
+								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+								//Loads the correct view from the scorecard tab
+								setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+								//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								if (holeNumber < 10) {
+									if (frontActive) {
+
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+								//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								else {
+									if (!frontActive) {
+
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					minusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Decreases the active player's score if the score is not already 0
+								if (puttScore[caddyPlayerNumber][holeNumber] != 0) {
+									puttScore[caddyPlayerNumber][holeNumber]--;
+									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									//Displays the decreased number
+									finishHolePuttScore.setText(Integer.toString(puttScore[caddyPlayerNumber][holeNumber]));
+									finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+									//Loads the correct view from the scorecard tab
+									setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+									//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									if (holeNumber < 10) {
+										if (frontActive) {
+
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+									//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									else {
+										if (!frontActive) {
+
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+								}
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					finishHoleChipScore = (TextView)dialogView.findViewById(R.id.caddyFinishHoleChipScore);
+					finishHoleChipScore.setText(Integer.toString(chipScore[caddyPlayerNumber][holeNumber]));
+
+					plusButton = (Button)dialogView.findViewById(R.id.caddyFinishHoleChipPlusButton);
+					minusButton = (Button)dialogView.findViewById(R.id.caddyFinishHoleChipMinusButton);
+
+					plusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Increases the active player's score
+								chipScore[caddyPlayerNumber][holeNumber]++;
+								holeScore[caddyPlayerNumber][holeNumber]++;
+
+								//Displays the increased number
+								finishHoleChipScore.setText(Integer.toString(chipScore[caddyPlayerNumber][holeNumber]));
+								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+								//Loads the correct view from the scorecard tab
+								setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+								//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								if (holeNumber < 10) {
+									if (frontActive) {
+
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+								//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								else {
+									if (!frontActive) {
+
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					minusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Decreases the active player's score if the score is not already 0
+								if (chipScore[caddyPlayerNumber][holeNumber] != 0) {
+									chipScore[caddyPlayerNumber][holeNumber]--;
+									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									//Displays the decreased number
+									finishHoleChipScore.setText(Integer.toString(chipScore[caddyPlayerNumber][holeNumber]));
+									finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+									//Loads the correct view from the scorecard tab
+									setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+									//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									if (holeNumber < 10) {
+										if (frontActive) {
+
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+									//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									else {
+										if (!frontActive) {
+
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+								}
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					finishHolePenaltyScore = (TextView)dialogView.findViewById(R.id.caddyFinishHolePenaltyScore);
+					finishHolePenaltyScore.setText(Integer.toString(penaltyScore[caddyPlayerNumber][holeNumber]));
+
+					plusButton = (Button)dialogView.findViewById(R.id.caddyFinishHolePenaltyPlusButton);
+					minusButton = (Button)dialogView.findViewById(R.id.caddyFinishHolePenaltyMinusButton);
+
+					plusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Increases the active player's score
+								penaltyScore[caddyPlayerNumber][holeNumber]++;
+								holeScore[caddyPlayerNumber][holeNumber]++;
+
+								//Displays the increased number
+								finishHolePenaltyScore.setText(Integer.toString(penaltyScore[caddyPlayerNumber][holeNumber]));
+								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+								//Loads the correct view from the scorecard tab
+								setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+								//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								if (holeNumber < 10) {
+									if (frontActive) {
+
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+								//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+								//If so, the scorecard display is updated to show the change in score
+								else {
+									if (!frontActive) {
+
+										scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+										updateScorecardTotals(caddyPlayerNumber);
+									}
+								}
+
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					minusButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							try {
+								//Sets the vibrate time
+								vibe.vibrate(15);
+
+								//Decreases the active player's score if the score is not already 0
+								if (penaltyScore[caddyPlayerNumber][holeNumber] != 0) {
+									penaltyScore[caddyPlayerNumber][holeNumber]--;
+									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									//Displays the decreased number
+									finishHolePenaltyScore.setText(Integer.toString(penaltyScore[caddyPlayerNumber][holeNumber]));
+									finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+									//Loads the correct view from the scorecard tab
+									setTextViewHoleNumber(caddyPlayerNumber, holeNumber);
+
+									//Checks if the hole is in the front 9 and if the front 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									if (holeNumber < 10) {
+										if (frontActive) {
+
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+									//Checks if the hole is in the back 9 and if the back 9 is currently displayed.
+									//If so, the scorecard display is updated to show the change in score
+									else {
+										if (!frontActive) {
+
+											if (holeScore[caddyPlayerNumber][holeNumber] == 0)
+												scoreEntryScorecard.setText("");
+											else
+												scoreEntryScorecard.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
+
+											updateScorecardTotals(caddyPlayerNumber);
+										}
+									}
+								}
+							} catch (Exception e) {
+							}
+						}
+					});
+
+					finishHoleDialog.show();
+				} catch (Exception e) {
+					Log.d("test", e + "");
 				}
 			}
 		});
@@ -3412,6 +4873,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 		countDistanceButton = (Button) findViewById(R.id.caddyCountDistanceButton);
 
+		countDistanceButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+
 		countDistanceButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -3419,7 +4882,15 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					//\todo implement the count distance button
+					if(countDistance) {
+						countDistanceButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+						countDistance = false;
+					}
+					else{
+						countDistanceButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+						countDistance = true;
+					}
+
 				} catch (Exception e) {
 				}
 			}
@@ -3438,7 +4909,85 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					//\todo implement club button
+					final String[] clubList = new String[clubListLength];
+					int x = 0;
+
+					for(Club club : clubs){
+
+						clubList[x] = club.getClub();
+
+						x++;
+					}
+
+					clubBuilder = new AlertDialog.Builder(StartRound.this);
+					clubBuilder.setTitle("Select Club")
+							.setItems(clubList, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									currentMainClubListIndex = which;
+
+									Club tempClub = new Club();
+									tempClub.setID(clubs.get(currentMainClubListIndex).getID());
+									shot.setClubID(tempClub);
+
+									if(clubList.length - currentMainClubListIndex < 2){
+										farRightClubButton.setText(clubs.get(currentMainClubListIndex-2).getClub());
+										rightClubButton.setText(clubs.get(currentMainClubListIndex-1).getClub());
+										middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+										leftClubButton.setVisibility(View.INVISIBLE);
+										farLeftClubButton.setVisibility(View.INVISIBLE);
+
+										farRightClubButton.setVisibility(View.VISIBLE);
+										rightClubButton.setVisibility(View.VISIBLE);
+									}
+									else if(clubList.length - currentMainClubListIndex < 3){
+										farRightClubButton.setText(clubs.get(currentMainClubListIndex-2).getClub());
+										rightClubButton.setText(clubs.get(currentMainClubListIndex-1).getClub());
+										middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+										leftClubButton.setText(clubs.get(currentMainClubListIndex+1).getClub());
+										farLeftClubButton.setVisibility(View.INVISIBLE);
+
+										farRightClubButton.setVisibility(View.VISIBLE);
+										rightClubButton.setVisibility(View.VISIBLE);
+										leftClubButton.setVisibility(View.VISIBLE);
+									}
+									else if(currentMainClubListIndex == 0){
+										farRightClubButton.setVisibility(View.INVISIBLE);
+										rightClubButton.setVisibility(View.INVISIBLE);
+										middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+										leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+										farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+
+										farLeftClubButton.setVisibility(View.VISIBLE);
+										leftClubButton.setVisibility(View.VISIBLE);
+									}
+									else if(currentMainClubListIndex == 1){
+										farRightClubButton.setVisibility(View.INVISIBLE);
+										rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+										middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+										leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+										farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+
+										rightClubButton.setVisibility(View.VISIBLE);
+										farLeftClubButton.setVisibility(View.VISIBLE);
+										leftClubButton.setVisibility(View.VISIBLE);
+									}
+									else {
+										farRightClubButton.setText(clubs.get(currentMainClubListIndex - 2).getClub());
+										rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+										middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+										leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+										farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+
+										farRightClubButton.setVisibility(View.VISIBLE);
+										rightClubButton.setVisibility(View.VISIBLE);
+										farLeftClubButton.setVisibility(View.VISIBLE);
+										leftClubButton.setVisibility(View.VISIBLE);
+									}
+
+								}
+							});
+					clubBuilder.show();
+
 				} catch (Exception e) {
 				}
 			}
@@ -3457,7 +5006,97 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					//\todo implement result button
+					final List<ShotType> resultTypes = new ArrayList<ShotType>();
+
+					final List<ShotType> shotTypes = shotTypeDAO.readListShotTypesIsPre(false);
+
+					ShotType penaltyType = new ShotType();
+					penaltyType.setType("Penalty Shot");
+
+					shotTypes.add(penaltyType);
+
+					ShotType dontrecordType = new ShotType();
+					dontrecordType.setType("Do Not Record");
+
+					shotTypes.add(dontrecordType);
+
+					final int resultLength = shotTypes.size();
+
+					final String[] resultList = new String[resultLength];
+					int x = 0;
+
+					for(ShotType shotType : shotTypes){
+
+						resultList[x] = shotType.getType();
+
+						x++;
+					}
+
+					final List<ShotType> addedShotTypes = shot.getShotTypePostList();
+					final boolean[] addedShotTypesBoolean = new boolean[resultLength];
+					x = 0;
+
+					for(ShotType shotType : shotTypes){
+						for(ShotType addedShotType : addedShotTypes){
+							if(addedShotType.getType().equals(shotType.getType())){
+								addedShotTypesBoolean[x] = true;
+							}
+						}
+						x++;
+					}
+
+					for(ShotType addedShotType : addedShotTypes){
+						resultTypes.add(addedShotType);
+					}
+
+					resultBuilder = new AlertDialog.Builder(StartRound.this);
+					resultBuilder.setTitle("Select Results")
+						.setMultiChoiceItems(resultList, addedShotTypesBoolean,
+								new DialogInterface.OnMultiChoiceClickListener() {
+									public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+										if (isChecked) {
+											// If the user checked the item, add it to the selected items
+											resultTypes.add(shotTypes.get(which));
+										} else if (resultTypes.contains(shotTypes.get(which))) {
+											// Else, if the item is already in the array, remove it
+											resultTypes.remove(shotTypes.get(which));
+										}
+
+									}
+								}
+						)
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								shot.clearShotTypesPost();
+
+								for (ShotType resultType : resultTypes) {
+
+									if (resultType.getType().equals("Penalty Shot")) {
+
+										penaltyScore[caddyPlayerNumber][holeNumber]++;
+										holeScore[caddyPlayerNumber][holeNumber]++;
+										CaddyScreenResetShot();
+									} else {
+										if (resultType.getType().equals("Do Not Record")) {
+
+											CaddyScreenResetShot();
+										} else {
+
+											shot.addShotTypePost(resultType);
+										}
+									}
+								}
+							}
+						})
+						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+
+							}
+						});
+
+					resultBuilder.show();
 				} catch (Exception e) {
 				}
 			}
@@ -3476,7 +5115,75 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					//\todo implement the select lie button
+					final List<ShotType> lieTypes = new ArrayList<ShotType>();
+
+					final List<ShotType> shotTypes = shotTypeDAO.readListShotTypesIsPre(true);
+
+					int lieLength = shotTypes.size();
+
+					final String[] lieList = new String[lieLength];
+					int x = 0;
+
+					for(ShotType shotType : shotTypes){
+
+						lieList[x] = shotType.getType();
+
+						x++;
+					}
+
+					final List<ShotType> addedShotTypes = shot.getShotTypePreList();
+					final boolean[] addedShotTypesBoolean = new boolean[lieLength];
+					x = 0;
+
+					for(ShotType shotType : shotTypes){
+						for(ShotType addedShotType : addedShotTypes){
+							if(addedShotType.getType().equals(shotType.getType())){
+								addedShotTypesBoolean[x] = true;
+							}
+						}
+						x++;
+					}
+
+					for(ShotType addedShotType : addedShotTypes){
+						lieTypes.add(addedShotType);
+					}
+
+					lieBuilder = new AlertDialog.Builder(StartRound.this);
+					lieBuilder.setTitle("Select Lie")
+							.setMultiChoiceItems(lieList, addedShotTypesBoolean,
+									new DialogInterface.OnMultiChoiceClickListener() {
+										public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+											if (isChecked) {
+												// If the user checked the item, add it to the selected items
+												lieTypes.add(shotTypes.get(which));
+											} else if (lieTypes.contains(shotTypes.get(which))) {
+												// Else, if the item is already in the array, remove it
+												lieTypes.remove(shotTypes.get(which));
+											}
+										}
+									}
+							)
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+
+									shot.clearShotTypesPre();
+
+									for (ShotType lieType : lieTypes) {
+
+										shot.addShotTypePre(lieType);
+									}
+
+								}
+							})
+							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+
+								}
+							});
+
+					lieBuilder.show();
 				} catch (Exception e) {
 				}
 			}
@@ -3486,11 +5193,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	//Initializes the Left Club Button
 	private void CaddyLeftClubButtonInitializer(){
 
-		rightClubButton = (Button) findViewById(R.id.caddyRightClubButton);
-		leftClubButton = (Button) findViewById(R.id.caddyLeftClubButton);
-		middleClubButton = (Button) findViewById(R.id.caddyMiddleClubButton);
-		farRightClubButton = (Button) findViewById(R.id.caddyFarRightClubButton);
-		farLeftClubButton = (Button) findViewById(R.id.caddyFarLeftClubButton);
+
 
 		leftClubButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -3499,41 +5202,131 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
-					animationSet = new AnimationSet(true);
-					animationSet.setFillAfter(true);
-
 					int toLocation[] = new int[2];
 					int fromLocation[] = new int[2];
-					middleClubButton.getLocationInWindow(toLocation);
-					leftClubButton.getLocationInWindow(fromLocation);
-
-					int xMove = toLocation[0]-fromLocation[0];
-					int yMove = toLocation[1]-fromLocation[1];
 
 					int toSize[] = new int[2];
 					int fromSize[] = new int[2];
 
-					toSize[0] = middleClubButton.getWidth();
-					toSize[1] = middleClubButton.getHeight();
-					fromSize[0] = leftClubButton.getWidth();
-					fromSize[1] = leftClubButton.getHeight();
+					int xMove;
+					int yMove;
 
-					float xChange = (float)toSize[0] / (float)fromSize[0];
-					float yChange = (float)toSize[1] / (float)fromSize[1];
+					float xChange;
+					float yChange;
 
-					xMove = (int)((float)xMove / xChange);
-					yMove = (int)((float)yMove / yChange);
+					currentMainClubListIndex += 1;
 
-					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
-					translateAnimation.setDuration(1000);
-					translateAnimation.setFillAfter(true);
-					animationSet.addAnimation(translateAnimation);
 
-					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
-					scaleAnimation.setDuration(1000);
-					animationSet.addAnimation(scaleAnimation);
 
-					leftClubButton.startAnimation(animationSet);
+					if(clubListLength - currentMainClubListIndex >= 2){
+
+						animationSet = new AnimationSet(true);
+						animationSet.setFillAfter(true);
+
+						leftClubButton.getLocationInWindow(toLocation);
+						farLeftClubButton.getLocationInWindow(fromLocation);
+
+						xMove = toLocation[0]-fromLocation[0];
+						yMove = toLocation[1]-fromLocation[1];
+
+						toSize[0] = leftClubButton.getWidth();
+						toSize[1] = leftClubButton.getHeight();
+						fromSize[0] = farLeftClubButton.getWidth();
+						fromSize[1] = farLeftClubButton.getHeight();
+
+						xChange = (float)toSize[0] / (float)fromSize[0];
+						yChange = (float)toSize[1] / (float)fromSize[1];
+
+						xMove = (int)((float)xMove / xChange);
+						yMove = (int)((float)yMove / yChange);
+
+						translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+						translateAnimation.setDuration(1000);
+						translateAnimation.setFillAfter(true);
+						animationSet.addAnimation(translateAnimation);
+
+						scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+						scaleAnimation.setDuration(1000);
+						animationSet.addAnimation(scaleAnimation);
+
+						animationSet.setAnimationListener(new Animation.AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								farLeftClubButton.clearAnimation();
+								if(clubListLength - currentMainClubListIndex >= 3) {
+									farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+								}
+							}
+
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
+
+							@Override
+							public void onAnimationStart(Animation animation) {
+
+							}
+						});
+
+						farLeftClubButton.startAnimation(animationSet);
+					}
+
+
+
+					if(clubListLength - currentMainClubListIndex >= 1) {
+						animationSet = new AnimationSet(true);
+						animationSet.setFillAfter(true);
+
+						middleClubButton.getLocationInWindow(toLocation);
+						leftClubButton.getLocationInWindow(fromLocation);
+
+						xMove = toLocation[0] - fromLocation[0];
+						yMove = toLocation[1] - fromLocation[1];
+
+						toSize[0] = middleClubButton.getWidth();
+						toSize[1] = middleClubButton.getHeight();
+						fromSize[0] = leftClubButton.getWidth();
+						fromSize[1] = leftClubButton.getHeight();
+
+						xChange = (float) toSize[0] / (float) fromSize[0];
+						yChange = (float) toSize[1] / (float) fromSize[1];
+
+						xMove = (int) ((float) xMove / xChange);
+						yMove = (int) ((float) yMove / yChange);
+
+						translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+						translateAnimation.setDuration(1000);
+						translateAnimation.setFillAfter(true);
+						animationSet.addAnimation(translateAnimation);
+
+						scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+						scaleAnimation.setDuration(1000);
+						animationSet.addAnimation(scaleAnimation);
+
+						animationSet.setAnimationListener(new Animation.AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								leftClubButton.clearAnimation();
+								if(clubListLength - currentMainClubListIndex >= 2) {
+									leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+								}
+								else{
+									leftClubButton.setVisibility(View.INVISIBLE);
+								}
+							}
+
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
+
+							@Override
+							public void onAnimationStart(Animation animation) {
+
+							}
+						});
+
+						leftClubButton.startAnimation(animationSet);
+					}
 
 
 
@@ -3567,76 +5360,15 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					scaleAnimation.setDuration(1000);
 					animationSet.addAnimation(scaleAnimation);
 
-					middleClubButton.startAnimation(animationSet);
-
-
-
-					animationSet = new AnimationSet(true);
-					animationSet.setFillAfter(true);
-
-					leftClubButton.getLocationInWindow(toLocation);
-					farLeftClubButton.getLocationInWindow(fromLocation);
-
-					xMove = toLocation[0]-fromLocation[0];
-					yMove = toLocation[1]-fromLocation[1];
-
-					toSize[0] = leftClubButton.getWidth();
-					toSize[1] = leftClubButton.getHeight();
-					fromSize[0] = farLeftClubButton.getWidth();
-					fromSize[1] = farLeftClubButton.getHeight();
-
-					xChange = (float)toSize[0] / (float)fromSize[0];
-					yChange = (float)toSize[1] / (float)fromSize[1];
-
-					xMove = (int)((float)xMove / xChange);
-					yMove = (int)((float)yMove / yChange);
-
-					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
-					translateAnimation.setDuration(1000);
-					translateAnimation.setFillAfter(true);
-					animationSet.addAnimation(translateAnimation);
-
-					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
-					scaleAnimation.setDuration(1000);
-					animationSet.addAnimation(scaleAnimation);
-
-					farLeftClubButton.startAnimation(animationSet);
-
-
-
-
-					animationSet = new AnimationSet(true);
-					animationSet.setFillAfter(true);
-
-					farRightClubButton.getLocationInWindow(toLocation);
-					rightClubButton.getLocationInWindow(fromLocation);
-
-					xMove = toLocation[0]-fromLocation[0];
-					yMove = toLocation[1]-fromLocation[1];
-
-					toSize[0] = farRightClubButton.getWidth();
-					toSize[1] = farRightClubButton.getHeight();
-					fromSize[0] = rightClubButton.getWidth();
-					fromSize[1] = rightClubButton.getHeight();
-
-					xChange = (float)toSize[0] / (float)fromSize[0];
-					yChange = (float)toSize[1] / (float)fromSize[1];
-
-					xMove = (int)((float)xMove / xChange);
-					yMove = (int)((float)yMove / yChange);
-
-					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
-					translateAnimation.setDuration(1000);
-					translateAnimation.setFillAfter(true);
-					animationSet.addAnimation(translateAnimation);
-
-					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
-					scaleAnimation.setDuration(1000);
-					animationSet.addAnimation(scaleAnimation);
-
 					animationSet.setAnimationListener(new Animation.AnimationListener() {
 						@Override
 						public void onAnimationEnd(Animation animation) {
+							middleClubButton.clearAnimation();
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							if(currentMainClubListIndex - 1 == 0){
+								rightClubButton.setVisibility(View.VISIBLE);
+								rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+							}
 						}
 
 						@Override
@@ -3645,19 +5377,67 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 						@Override
 						public void onAnimationStart(Animation animation) {
-							farRightClubButton.clearAnimation();
+
 						}
 					});
-					rightClubButton.startAnimation(animationSet);
 
-					//Thread.sleep(1000);
-
-					//farRightClubButton.setVisibility(View.GONE);
+					middleClubButton.startAnimation(animationSet);
 
 
-					leftClubButton.setText("4");
-					//Animation slideOutRight = AnimationUtils.makeOutAnimation(StartRound.this, true);
-					//rightClubButton.startAnimation(slideOutRight);
+
+
+
+					if(currentMainClubListIndex - 1 != 0) {
+
+						animationSet = new AnimationSet(true);
+						animationSet.setFillAfter(true);
+
+						farRightClubButton.getLocationInWindow(toLocation);
+						rightClubButton.getLocationInWindow(fromLocation);
+
+						xMove = toLocation[0] - fromLocation[0];
+						yMove = toLocation[1] - fromLocation[1];
+
+						toSize[0] = farRightClubButton.getWidth();
+						toSize[1] = farRightClubButton.getHeight();
+						fromSize[0] = rightClubButton.getWidth();
+						fromSize[1] = rightClubButton.getHeight();
+
+						xChange = (float) toSize[0] / (float) fromSize[0];
+						yChange = (float) toSize[1] / (float) fromSize[1];
+
+						xMove = (int) ((float) xMove / xChange);
+						yMove = (int) ((float) yMove / yChange);
+
+						translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+						translateAnimation.setDuration(1000);
+						translateAnimation.setFillAfter(true);
+						animationSet.addAnimation(translateAnimation);
+
+						scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+						scaleAnimation.setDuration(1000);
+						animationSet.addAnimation(scaleAnimation);
+
+						animationSet.setAnimationListener(new Animation.AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								rightClubButton.clearAnimation();
+								rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+
+								farRightClubButton.setText(clubs.get(currentMainClubListIndex - 2).getClub());
+							}
+
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
+
+							@Override
+							public void onAnimationStart(Animation animation) {
+								//farRightClubButton.clearAnimation();
+							}
+						});
+						rightClubButton.startAnimation(animationSet);
+					}
 
 					//\todo implement the left club button
 				} catch (Exception e) {
@@ -3678,126 +5458,91 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Sets the vibrate time
 					vibe.vibrate(15);
 
+					int toLocation[] = new int[2];
+					int fromLocation[] = new int[2];
+
+					int toSize[] = new int[2];
+					int fromSize[] = new int[2];
+
+					int xMove;
+					int yMove;
+
+					float xChange;
+					float yChange;
+
+					currentMainClubListIndex -= 1;
+
+
+					if(currentMainClubListIndex + 1 != clubs.size() - 1) {
+
+						animationSet = new AnimationSet(true);
+						animationSet.setFillAfter(true);
+
+						farLeftClubButton.getLocationInWindow(toLocation);
+						leftClubButton.getLocationInWindow(fromLocation);
+
+						xMove = toLocation[0] - fromLocation[0];
+						yMove = toLocation[1] - fromLocation[1];
+
+						toSize[0] = farLeftClubButton.getWidth();
+						toSize[1] = farLeftClubButton.getHeight();
+						fromSize[0] = leftClubButton.getWidth();
+						fromSize[1] = leftClubButton.getHeight();
+
+						xChange = (float) toSize[0] / (float) fromSize[0];
+						yChange = (float) toSize[1] / (float) fromSize[1];
+
+						xMove = (int) ((float) xMove / xChange);
+						yMove = (int) ((float) yMove / yChange);
+
+						translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+						translateAnimation.setDuration(1000);
+						translateAnimation.setFillAfter(true);
+						animationSet.addAnimation(translateAnimation);
+
+						scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+						scaleAnimation.setDuration(1000);
+						animationSet.addAnimation(scaleAnimation);
+
+						animationSet.setAnimationListener(new Animation.AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								leftClubButton.clearAnimation();
+								leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+
+								farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
+							}
+
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
+
+							@Override
+							public void onAnimationStart(Animation animation) {
+								//farRightClubButton.clearAnimation();
+							}
+						});
+						leftClubButton.startAnimation(animationSet);
+					}
+
+
+
+
+
 
 					animationSet = new AnimationSet(true);
 					animationSet.setFillAfter(true);
 
-					int toLocation[] = new int[2];
-					int fromLocation[] = new int[2];
 					leftClubButton.getLocationInWindow(toLocation);
 					middleClubButton.getLocationInWindow(fromLocation);
 
-					int xMove = toLocation[0]-fromLocation[0];
-					int yMove = toLocation[1]-fromLocation[1];
-
-					int toSize[] = new int[2];
-					int fromSize[] = new int[2];
+					xMove = toLocation[0]-fromLocation[0];
+					yMove = toLocation[1]-fromLocation[1];
 
 					toSize[0] = leftClubButton.getWidth();
 					toSize[1] = leftClubButton.getHeight();
 					fromSize[0] = middleClubButton.getWidth();
 					fromSize[1] = middleClubButton.getHeight();
-
-					float xChange = (float)toSize[0] / (float)fromSize[0];
-					float yChange = (float)toSize[1] / (float)fromSize[1];
-
-					xMove = (int)((float)xMove / xChange);
-					yMove = (int)((float)yMove / yChange);
-
-					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
-					translateAnimation.setDuration(1000);
-					translateAnimation.setFillAfter(true);
-					animationSet.addAnimation(translateAnimation);
-
-					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
-					scaleAnimation.setDuration(1000);
-					animationSet.addAnimation(scaleAnimation);
-
-					middleClubButton.startAnimation(animationSet);
-
-
-
-
-					animationSet = new AnimationSet(true);
-					animationSet.setFillAfter(true);
-
-					middleClubButton.getLocationInWindow(toLocation);
-					rightClubButton.getLocationInWindow(fromLocation);
-
-					xMove = toLocation[0]-fromLocation[0];
-					yMove = toLocation[1]-fromLocation[1];
-
-					toSize[0] = middleClubButton.getWidth();
-					toSize[1] = middleClubButton.getHeight();
-					fromSize[0] = rightClubButton.getWidth();
-					fromSize[1] = rightClubButton.getHeight();
-
-					xChange = (float)toSize[0] / (float)fromSize[0];
-					yChange = (float)toSize[1] / (float)fromSize[1];
-
-					xMove = (int)((float)xMove / xChange);
-					yMove = (int)((float)yMove / yChange);
-
-					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
-					translateAnimation.setDuration(1000);
-					translateAnimation.setFillAfter(true);
-					animationSet.addAnimation(translateAnimation);
-
-					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
-					scaleAnimation.setDuration(1000);
-					animationSet.addAnimation(scaleAnimation);
-
-					rightClubButton.startAnimation(animationSet);
-
-
-
-					animationSet = new AnimationSet(true);
-					animationSet.setFillAfter(true);
-
-					farLeftClubButton.getLocationInWindow(toLocation);
-					leftClubButton.getLocationInWindow(fromLocation);
-
-					xMove = toLocation[0]-fromLocation[0];
-					yMove = toLocation[1]-fromLocation[1];
-
-					toSize[0] = farLeftClubButton.getWidth();
-					toSize[1] = farLeftClubButton.getHeight();
-					fromSize[0] = leftClubButton.getWidth();
-					fromSize[1] = leftClubButton.getHeight();
-
-					xChange = (float)toSize[0] / (float)fromSize[0];
-					yChange = (float)toSize[1] / (float)fromSize[1];
-
-					xMove = (int)((float)xMove / xChange);
-					yMove = (int)((float)yMove / yChange);
-
-					translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
-					translateAnimation.setDuration(1000);
-					translateAnimation.setFillAfter(true);
-					animationSet.addAnimation(translateAnimation);
-
-					scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
-					scaleAnimation.setDuration(1000);
-					animationSet.addAnimation(scaleAnimation);
-
-					leftClubButton.startAnimation(animationSet);
-
-
-
-
-					animationSet = new AnimationSet(true);
-					animationSet.setFillAfter(true);
-
-					rightClubButton.getLocationInWindow(toLocation);
-					farRightClubButton.getLocationInWindow(fromLocation);
-
-					xMove = toLocation[0]-fromLocation[0];
-					yMove = toLocation[1]-fromLocation[1];
-
-					toSize[0] = rightClubButton.getWidth();
-					toSize[1] = rightClubButton.getHeight();
-					fromSize[0] = farRightClubButton.getWidth();
-					fromSize[1] = farRightClubButton.getHeight();
 
 					xChange = (float)toSize[0] / (float)fromSize[0];
 					yChange = (float)toSize[1] / (float)fromSize[1];
@@ -3817,6 +5562,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					animationSet.setAnimationListener(new Animation.AnimationListener() {
 						@Override
 						public void onAnimationEnd(Animation animation) {
+							middleClubButton.clearAnimation();
+							middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
+							if (currentMainClubListIndex + 1 == clubs.size() - 1) {
+								leftClubButton.setVisibility(View.VISIBLE);
+								leftClubButton.setText(clubs.get(currentMainClubListIndex + 1).getClub());
+							}
 						}
 
 						@Override
@@ -3825,10 +5576,123 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 						@Override
 						public void onAnimationStart(Animation animation) {
-							farLeftClubButton.clearAnimation();
+
 						}
 					});
-					farRightClubButton.startAnimation(animationSet);
+
+					middleClubButton.startAnimation(animationSet);
+
+
+
+					if(currentMainClubListIndex >= 0) {
+
+						animationSet = new AnimationSet(true);
+						animationSet.setFillAfter(true);
+
+						middleClubButton.getLocationInWindow(toLocation);
+						rightClubButton.getLocationInWindow(fromLocation);
+
+						xMove = toLocation[0] - fromLocation[0];
+						yMove = toLocation[1] - fromLocation[1];
+
+						toSize[0] = middleClubButton.getWidth();
+						toSize[1] = middleClubButton.getHeight();
+						fromSize[0] = rightClubButton.getWidth();
+						fromSize[1] = rightClubButton.getHeight();
+
+						xChange = (float) toSize[0] / (float) fromSize[0];
+						yChange = (float) toSize[1] / (float) fromSize[1];
+
+						xMove = (int) ((float) xMove / xChange);
+						yMove = (int) ((float) yMove / yChange);
+
+						translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+						translateAnimation.setDuration(1000);
+						translateAnimation.setFillAfter(true);
+						animationSet.addAnimation(translateAnimation);
+
+						scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+						scaleAnimation.setDuration(1000);
+						animationSet.addAnimation(scaleAnimation);
+
+						animationSet.setAnimationListener(new Animation.AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								rightClubButton.clearAnimation();
+								if(currentMainClubListIndex >= 1) {
+									rightClubButton.setText(clubs.get(currentMainClubListIndex - 1).getClub());
+								}
+								else{
+									rightClubButton.setVisibility(View.INVISIBLE);
+								}
+							}
+
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
+
+							@Override
+							public void onAnimationStart(Animation animation) {
+
+							}
+						});
+
+						rightClubButton.startAnimation(animationSet);
+					}
+
+
+
+					if(currentMainClubListIndex >= 1) {
+
+						animationSet = new AnimationSet(true);
+						animationSet.setFillAfter(true);
+
+						rightClubButton.getLocationInWindow(toLocation);
+						farRightClubButton.getLocationInWindow(fromLocation);
+
+						xMove = toLocation[0] - fromLocation[0];
+						yMove = toLocation[1] - fromLocation[1];
+
+						toSize[0] = rightClubButton.getWidth();
+						toSize[1] = rightClubButton.getHeight();
+						fromSize[0] = farRightClubButton.getWidth();
+						fromSize[1] = farRightClubButton.getHeight();
+
+						xChange = (float) toSize[0] / (float) fromSize[0];
+						yChange = (float) toSize[1] / (float) fromSize[1];
+
+						xMove = (int) ((float) xMove / xChange);
+						yMove = (int) ((float) yMove / yChange);
+
+						translateAnimation = new TranslateAnimation(0, xMove, 0, yMove);
+						translateAnimation.setDuration(1000);
+						translateAnimation.setFillAfter(true);
+						animationSet.addAnimation(translateAnimation);
+
+						scaleAnimation = new ScaleAnimation(1.0f, xChange, 1.0f, yChange, 0.0f, 0.0f);
+						scaleAnimation.setDuration(1000);
+						animationSet.addAnimation(scaleAnimation);
+
+						animationSet.setAnimationListener(new Animation.AnimationListener() {
+							@Override
+							public void onAnimationEnd(Animation animation) {
+								farRightClubButton.clearAnimation();
+								if(currentMainClubListIndex >= 2) {
+									farRightClubButton.setText(clubs.get(currentMainClubListIndex - 2).getClub());
+								}
+							}
+
+							@Override
+							public void onAnimationRepeat(Animation animation) {
+							}
+
+							@Override
+							public void onAnimationStart(Animation animation) {
+
+							}
+						});
+						farRightClubButton.startAnimation(animationSet);
+					}
 
 					//\todo implement the right club button
 				} catch (Exception e) {
@@ -3863,6 +5727,21 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		});
 	}
 
+	//Caddy Screen Reset
+	private void CaddyScreenResetShot(){
+		shot = new Shot();
+
+		TextView previousShotTitleText = (TextView) findViewById(R.id.caddyBottomSectionTitleText);
+		previousShotTitleText.setText("Next Shot");
+
+		TextView previousShotDistanceText = (TextView) findViewById(R.id.caddyMainSectionPreviousShotText);
+		previousShotDistanceText.setText("");
+
+		recordLocationButton.setText("Start Shot");
+
+		initialLocationRecorded = false;
+	}
+
 	//Caddy Screen switching from front to back
 	private void CaddyScreenFrontHoleSwitcher(){
 
@@ -3879,5 +5758,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			caddyTitleBarText.setText(courseName + " - " + subCourseName);
 		}
 	}
+
+	//\todo Add bogey/birdie images for scorecard
 }
 

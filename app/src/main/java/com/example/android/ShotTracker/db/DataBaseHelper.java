@@ -2,9 +2,7 @@ package com.example.android.ShotTracker.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -100,7 +98,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String SHOTTYPEID_COLUMN = "ShotTypeID";
     public static final String SHOTTYPE_COLUMN = "ShotType";
-    public static final String SHOTISPRE_COLIMN = "ShotTypeIsPre";
+    public static final String SHOTISPRE_COLUMN = "ShotTypeIsPre";
 
     public static final String SHOTLINKID_COLUMN = "ShotLinkID";
 
@@ -206,7 +204,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + SHOTTYPE_TABLE + "("
             + SHOTTYPEID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SHOTTYPE_COLUMN + " TEXT NOT NULL, "
-            + SHOTISPRE_COLIMN + " BOOLEAN NOT NULL DEFAULT 0"
+            + SHOTISPRE_COLUMN + " BOOLEAN NOT NULL DEFAULT 0"
             + ");";
 
     private static final String CREATE_SHOTLINK_TABLE = "CREATE TABLE "

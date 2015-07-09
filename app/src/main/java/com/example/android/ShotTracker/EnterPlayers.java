@@ -76,8 +76,6 @@ public class EnterPlayers extends Activity{
 
 		//Initializes the button that starts the round
 		startRound();
-		
-
 	}
 
     private void setPlayerSpinners(boolean onAddPlayer){

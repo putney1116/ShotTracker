@@ -26,8 +26,6 @@ public class StartRoundList extends ListActivity{
     private CourseDAO courseDAO = null;
 
     private List<Course> courses = null;
-
-    //\todo Change Stow Acres North and South to one 36 hole course. Same w/ Blue Hills.
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

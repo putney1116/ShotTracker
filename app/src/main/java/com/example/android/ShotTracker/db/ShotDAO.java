@@ -51,18 +51,14 @@ public class ShotDAO extends ShotTrackerDBDAO {
         if (shot.getYards() > 0) {
             values.put(DataBaseHelper.YARDS_COLUMN, shot.getYards());
         }
-        if (shot.getShotStartLat() > 0){
-            values.put(DataBaseHelper.SHOTSTARTLAT_COLUMN, shot.getShotStartLat());
-        }
-        if (shot.getShotStartLong() > 0){
-            values.put(DataBaseHelper.SHOTSTARTLONG_COLUMN, shot.getShotStartLong());
-        }
-        if (shot.getShotEndLat() > 0){
-            values.put(DataBaseHelper.SHOTENDLAT_COLUMN, shot.getShotEndLat());
-        }
-        if (shot.getShotEndLong() > 0){
-            values.put(DataBaseHelper.SHOTENDLONG_COLUMN, shot.getShotEndLong());
-        }
+
+        values.put(DataBaseHelper.SHOTSTARTLAT_COLUMN, shot.getShotStartLat());
+
+        values.put(DataBaseHelper.SHOTSTARTLONG_COLUMN, shot.getShotStartLong());
+
+        values.put(DataBaseHelper.SHOTENDLAT_COLUMN, shot.getShotEndLat());
+
+        values.put(DataBaseHelper.SHOTENDLONG_COLUMN, shot.getShotEndLong());
 
         return database.insert(DataBaseHelper.SHOT_TABLE,null,values);
     }
@@ -86,18 +82,14 @@ public class ShotDAO extends ShotTrackerDBDAO {
         if (shot.getYards() > 0) {
             values.put(DataBaseHelper.YARDS_COLUMN, shot.getYards());
         }
-        if (shot.getShotStartLat() > 0){
-            values.put(DataBaseHelper.SHOTSTARTLAT_COLUMN, shot.getShotStartLat());
-        }
-        if (shot.getShotStartLong() > 0){
-            values.put(DataBaseHelper.SHOTSTARTLONG_COLUMN, shot.getShotStartLong());
-        }
-        if (shot.getShotEndLat() > 0){
-            values.put(DataBaseHelper.SHOTENDLAT_COLUMN, shot.getShotEndLat());
-        }
-        if (shot.getShotEndLong() > 0){
-            values.put(DataBaseHelper.SHOTENDLONG_COLUMN, shot.getShotEndLong());
-        }
+
+        values.put(DataBaseHelper.SHOTSTARTLAT_COLUMN, shot.getShotStartLat());
+
+        values.put(DataBaseHelper.SHOTSTARTLONG_COLUMN, shot.getShotStartLong());
+
+        values.put(DataBaseHelper.SHOTENDLAT_COLUMN, shot.getShotEndLat());
+
+        values.put(DataBaseHelper.SHOTENDLONG_COLUMN, shot.getShotEndLong());
 
         return database.update(DataBaseHelper.SHOT_TABLE,
                 values,
