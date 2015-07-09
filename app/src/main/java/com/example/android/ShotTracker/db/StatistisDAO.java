@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
 import com.example.android.ShotTracker.objects.Round;
@@ -1358,6 +1359,258 @@ public class StatistisDAO extends ShotTrackerDBDAO {
             nGiR = cursor.getInt(0);
         cursor.close();
         return nGiR;
+    }
+
+    /**
+     * Get the average distance for a given player and club
+     * @param player
+     * @param club
+     * @return
+     */
+    public float getClubAvgDist(Player player, Club club) {
+        float avg = 0;
+        String query = "SELECT AVG("
+                + DataBaseHelper.YARDS_COLUMN + ")"
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if ( cursor.moveToFirst() )
+            avg = cursor.getFloat(0);
+        cursor.close();
+        return avg;
+    }
+
+    /**
+     * Get the average shot distance given a player, club, and course
+     * @param player
+     * @param club
+     * @param course
+     * @return
+     */
+    public float getClubAvgDist(Player player, Club club, Course course) {
+        float avg = 0;
+        String query = "SELECT AVG("
+                + DataBaseHelper.YARDS_COLUMN + ")"
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.SHOT_TABLE + "." + DataBaseHelper.ROUNDHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.ROUNDHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "=" + course.getID()
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(query, null);
+        if ( cursor.moveToFirst() )
+            avg = cursor.getFloat(0);
+        cursor.close();
+        return avg;
+    }
+
+    /**
+     * Get the percentage of shots that are within +/- "dist" of the average shot yardage
+     * for a given player and club
+     * @param player
+     * @param club
+     * @return
+     */
+    public float getClubAccuracy(Player player, Club club, float dist) {
+        int nshot = 0;
+        int ngood = 0;
+
+        String querynshot = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(querynshot, null);
+        if ( cursor.moveToFirst() )
+            nshot = cursor.getInt(0);
+        cursor.close();
+
+        float lyards = club.getAvgDist() - dist;
+        float hyards = club.getAvgDist() + dist;
+        String queryngood = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " NATURAL JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + ">" + lyards
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + "<" + hyards;
+
+        cursor = database.rawQuery(queryngood, null);
+        if ( cursor.moveToFirst() )
+            ngood = cursor.getInt(0);
+        cursor.close();
+
+        if (nshot > 0) {
+            return (float)ngood / (float)nshot * (float)100.;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Get the percentage of shots that are within +/- "dist" of the average shot yardage
+     * for a given player, club, and course
+     * @param player
+     * @param club
+     * @param course
+     * @return
+     */
+    public float getClubAccuracy(Player player, Club club, Course course, float dist) {
+        int nshot = 0;
+        int ngood = 0;
+
+        String querynshot = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.SHOT_TABLE + "." + DataBaseHelper.ROUNDHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.ROUNDHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "=" + course.getID()
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + ">0";
+
+        Cursor cursor = database.rawQuery(querynshot, null);
+        if ( cursor.moveToFirst() )
+            nshot = cursor.getInt(0);
+        cursor.close();
+
+        float lyards = club.getAvgDist() - dist;
+        float hyards = club.getAvgDist() + dist;
+        String queryngood = "SELECT count(*)"
+                + " FROM "
+                + DataBaseHelper.SHOT_TABLE
+                + " LEFT JOIN "
+                + DataBaseHelper.ROUNDHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.SHOT_TABLE + "." + DataBaseHelper.ROUNDHOLEID_COLUMN
+                + "="
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.ROUNDHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.COURSEHOLE_TABLE
+                + " ON "
+                + DataBaseHelper.ROUNDHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " = "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.COURSEHOLEID_COLUMN
+                + " LEFT JOIN "
+                + DataBaseHelper.SUBCOURSE_TABLE
+                + " ON "
+                + DataBaseHelper.COURSEHOLE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " = "
+                + DataBaseHelper.SUBCOURSE_TABLE + "." + DataBaseHelper.SUBCOURSEID_COLUMN
+                + " WHERE "
+                + DataBaseHelper.PLAYERID_COLUMN
+                + "=" + player.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.COURSEID_COLUMN
+                + "=" + course.getID()
+                + " AND "
+                + DataBaseHelper.CLUBID_COLUMN
+                + "=" + club.getID()
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + ">" + lyards
+                + " AND "
+                + DataBaseHelper.YARDS_COLUMN
+                + "<" + hyards;
+
+        cursor = database.rawQuery(queryngood, null);
+        if ( cursor.moveToFirst() )
+            ngood = cursor.getInt(0);
+        cursor.close();
+
+        if (nshot > 0) {
+            return (float)ngood / (float)nshot * (float)100.;
+        }
+        else {
+            return 0;
+        }
     }
 
 }

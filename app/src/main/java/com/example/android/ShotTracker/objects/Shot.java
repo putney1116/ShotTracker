@@ -1,5 +1,6 @@
 package com.example.android.ShotTracker.objects;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -22,7 +23,7 @@ public class Shot {
      * Default Constructor
      */
     public Shot() {
-        mShotType = new List<ShotType>();
+        mShotType = new ArrayList<ShotType>();
     }
 
     public Shot(long id, RoundHole roundhole, Club club,

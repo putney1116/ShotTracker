@@ -31,11 +31,13 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.ShotTracker.db.BagDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
 import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.DAOUtilities;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.StatistisDAO;
+import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
 
@@ -107,7 +109,9 @@ public class Statistics extends ListActivity{
 	private double par5DoubleBogeyCount = 0;
 	private double par5TripleBogeyCount = 0;
 	private double par5QuadBogeyPlusCount = 0;
-	
+
+    private List<Club> clubs = new ArrayList<Club>();
+
 	private int par[] = new int[19];
 	
 	private DecimalFormat df = new DecimalFormat("#.##");
@@ -226,6 +230,7 @@ public class Statistics extends ListActivity{
         StatistisDAO statDAO = new StatistisDAO(Statistics.this);
         DAOUtilities daoUtil = new DAOUtilities(Statistics.this);
         PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
+        BagDAO bagDAO = new BagDAO(Statistics.this);
 
         Player player = new Player();
         long id = playerDAO.readIDFromName(players.get(pos));
@@ -325,6 +330,14 @@ public class Statistics extends ListActivity{
                 + par4QuadBogeyPlusCount
                 + par5QuadBogeyPlusCount;
 
+
+        clubs = bagDAO.readClubsInBag(player);
+        for (Club club : clubs) {
+            club.setAvgDist(statDAO.getClubAvgDist(player, club));
+            club.setAccuracy(statDAO.getClubAccuracy(player, club, (float) 10));
+        }
+
+
         // get the number of rounds played
         int courseCount = 0;
 		//Calls the method that displays the stats on the screen
@@ -340,6 +353,7 @@ public class Statistics extends ListActivity{
         DAOUtilities daoUtil = new DAOUtilities(Statistics.this);
         PlayerDAO playerDAO = new PlayerDAO(Statistics.this);
         CourseDAO courseDAO = new CourseDAO(Statistics.this);
+        BagDAO bagDAO = new BagDAO(Statistics.this);
 
         Player player = new Player();
         long pid = playerDAO.readIDFromName(players.get(playerPos));
@@ -440,6 +454,12 @@ public class Statistics extends ListActivity{
         quadBogeyPlusCount = par3QuadBogeyPlusCount
                 + par4QuadBogeyPlusCount
                 + par5QuadBogeyPlusCount;
+
+        clubs = bagDAO.readClubsInBag(player);
+        for (Club club : clubs) {
+            club.setAvgDist(statDAO.getClubAvgDist(player, club, course));
+            club.setAccuracy(statDAO.getClubAccuracy(player, club, course, (float)10));
+        }
 
         // get the number of rounds played
         int courseCount = 0;
@@ -893,7 +913,28 @@ public class Statistics extends ListActivity{
         else
             map.put("col_3", ""+df.format(par5QuadBogeyPlusCount/numberOfPar5Holes*100)+"%");
         fillMaps.add(map);
-        
+
+
+        map = new HashMap<String, String>();
+        map.put("col_1", "Club");
+        map.put("col_2", "Avg. Dist.");
+        map.put("col_3", "Accuracy");
+        fillMaps.add(map);
+
+        for(Club club : clubs) {
+            map = new HashMap<String, String>();
+            map.put("col_1", "" + club.getClub());
+            map.put("col_2", club.getAvgDist() <= 0 ? "-" : "" + df.format(club.getAvgDist()));
+            if (club.getAccuracy() <= 0 && club.getAvgDist() <= 0)
+                map.put("col_3", "-");
+            else
+                map.put("col_3", "" + df.format(club.getAccuracy()) + "%");
+            fillMaps.add(map);
+        }
+
+
+
+
         ListView lv = getListView();	
         
         //Sets a fading design as the divider line
@@ -986,6 +1027,7 @@ public class Statistics extends ListActivity{
 		par5DoubleBogeyCount = 0;
 		par5TripleBogeyCount = 0;
 		par5QuadBogeyPlusCount = 0;
+        clubs.clear();
 	}
 	
 	//Closes the activity and the display returns to the home screen if the back button is pressed
@@ -1036,7 +1078,8 @@ public class Statistics extends ListActivity{
                     position==11 ||
                     position==20 ||
                     position==32 ||
-                    position==46){
+                    position==46 ||
+                    position==60){
 				view.setBackgroundColor(0xff347c12);
 				
 				t1 = (TextView)view.findViewById(R.id.statisticsitem1);

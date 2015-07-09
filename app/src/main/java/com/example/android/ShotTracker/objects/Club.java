@@ -7,6 +7,8 @@ public class Club {
 
     private long mID = -1;
     private String mClub = "";
+    private float mAvgDist = 0;
+    private float mAccuracy = 0;
 
     /**
      * Default Constructor
@@ -44,6 +46,10 @@ public class Club {
         this.mClub = club;
     }
 
+    public void setAvgDist(float dist) { this.mAvgDist = dist; }
+
+    public void setAccuracy(float acc) { this.mAccuracy = acc; }
+
     /**
      * Getters
      */
@@ -54,4 +60,8 @@ public class Club {
     public String getClub() {
         return this.mClub;
     }
+
+    public float getAvgDist() { return this.mAvgDist; }
+
+    public float getAccuracy() { return this.mAccuracy; }
 }
