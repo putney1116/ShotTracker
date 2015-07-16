@@ -3711,21 +3711,25 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
                         roundHole.setID(roundHoleDAO.createRoundHole(roundHole));
 
-						for(Shot shot : roundHole.getShotList()){
+                        try {
+                            for (Shot shot : roundHole.getShotList()) {
 
-							shot.setRoundHoleID(roundHole);
+                                shot.setRoundHoleID(roundHole);
 
-							shot.setID(shotDAO.createShot(shot));
+                                shot.setID(shotDAO.createShot(shot));
 
-							for(ShotType shotType : shot.getShotTypePreList()){
-								shotLinkDAO.createShotLink(shot, shotType);
-							}
+                                for (ShotType shotType : shot.getShotTypePreList()) {
+                                    shotLinkDAO.createShotLink(shot, shotType);
+                                }
 
-							for(ShotType shotType : shot.getShotTypePostList()){
-								shotLinkDAO.createShotLink(shot, shotType);
-							}
-						}
-                    }
+                                for (ShotType shotType : shot.getShotTypePostList()) {
+                                    shotLinkDAO.createShotLink(shot, shotType);
+                                }
+                            }
+                        } catch(Exception e){
+
+                            }
+                        }
                 }
             }
         }
