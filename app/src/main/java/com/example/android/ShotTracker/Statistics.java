@@ -1,25 +1,12 @@
 package com.example.android.ShotTracker;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +20,17 @@ import android.widget.TextView;
 
 import com.example.android.ShotTracker.db.BagDAO;
 import com.example.android.ShotTracker.db.CourseDAO;
-import com.example.android.ShotTracker.db.CourseHoleDAO;
 import com.example.android.ShotTracker.db.DAOUtilities;
 import com.example.android.ShotTracker.db.PlayerDAO;
 import com.example.android.ShotTracker.db.StatistisDAO;
 import com.example.android.ShotTracker.objects.Club;
 import com.example.android.ShotTracker.objects.Course;
 import com.example.android.ShotTracker.objects.Player;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Statistics extends ListActivity{
 	
@@ -220,6 +211,8 @@ public class Statistics extends ListActivity{
     		}
     	});    	
 	}
+
+    //\todo There is difference between a "-" and 0%. Should account for this. For example if they havent played any par 3's then the GIR is a dash but if they have played some but just not hit a GIR, then it should show 0%
 	 
 
 	//Method called when the main spinner is set to "My Total". 
