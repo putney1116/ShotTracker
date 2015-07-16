@@ -20,6 +20,9 @@ public class BagDAO extends ShotTrackerDBDAO {
             + "=? AND "
             + DataBaseHelper.CLUBID_COLUMN + "=?";
 
+    private static final String WHERE_PLAYERID_EQUALS = DataBaseHelper.PLAYERID_COLUMN
+            + "=?";
+
     public BagDAO(Context context){ super(context); }
 
     /**
@@ -56,6 +59,16 @@ public class BagDAO extends ShotTrackerDBDAO {
                 WHERE_IDS_EQUAL, new String[]{player.getID() + "", club.getID() + ""});
     }
 
+    public long deletePlayerBag(Player player){
+        if (player.getID() < 0){
+            throw new RuntimeException("playerID not set in BagDAO.deletePlayerBag()");
+        }
+
+        return database.delete(DataBaseHelper.BAG_TABLE,
+                WHERE_PLAYERID_EQUALS,
+                new String[]{String.valueOf(player.getID())});
+    }
+
     /**
      * read all clubs in a players bag
      * @param player
@@ -65,7 +78,6 @@ public class BagDAO extends ShotTrackerDBDAO {
         List<Club> clubs = new ArrayList<Club>();
 
         /// Build multi-table query using NATURAL JOIN
-        ///\todo look into SQLiteQueryBuilder
         String query = "SELECT "
                 + DataBaseHelper.CLUBID_COLUMN + ", "
                 + DataBaseHelper.CLUBNAME_COLUMN

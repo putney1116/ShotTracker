@@ -30,10 +30,9 @@ public class CourseHoleInfoDAO extends ShotTrackerDBDAO {
     public long createCourseHoleInfo(CourseHoleInfo courseHoleInfo) {
         ContentValues values = new ContentValues();
 
-        //Log.d("Test", "F/M/B = " + courseHoleInfo.getCourseHoleID() + ", HoleNumber = " + holeNumber);
-        //Log.d("test", "Last: "+ courseHoleInfo.getLongitude());
-
-        //\todo check that courseHoleID is set before using
+        if (courseHoleInfo.getCourseHoleID() < 0){
+            throw new RuntimeException("courseHoleID is not set in CourseHoleInfoDAO.createCourseHoleInfo()");
+        }
         values.put(DataBaseHelper.COURSEHOLEID_COLUMN, courseHoleInfo.getCourseHoleID());
         values.put(DataBaseHelper.INFO_COLUMN, courseHoleInfo.getInfo());
         values.put(DataBaseHelper.INFOLATITUDE_COLUMN, courseHoleInfo.getLatitude());
@@ -55,7 +54,9 @@ public class CourseHoleInfoDAO extends ShotTrackerDBDAO {
         }
         ContentValues values = new ContentValues();
 
-        //\todo check that courseHoleID is set before using
+        if (courseHoleInfo.getCourseHoleID() < 0){
+            throw new RuntimeException("courseHoleID is not set in CourseHoleInfoDAO.updateCourseHoleInfo()");
+        }
         values.put(DataBaseHelper.COURSEHOLEID_COLUMN, courseHoleInfo.getCourseHoleID());
         values.put(DataBaseHelper.INFO_COLUMN, courseHoleInfo.getInfo());
         values.put(DataBaseHelper.INFOLATITUDE_COLUMN, courseHoleInfo.getLatitude());

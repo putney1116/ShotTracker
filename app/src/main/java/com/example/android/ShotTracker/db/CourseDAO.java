@@ -154,6 +154,8 @@ public class CourseDAO extends ShotTrackerDBDAO {
             courseID = cursor.getLong(0);
         }
 
+        cursor.close();
+
         return courseID;
     }
 
@@ -163,8 +165,6 @@ public class CourseDAO extends ShotTrackerDBDAO {
      */
     public List<Course> readListofCourses() {
         List<Course> courses = new ArrayList<Course>();
-
-        //\todo check nulls
 
         Cursor cursor = database.query(DataBaseHelper.COURSE_TABLE,
                 new String[] {DataBaseHelper.COURSEID_COLUMN,

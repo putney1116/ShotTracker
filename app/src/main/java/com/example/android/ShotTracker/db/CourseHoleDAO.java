@@ -31,7 +31,9 @@ public class CourseHoleDAO extends ShotTrackerDBDAO {
     public long createCourseHole(CourseHole courseHole) {
         ContentValues values = new ContentValues();
 
-        //\todo check that CourseHole.getSubCourseID() is set before using it.
+        if (courseHole.getSubCourseID() < 0){
+            throw new RuntimeException("SubCourseID not set in CourseHoleDAO.createCourseHole()");
+        }
 
         values.put(DataBaseHelper.SUBCOURSEID_COLUMN, courseHole.getSubCourseID());
         values.put(DataBaseHelper.COURSEHOLENUMBER_COLUMN, courseHole.getHoleNumber());

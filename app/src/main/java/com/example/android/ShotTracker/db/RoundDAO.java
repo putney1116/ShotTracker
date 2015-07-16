@@ -62,6 +62,7 @@ public class RoundDAO extends ShotTrackerDBDAO {
     }
 
     /**
+     * Delete a round from table only
      * @param round
      * @return
      */

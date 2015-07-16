@@ -10,14 +10,17 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.example.android.ShotTracker.objects.Player;
+import com.example.android.ShotTracker.objects.Round;
 
 /**
  * Database CRUD methods for Club objects
  */
 public class ClubDAO extends ShotTrackerDBDAO {
 
-    private static final String WHERE_ID_EQUALS = DataBaseHelper.CLUBID_COLUMN
+    private static final String WHERE_CLUBID_EQUALS = DataBaseHelper.CLUBID_COLUMN
             + " =?";
+
+    private Context mContext = null;
 
     public ClubDAO(Context context) {
         super(context);
@@ -31,13 +34,49 @@ public class ClubDAO extends ShotTrackerDBDAO {
      */
     public long create(Club club) {
         ///\todo check against duplicate entries in db? goes here?
+
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.CLUBNAME_COLUMN, club.getClub());
 
         return database.insert(DataBaseHelper.CLUB_TABLE, null, values);
     }
 
-    ///\todo update() and delete() methods shouldn't be needed, but could add them for completeness
+    /**
+     *
+     * @param club
+     * @return
+     */
+    public long update(Club club) {
+        ContentValues values = new ContentValues();
+        
+        if (club.getID() < 0 ) {
+            throw new RuntimeException("ClubID not set in ClubDAO.update()");
+        }
+        
+        values.put(DataBaseHelper.CLUBNAME_COLUMN, club.getClub());
+        
+        return database.update(DataBaseHelper.CLUB_TABLE,
+                values,
+                WHERE_CLUBID_EQUALS,
+                new String[]{String.valueOf(club.getID())});
+    }
+
+    /**
+     *
+     * @param club
+     * @return
+     */
+    public long delete(Club club) {
+        ContentValues values = new ContentValues();
+
+        if (club.getID() < 0 ){
+            throw new RuntimeException("ClubID not set in ClubDAO.delete()");
+        }
+
+        return database.delete(DataBaseHelper.CLUB_TABLE,
+                WHERE_CLUBID_EQUALS,
+                new String[]{String.valueOf(club.getID())});
+    }
 
     /**
      * Get a list of all Clubs in the database
@@ -70,13 +109,16 @@ public class ClubDAO extends ShotTrackerDBDAO {
     public Club readClub(int clubID) {
         Cursor cursor = database.query(DataBaseHelper.CLUB_TABLE,
                 new String[] {DataBaseHelper.CLUBID_COLUMN, DataBaseHelper.CLUBNAME_COLUMN},
-                WHERE_ID_EQUALS,
+                WHERE_CLUBID_EQUALS,
                 new String[] {String.valueOf(clubID)},
                 null, null, null, null);
 
         Club club = new Club();
-        club.setID(cursor.getLong(0));
-        club.setClub(cursor.getString(1));
+        while ( cursor.moveToNext() ) {
+            club.setID(cursor.getLong(0));
+            club.setClub(cursor.getString(1));
+        }
+
         cursor.close();
 
         return club;

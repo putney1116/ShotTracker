@@ -546,7 +546,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     *//**
-     * \todo D. McGlinchey 11/28/2014: Need to understand onOpen() function
+     *
      *
      * @param db
      *//*

@@ -81,7 +81,6 @@ public class EnterPlayers extends Activity{
     private void setPlayerSpinners(boolean onAddPlayer){
         PlayerDAO playerDAO = new PlayerDAO(this);
         final List<String> players = playerDAO.readListofPlayerNameswDefaultFirst();
-		Log.e("Test","Lengh of List: " + players.size());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(EnterPlayers.this, android.R.layout.simple_spinner_item, players);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

@@ -413,6 +413,10 @@ public class DAOUtilities {
         return rounds;
     }
 
+    /**
+     * Delete a round from the entire DB
+     * @param round
+     */
     public void deleteRound(Round round) {
         RoundDAO roundDAO = new RoundDAO(mContext);
         SubRoundDAO subRoundDAO = new SubRoundDAO(mContext);
@@ -443,9 +447,26 @@ public class DAOUtilities {
         roundDAO.deleteRound(round);
 
     }
-    // \todo Delete Round
-    // \todo Course from Round
-    // \todo Delete Player (and all player ID's)
+
+    public void deletePlayer(Player player){
+        PlayerDAO playerDAO = new PlayerDAO(mContext);
+        BagDAO bagDAO = new BagDAO(mContext);
+        RoundHoleDAO roundHoleDAO = new RoundHoleDAO(mContext);
+
+        List<RoundHole> roundHoles = roundHoleDAO.readListofRoundHolePlayer(player);
+
+        for (RoundHole roundHole : roundHoles){
+            roundHoleDAO.deleteRoundHole(roundHole);
+        }
+
+        bagDAO.deletePlayerBag(player);
+
+        playerDAO.deletePlayer(player);
+
+
+    }
+
+    // \todo Delete Course (from Round et al)
 
     /**
      * Read a list of players, ordered by the player number, for a given round
