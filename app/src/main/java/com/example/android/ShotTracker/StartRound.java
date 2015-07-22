@@ -9,13 +9,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -30,7 +29,6 @@ import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -68,7 +66,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -79,13 +77,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
-public class StartRound extends com.google.android.maps.MapActivity implements OnClickListener, OnMapClickListener{
+public class StartRound extends FragmentActivity implements OnClickListener, OnMapClickListener{
 
 	//\todo Copy xml changes to inroundscreen2
 	
@@ -116,6 +112,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private int chipScore[][] = new int[5][19];
 	private int penaltyScore[][] = new int[5][19];
 	private boolean fairwayHit[][] = new boolean[5][19];
+	private boolean girHit[][] = new boolean[5][19];
 	String playerName[] = {"","","","",""};
 	
 	View.OnTouchListener gestureListener;
@@ -127,9 +124,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private LocationListener gpsClass;
 	private Location greenLocation = new Location("");
 	private Location playerLocation = new Location("");
-	private Location tapLocation = new Location("");
 	private Location location = new Location("");
-	private ImageView gpsStatusPicture;
+	//private ImageView gpsStatusPicture;
 	
 	double lat[] = new double[2];
 	double lng[] = new double[2];
@@ -222,6 +218,9 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	
     	//Initializes the tab controller
     	tabSetup();
+
+		//Initializes the edit round map button
+		mapEditRoundButtonInitializer();
 
 		//Initializes the caddy screen
 		CaddyScreenInitializer();
@@ -376,6 +375,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	Button minusButton = (Button)findViewById(R.id.minusbutton);
     	Button finishButton = (Button)findViewById(R.id.finishbutton);
 		final Button fairwayButton = (Button)findViewById(R.id.fairwayhitbutton);
+		Button girButton = (Button)findViewById(R.id.girhitbutton);
     		
     	scoreEntryGreen = (TextView)findViewById(R.id.totalscore);
 
@@ -398,6 +398,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Increases the active player's score
 					shotScore[playerNumber][holeNumber]++;
 					holeScore[playerNumber][holeNumber]++;
+
+					if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+						girHit[playerNumber][holeNumber] = true;
+					else
+						girHit[playerNumber][holeNumber] = false;
+
+					Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+					if (girHit[playerNumber][holeNumber]) {
+						girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+					} else {
+						girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+					}
 
 					//Displays the increased number
 					scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
@@ -441,6 +454,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					if (shotScore[playerNumber][holeNumber] != 0) {
 						shotScore[playerNumber][holeNumber]--;
 						holeScore[playerNumber][holeNumber]--;
+
+						if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+							girHit[playerNumber][holeNumber] = true;
+						else
+							girHit[playerNumber][holeNumber] = false;
+
+						Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+						if (girHit[playerNumber][holeNumber]) {
+							girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+						} else {
+							girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+						}
 
 						//Displays the decreased number
 						scoreEntryGreenShots.setText(Integer.toString(shotScore[playerNumber][holeNumber]));
@@ -498,6 +524,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					puttScore[playerNumber][holeNumber]++;
 					holeScore[playerNumber][holeNumber]++;
 
+					if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+						girHit[playerNumber][holeNumber] = true;
+					else
+						girHit[playerNumber][holeNumber] = false;
+
+					Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+					if (girHit[playerNumber][holeNumber]) {
+						girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+					} else {
+						girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+					}
+
 					//Displays the increased number
 					scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
 					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -542,6 +581,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					if (puttScore[playerNumber][holeNumber] != 0) {
 						puttScore[playerNumber][holeNumber]--;
 						holeScore[playerNumber][holeNumber]--;
+
+						if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+							girHit[playerNumber][holeNumber] = true;
+						else
+							girHit[playerNumber][holeNumber] = false;
+
+						Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+						if (girHit[playerNumber][holeNumber]) {
+							girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+						} else {
+							girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+						}
 
 						//Displays the decreased number
 						scoreEntryGreenPutts.setText(Integer.toString(puttScore[playerNumber][holeNumber]));
@@ -599,6 +651,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					chipScore[playerNumber][holeNumber]++;
 					holeScore[playerNumber][holeNumber]++;
 
+					if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+						girHit[playerNumber][holeNumber] = true;
+					else
+						girHit[playerNumber][holeNumber] = false;
+
+					Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+					if (girHit[playerNumber][holeNumber]) {
+						girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+					} else {
+						girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+					}
+
 					//Displays the increased number
 					scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
 					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -643,6 +708,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					if (chipScore[playerNumber][holeNumber] != 0) {
 						chipScore[playerNumber][holeNumber]--;
 						holeScore[playerNumber][holeNumber]--;
+
+						if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+							girHit[playerNumber][holeNumber] = true;
+						else
+							girHit[playerNumber][holeNumber] = false;
+
+						Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+						if (girHit[playerNumber][holeNumber]) {
+							girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+						} else {
+							girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+						}
 
 						//Displays the decreased number
 						scoreEntryGreenChips.setText(Integer.toString(chipScore[playerNumber][holeNumber]));
@@ -701,6 +779,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					penaltyScore[playerNumber][holeNumber]++;
 					holeScore[playerNumber][holeNumber]++;
 
+					if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+						girHit[playerNumber][holeNumber] = true;
+					else
+						girHit[playerNumber][holeNumber] = false;
+
+					Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+					if (girHit[playerNumber][holeNumber]) {
+						girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+					} else {
+						girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+					}
+
 					//Displays the increased number
 					scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
 					scoreEntryGreen.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -745,6 +836,19 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					if (penaltyScore[playerNumber][holeNumber] != 0) {
 						penaltyScore[playerNumber][holeNumber]--;
 						holeScore[playerNumber][holeNumber]--;
+
+						if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+							girHit[playerNumber][holeNumber] = true;
+						else
+							girHit[playerNumber][holeNumber] = false;
+
+						Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+						if (girHit[playerNumber][holeNumber]) {
+							girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+						} else {
+							girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+						}
 
 						//Displays the decreased number
 						scoreEntryGreenPenalty.setText(Integer.toString(penaltyScore[playerNumber][holeNumber]));
@@ -798,13 +902,20 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 				catch(Exception e) {
 				}
 			}
-	    	});
+		});
 
 
 		for (int x = 1; x < 19; x++) {
 			for (int y = 1; y < 5; y++) {
 				fairwayHit[y][x] = false;
+				girHit[y][x] = true;
 			}
+		}
+
+		if (girHit[playerNumber][holeNumber]) {
+			girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+		} else {
+			girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 		}
 
 		if(par[holeNumber] != 3) {
@@ -973,6 +1084,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					//Increases the score
 					holeScore[playerNumber][holeNumber]++;
 					shotScore[playerNumber][holeNumber]++;
+
+					if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+						girHit[playerNumber][holeNumber] = true;
+					else
+						girHit[playerNumber][holeNumber] = false;
 					
 					//Displays the increased score
 					scoreEntryScorecard.setText(Integer.toString(holeScore[playerNumber][holeNumber]));
@@ -996,6 +1112,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 					if(shotScore[playerNumber][holeNumber]!=0){
 						holeScore[playerNumber][holeNumber]--;
 						shotScore[playerNumber][holeNumber]--;
+
+						if(holeScore[playerNumber][holeNumber] - puttScore[playerNumber][holeNumber] <= par[holeNumber] - 2)
+							girHit[playerNumber][holeNumber] = true;
+						else
+							girHit[playerNumber][holeNumber] = false;
 
 						//Displays the decreased score
 						if(holeScore[playerNumber][holeNumber]==0)
@@ -2969,6 +3090,14 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
 							}
+
+							Button girButton = (Button)findViewById(R.id.girhitbutton);
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+							}
     						
     						//Gets the location and calls the method that calculates the distance to the green
 	    	   				Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -3026,6 +3155,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
     	private TextView greenParText = (TextView)findViewById(R.id.parnumber);
     	private TextView greenPlayerNameText = (TextView)findViewById(R.id.playername);
 		private Button fairwayButton = (Button)findViewById(R.id.fairwayhitbutton);
+		private Button girButton = (Button)findViewById(R.id.girhitbutton);
     	 
     	@Override
     	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
@@ -3059,6 +3189,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								} else {
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
+							}
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 							}
 
 							//Updates the scorecard display if the increase goes from the front to the back
@@ -3111,6 +3247,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								} else {
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
+							}
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 							}
     						
     						//Updates the scorecard display if the decrease goes from the back to the front
@@ -3192,6 +3334,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
 							}
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+							}
     					}
     					else{   
     						//Runs if the current player is not the last player
@@ -3218,6 +3366,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								} else {
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
+							}
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 							}
     					}
     				}
@@ -3277,6 +3431,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
 							}
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+							}
     					}
     					else{
     						//Runs if the current player is not the first player
@@ -3303,6 +3463,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								} else {
 									fairwayButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 								}
+							}
+
+							if (girHit[playerNumber][holeNumber]) {
+								girButton.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+							} else {
+								girButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 							}
     					}  
     				}
@@ -3569,11 +3735,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	public void onClick(View arg0) {
 	}
 
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}
-	
 	//Initializes the gps module
 	private void gpsSetup(){
 		gpsClass = new MyLocationListener();
@@ -3581,7 +3742,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
 		//Loads the gps related views
-        gpsStatusPicture = (ImageView)findViewById(R.id.gpsstatusindicator);
+        //gpsStatusPicture = (ImageView)findViewById(R.id.gpsstatusindicator);
          
         //Sets when the gps location should be updated
         locationManager.requestLocationUpdates(
@@ -3598,11 +3759,15 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
         	//Sets the vibrate time
 			vibe.vibrate(15);
-			
-        	if(tabHost.getCurrentTab()==0)
-        		builder.show();
-        	else
-        		tabHost.setCurrentTab(0);
+
+			//\todo handle for 9 holes
+			if(!editButtonSelected) {
+				if (tabHost.getCurrentTab() == 0)
+					builder.show();
+				else
+					tabHost.setCurrentTab(0);
+			}
+
         	return true;
         }
  	
@@ -3699,11 +3864,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 						roundHole.setPutts(puttScore[x][9 * (subCourseNumber) + y]);
 						roundHole.setChips(chipScore[x][9 * (subCourseNumber) + y]);
 						roundHole.setFairways(fairwayHit[x][9*(subCourseNumber) + y]);
-						if(holeScore[x][9*(subCourseNumber)+y] - puttScore[x][9*(subCourseNumber)+y] <= par[9*(subCourseNumber)+y] - 2)
-							roundHole.setGiR(true);
-						else
-							roundHole.setGiR(false);
-						//\todo Add code so that GIR is an array similar to fairways and can be called by other parts of the code
+						roundHole.setGiR(girHit[x][9*(subCourseNumber) + y]);
 						roundHole.setSubRoundID(subRound);
                         roundHole.setPlayerID(player);
                         roundHole.setPlayerNumber((long)x);
@@ -3711,25 +3872,25 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
                         roundHole.setID(roundHoleDAO.createRoundHole(roundHole));
 
-                        try {
-                            for (Shot shot : roundHole.getShotList()) {
+						try {
+							for (Shot shot : roundHole.getShotList()) {
 
-                                shot.setRoundHoleID(roundHole);
+								shot.setRoundHoleID(roundHole);
 
-                                shot.setID(shotDAO.createShot(shot));
+								shot.setID(shotDAO.createShot(shot));
 
-                                for (ShotType shotType : shot.getShotTypePreList()) {
-                                    shotLinkDAO.createShotLink(shot, shotType);
-                                }
+								for (ShotType shotType : shot.getShotTypePreList()) {
+									shotLinkDAO.createShotLink(shot, shotType);
+								}
 
-                                for (ShotType shotType : shot.getShotTypePostList()) {
-                                    shotLinkDAO.createShotLink(shot, shotType);
-                                }
-                            }
-                        } catch(Exception e){
+								for (ShotType shotType : shot.getShotTypePostList()) {
+									shotLinkDAO.createShotLink(shot, shotType);
+								}
+							}
+						}catch(Exception e){
 
-                            }
-                        }
+						}
+                    }
                 }
             }
         }
@@ -3740,45 +3901,9 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			daoUtility.deleteRound(round);
         }
     }
-    
-	//Shows the gps coordinates and the current city of the current location
-    protected void showCurrentLocation() {
-    	//Loads the last location
-		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-	 
-	    if (location != null) {
-	    	//Displays a toast message of the current gps coordinates
-	        String message = String.format(
-	                "Current Location \n Longitude: %1$s \n Latitude: %2$s",
-	                location.getLongitude(), location.getLatitude()
-	        );
-	        Toast.makeText(StartRound.this, message,Toast.LENGTH_SHORT).show();
-
-	        String cityName = null;  
-	        Geocoder gcd = new Geocoder(getBaseContext(),   
-	          Locale.getDefault());  
-
-	        //Loads the current location's city name
-	        List<Address> addresses;  
-	        try {  
-	         addresses = gcd.getFromLocation(location.getLatitude(),  
-	           location.getLongitude(), 1);  
-	         if (addresses.size() > 0)   
-	        	 cityName = addresses.get(0).getLocality();  
-	        } catch (IOException e) {  
-	         e.printStackTrace();  
-	        }  
-
-	        //Displays a toast message of the current city
-	        message = "My Currrent City is: " + cityName;  
-	        Toast.makeText(StartRound.this, message,Toast.LENGTH_SHORT).show();
-	    }
-	}
 	
     //Handles the change in gps coordinates 
 	private class MyLocationListener implements LocationListener {
-
-		//\todo Map screen needs to update on the fly if location is changing
 
 		@SuppressWarnings("unused")
 		//Run when the location of the gps is requested or has changed
@@ -3805,19 +3930,22 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			distance = (int)Math.round(location.distanceTo(greenLocation) * 1.09361);
 			greenDistance.setText(Integer.toString(distance));
 			
-			//Displays the gps status indicator based on if the current location exists
+			/*//Displays the gps status indicator based on if the current location exists
 			if(location != null)
 				gpsStatusPicture.setImageResource(R.drawable.gpsstatusgood);
 			else
-				gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);
+				gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);*/
 
 			//Sets the previous shot and next shot location text bars
 			greenDistance = (TextView) findViewById(R.id.caddyMainSectionDistanceToPinText);
+			Button cancelTargetButton = (Button) findViewById(R.id.cancelMapTargetButton);
 			if(targetNotPin){
+				cancelTargetButton.setVisibility(View.VISIBLE);
 				distance = (int)Math.round(location.distanceTo(targetLocation) * 1.09361);
 				greenDistance.setText("Distance to Map Target: " + distance + " yds");
 			}
 			else {
+				cancelTargetButton.setVisibility(View.INVISIBLE);
 				greenDistance.setText("Distance to Middle of Green: " + middleDistance + " yds");
 			}
 
@@ -3829,34 +3957,40 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			else {
 				greenDistance.setText("");
 			}
+
+			if(tabHost.getCurrentTab()==1)
+				setMapLocation();
 		}
  
 		//Displays the gps status indicator based on if the current location exists
 		public void onStatusChanged(String s, int i, Bundle b) {
-			if(i>0)
+			/*if(i>0)
 				gpsStatusPicture.setImageResource(R.drawable.gpsstatusgood);
 			else
-				gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);
+				gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);*/
 		}
 
 		//Displays the gps status indicator based on if the current location exists
 		public void onProviderDisabled(String s) {
-			gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);
-			Toast.makeText(StartRound.this, "Provider status changed to Disabled",Toast.LENGTH_SHORT).show();
+			/*gpsStatusPicture.setImageResource(R.drawable.gpsstatusbad);
+			Toast.makeText(StartRound.this, "Provider status changed to Disabled",Toast.LENGTH_SHORT).show();*/
 		}
 
 		//Displays the gps status indicator based on if the current location exists
 		public void onProviderEnabled(String s) {
-			gpsStatusPicture.setImageResource(R.drawable.gpsstatusgood);
-			Toast.makeText(StartRound.this, "Provider status changed to Enabled",Toast.LENGTH_SHORT).show();
+			/*gpsStatusPicture.setImageResource(R.drawable.gpsstatusgood);
+			Toast.makeText(StartRound.this, "Provider status changed to Enabled",Toast.LENGTH_SHORT).show();*/
 		}
 	}
+
+	private SupportMapFragment frag;
 	
 	//Initializes the map view tab
 	private void mapInitializer(){
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.maptab2))
-		        .getMap();
-		
+
+
+		map = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.maptab2)).getMap();
+
 		map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 		
 		map.setOnMapClickListener(this);
@@ -3871,7 +4005,9 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		//Test values
 		//greenLocations[0][2][1]=42.351185;
 		//greenLocations[1][2][1]=-71.137167;
-		
+
+		map = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.maptab2)).getMap();
+
 		map.clear();
 		
 		if(location!=null){			
@@ -3969,70 +4105,126 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	    .add(new LatLng(lat[1],lng[1]))
 	    .color(Color.GRAY)
 	    .width(5));
+
+		if(targetNotPin){
+
+			LatLng point = new LatLng(targetLocation.getLatitude(), targetLocation.getLongitude());
+
+			distance = (int) Math.round(targetLocation.distanceTo(playerLocation) * 1.09361);
+			middleDistance = (int) Math.round(targetLocation.distanceTo(greenLocation) * 1.09361);
+
+			mapClickMarker = map.addMarker(new MarkerOptions()
+					.position(point)
+					.title(distance + " yds away")
+					.snippet(middleDistance + " yds to pin")
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.golfball)));
+
+			mapClickMarker.showInfoWindow();
+
+			mapPolyline = map.addPolyline(new PolylineOptions()
+					.add(new LatLng(lat[0], lng[0]))
+					.add(new LatLng(point.latitude, point.longitude))
+					.add(new LatLng(lat[1], lng[1]))
+					.color(Color.GRAY)
+					.width(5));
+
+			map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+				public void onInfoWindowClick(Marker marker) {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					marker.hideInfoWindow();
+				}
+			});
+
+			map.setOnMarkerClickListener(new OnMarkerClickListener() {
+				public boolean onMarkerClick(Marker marker) {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					if (!marker.equals(mapClickMarker))
+						marker.showInfoWindow();
+
+					mapClickMarker.remove();
+					mapPolyline.remove();
+
+					return true;
+				}
+			});
+		}
 	}
 	
 	@Override
 	public void onMapClick(LatLng point) {
-		//Sets the vibrate time
-		vibe.vibrate(15);
 
-		if (mapClickMarker != null) {
-			mapPolyline.remove();
-			mapClickMarker.remove();
-		}
+		if(!editButtonSelected) {
+			//Sets the vibrate time
+			vibe.vibrate(15);
 
-		tapLocation.setLatitude(point.latitude);
-		tapLocation.setLongitude(point.longitude);
-
-		distance = (int) Math.round(tapLocation.distanceTo(playerLocation) * 1.09361);
-		middleDistance = (int) Math.round(tapLocation.distanceTo(greenLocation) * 1.09361);
-
-		mapClickMarker = map.addMarker(new MarkerOptions()
-				.position(point)
-				.title(distance + " yds away")
-				.snippet(middleDistance + " yds to pin")
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.golfball)));
-
-		mapClickMarker.showInfoWindow();
-
-		mapPolyline = map.addPolyline(new PolylineOptions()
-				.add(new LatLng(lat[0], lng[0]))
-				.add(new LatLng(point.latitude, point.longitude))
-				.add(new LatLng(lat[1], lng[1]))
-				.color(Color.GRAY)
-				.width(5));
-
-		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-			public void onInfoWindowClick(Marker marker) {
-				//Sets the vibrate time
-				vibe.vibrate(15);
-
-				marker.hideInfoWindow();
-			}
-		});
-
-		map.setOnMarkerClickListener(new OnMarkerClickListener() {
-			public boolean onMarkerClick(Marker marker) {
-				//Sets the vibrate time
-				vibe.vibrate(15);
-
-				if (!marker.equals(mapClickMarker))
-					marker.showInfoWindow();
-
-				mapClickMarker.remove();
+			if (mapClickMarker != null) {
 				mapPolyline.remove();
-
-				return true;
+				mapClickMarker.remove();
 			}
-		});
+
+			targetNotPin = true;
+
+			targetLocation.setLatitude(point.latitude);
+			targetLocation.setLongitude(point.longitude);
+
+			distance = (int) Math.round(targetLocation.distanceTo(playerLocation) * 1.09361);
+			middleDistance = (int) Math.round(targetLocation.distanceTo(greenLocation) * 1.09361);
+
+			mapClickMarker = map.addMarker(new MarkerOptions()
+					.position(point)
+					.title(distance + " yds away")
+					.snippet(middleDistance + " yds to pin")
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.golfball)));
+
+			mapClickMarker.showInfoWindow();
+
+			mapPolyline = map.addPolyline(new PolylineOptions()
+					.add(new LatLng(lat[0], lng[0]))
+					.add(new LatLng(point.latitude, point.longitude))
+					.add(new LatLng(lat[1], lng[1]))
+					.color(Color.GRAY)
+					.width(5));
+
+			map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+				public void onInfoWindowClick(Marker marker) {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					marker.hideInfoWindow();
+				}
+			});
+
+			map.setOnMarkerClickListener(new OnMarkerClickListener() {
+				public boolean onMarkerClick(Marker marker) {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					if (!marker.equals(mapClickMarker))
+						marker.showInfoWindow();
+					else {
+						mapClickMarker.remove();
+						mapPolyline.remove();
+						targetNotPin = false;
+					}
+					return true;
+				}
+			});
+		}
+		else {
+			//Sets the vibrate time
+			vibe.vibrate(15);
+
+			editShotsForMap();
+		}
 	}
 
-	private ViewEditCurrentRound viewEditCurrentRound = null;
-
 	private List[] shotArray = null;
-	private Button editRoundButton = null;
-	private Button changeTargetButton = null;
 	private Button finishHoleButton = null;
 	private Button recordLocationButton = null;
 	private Button countDistanceButton = null;
@@ -4048,10 +4240,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 	private TextView caddyHoleNumberText = null;
 	private boolean targetNotPin = false;
 	private boolean initialLocationRecorded = false;
-	private Location targetLocation = null;
+	private Location targetLocation = new Location("");
 	private Location shotStartLocation = null;
 	private int request_code = 1;
 	private boolean countDistance = true;
+	private boolean editButtonSelected = false;
 
 	private TextView finishHoleShotScore = null;
 	private TextView finishHolePuttScore = null;
@@ -4106,7 +4299,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			caddyPlayerNumber = 1;
 		}
 
-
 		clubs = bagDAO.readClubsInBag(defaultPlayer);
 
 		clubListLength = clubs.size();
@@ -4124,13 +4316,7 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		rightClubButton.setText(clubs.get(currentMainClubListIndex-1).getClub());
 		middleClubButton.setText(clubs.get(currentMainClubListIndex).getClub());
 		leftClubButton.setText(clubs.get(currentMainClubListIndex+1).getClub());
-		farLeftClubButton.setText(clubs.get(currentMainClubListIndex+2).getClub());
-
-		//Initializes the EditRoundButton
-		EditRoundButtonInitializer();
-
-		//Initializes the ChangeTargetButton
-		ChangeTargetButtonInitializer();
+		farLeftClubButton.setText(clubs.get(currentMainClubListIndex + 2).getClub());
 
 		//Initialize the title bar text
 		CaddyScreenFrontHoleSwitcher();
@@ -4162,73 +4348,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		//Initialize the MiddleClubButton
 		CaddyMiddleClubButtonInitializer();
 
+		//Initialize the Cancel Map Target Button
+		cancelTargetButtonInitializer();
+
 		//Sets up the round to be used by the caddy screen and to later be saved
 		CaddySetUpRound();
-	}
-
-	//Initialzes the Change Target Button
-	private void ChangeTargetButtonInitializer(){
-		changeTargetButton = (Button) findViewById(R.id.caddyViewMapButton);
-
-		changeTargetButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try {
-					//Sets the vibrate time
-					vibe.vibrate(15);
-
-					//\todo call Jensens class for displaying the map and changing the target
-				} catch (Exception e) {
-				}
-			}
-		});
-	}
-
-	//Initializes the View/Edit Round Button
-	private void EditRoundButtonInitializer(){
-
-		shotArray = new List[19];
-
-		for(int x = 0;x<19;x++){
-			shotArray[x] = new ArrayList<Shot>();
-		}
-
-
-
-		editRoundButton = (Button) findViewById(R.id.caddyEditRoundButton);
-
-		viewEditCurrentRound = new ViewEditCurrentRound(this, this);
-
-		editRoundButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try {
-					//Sets the vibrate time
-					vibe.vibrate(15);
-
-					Log.d("Test", "Switching classes...");
-
-					/*//\todo change all serializable objects to parcelable objects if slow
-					Intent myIntent = new Intent(v.getContext(), ViewEditCurrentRound.class);
-					//\todo Make sure data passing is correct. Might have to implement serializable clas
-					myIntent.putExtra("Round Holes", (Serializable)roundHoles);
-					myIntent.putExtra("Green Locations", greenLocations);
-					myIntent.putExtra("Tee Locations", teeLocations);
-					myIntent.putExtra("Hole Number", holeNumber);
-					myIntent.putExtra("Hole Number Text", holeNumberText);
-					myIntent.putExtra("Eighteen", eighteenHoleRound);
-					myIntent.putExtra("Player Name", playerName[1]);
-
-					//The activity is started
-					startActivityForResult(myIntent, request_code);*/
-
-					shotArray = viewEditCurrentRound.ViewEditCurrentRoundMain(shotArray, greenLocations, teeLocations, holeNumber, holeNumberText, eighteenHoleRound);
-
-					//\todo reset from justin's xml here by calling all initializer methods
-				} catch (Exception e) {
-				}
-			}
-		});
 	}
 
 	@Override
@@ -4297,6 +4421,23 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 						recordLocationButton.setText("At Ball");
 
+						//Sets the previous shot and next shot location text bars
+						TextView greenDistance = (TextView) findViewById(R.id.caddyMainSectionDistanceToPinText);
+						Button cancelTargetButton = (Button) findViewById(R.id.cancelMapTargetButton);
+						if(targetNotPin){
+							cancelTargetButton.setVisibility(View.VISIBLE);
+							distance = (int)Math.round(location.distanceTo(targetLocation) * 1.09361);
+							greenDistance.setText("Distance to Map Target: " + distance + " yds");
+						}
+						else {
+							cancelTargetButton.setVisibility(View.INVISIBLE);
+							Location tempLocation = new Location("");
+							tempLocation.setLatitude(greenLocations[0][1][holeNumber]);
+							tempLocation.setLongitude(greenLocations[1][1][holeNumber]);
+							distance = (int)Math.round(location.distanceTo(tempLocation) * 1.09361);
+							greenDistance.setText("Distance to Middle of Green: " + distance + " yds");
+						}
+
 						TextView previousShotTitleText = (TextView) findViewById(R.id.caddyBottomSectionTitleText);
 						previousShotTitleText.setText("Previous Shot");
 
@@ -4337,6 +4478,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 						shotScore[caddyPlayerNumber][holeNumber]++;
 						holeScore[caddyPlayerNumber][holeNumber]++;
+
+						if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+							girHit[caddyPlayerNumber][holeNumber] = true;
+						else
+							girHit[caddyPlayerNumber][holeNumber] = false;
 
 						shot = new Shot();
 						shot.setShotStartLatLong(location.getLatitude(), location.getLongitude());
@@ -4482,6 +4628,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								shotScore[caddyPlayerNumber][holeNumber]++;
 								holeScore[caddyPlayerNumber][holeNumber]++;
 
+								if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+									girHit[caddyPlayerNumber][holeNumber] = true;
+								else
+									girHit[caddyPlayerNumber][holeNumber] = false;
+
 								//Displays the increased number
 								finishHoleShotScore.setText(Integer.toString(shotScore[caddyPlayerNumber][holeNumber]));
 								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
@@ -4524,6 +4675,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								if (shotScore[caddyPlayerNumber][holeNumber] != 0) {
 									shotScore[caddyPlayerNumber][holeNumber]--;
 									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+										girHit[caddyPlayerNumber][holeNumber] = true;
+									else
+										girHit[caddyPlayerNumber][holeNumber] = false;
 
 									finishHoleShotScore.setText(Integer.toString(shotScore[caddyPlayerNumber][holeNumber]));
 									finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
@@ -4578,6 +4734,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								puttScore[caddyPlayerNumber][holeNumber]++;
 								holeScore[caddyPlayerNumber][holeNumber]++;
 
+								if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+									girHit[caddyPlayerNumber][holeNumber] = true;
+								else
+									girHit[caddyPlayerNumber][holeNumber] = false;
+
 								//Displays the increased number
 								finishHolePuttScore.setText(Integer.toString(puttScore[caddyPlayerNumber][holeNumber]));
 								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
@@ -4622,6 +4783,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								if (puttScore[caddyPlayerNumber][holeNumber] != 0) {
 									puttScore[caddyPlayerNumber][holeNumber]--;
 									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+										girHit[caddyPlayerNumber][holeNumber] = true;
+									else
+										girHit[caddyPlayerNumber][holeNumber] = false;
 
 									//Displays the decreased number
 									finishHolePuttScore.setText(Integer.toString(puttScore[caddyPlayerNumber][holeNumber]));
@@ -4679,6 +4845,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								chipScore[caddyPlayerNumber][holeNumber]++;
 								holeScore[caddyPlayerNumber][holeNumber]++;
 
+								if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+									girHit[caddyPlayerNumber][holeNumber] = true;
+								else
+									girHit[caddyPlayerNumber][holeNumber] = false;
+
 								//Displays the increased number
 								finishHoleChipScore.setText(Integer.toString(chipScore[caddyPlayerNumber][holeNumber]));
 								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
@@ -4723,6 +4894,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								if (chipScore[caddyPlayerNumber][holeNumber] != 0) {
 									chipScore[caddyPlayerNumber][holeNumber]--;
 									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+										girHit[caddyPlayerNumber][holeNumber] = true;
+									else
+										girHit[caddyPlayerNumber][holeNumber] = false;
 
 									//Displays the decreased number
 									finishHoleChipScore.setText(Integer.toString(chipScore[caddyPlayerNumber][holeNumber]));
@@ -4780,6 +4956,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								penaltyScore[caddyPlayerNumber][holeNumber]++;
 								holeScore[caddyPlayerNumber][holeNumber]++;
 
+								if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+									girHit[caddyPlayerNumber][holeNumber] = true;
+								else
+									girHit[caddyPlayerNumber][holeNumber] = false;
+
 								//Displays the increased number
 								finishHolePenaltyScore.setText(Integer.toString(penaltyScore[caddyPlayerNumber][holeNumber]));
 								finishHoleTotalScore.setText(Integer.toString(holeScore[caddyPlayerNumber][holeNumber]));
@@ -4824,6 +5005,11 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 								if (penaltyScore[caddyPlayerNumber][holeNumber] != 0) {
 									penaltyScore[caddyPlayerNumber][holeNumber]--;
 									holeScore[caddyPlayerNumber][holeNumber]--;
+
+									if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+										girHit[caddyPlayerNumber][holeNumber] = true;
+									else
+										girHit[caddyPlayerNumber][holeNumber] = false;
 
 									//Displays the decreased number
 									finishHolePenaltyScore.setText(Integer.toString(penaltyScore[caddyPlayerNumber][holeNumber]));
@@ -5080,6 +5266,12 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 										penaltyScore[caddyPlayerNumber][holeNumber]++;
 										holeScore[caddyPlayerNumber][holeNumber]++;
+
+										if(holeScore[caddyPlayerNumber][holeNumber] - puttScore[caddyPlayerNumber][holeNumber] <= par[holeNumber] - 2)
+											girHit[caddyPlayerNumber][holeNumber] = true;
+										else
+											girHit[caddyPlayerNumber][holeNumber] = false;
+
 										CaddyScreenResetShot();
 									} else {
 										if (resultType.getType().equals("Do Not Record")) {
@@ -5196,8 +5388,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 	//Initializes the Left Club Button
 	private void CaddyLeftClubButtonInitializer(){
-
-
 
 		leftClubButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -5452,8 +5642,6 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 
 	//Initializes the Right Club Button
 	private void CaddyRightClubButtonInitializer(){
-
-
 
 		rightClubButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -5744,6 +5932,8 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 		recordLocationButton.setText("Start Shot");
 
 		initialLocationRecorded = false;
+
+		targetNotPin = false;
 	}
 
 	//Caddy Screen switching from front to back
@@ -5761,7 +5951,86 @@ public class StartRound extends com.google.android.maps.MapActivity implements O
 			String subCourseName = subCourses.get(1).getName();
 			caddyTitleBarText.setText(courseName + " - " + subCourseName);
 		}
+
+		if(location!=null) {
+			//Sets the previous shot and next shot location text bars
+			TextView greenDistance = (TextView) findViewById(R.id.caddyMainSectionDistanceToPinText);
+			Button cancelTargetButton = (Button)findViewById(R.id.cancelMapTargetButton);
+			if (targetNotPin) {
+				cancelTargetButton.setVisibility(View.VISIBLE);
+				distance = (int) Math.round(location.distanceTo(targetLocation) * 1.09361);
+				greenDistance.setText("Distance to Map Target: " + distance + " yds");
+			} else {
+				cancelTargetButton.setVisibility(View.INVISIBLE);
+				Location tempLocation = new Location("");
+				tempLocation.setLatitude(greenLocations[0][1][holeNumber]);
+				tempLocation.setLongitude(greenLocations[1][1][holeNumber]);
+				distance = (int) Math.round(location.distanceTo(tempLocation) * 1.09361);
+				greenDistance.setText("Distance to Middle of Green: " + distance + " yds");
+			}
+		}
 	}
+
+	//Map Screen Edit Round Button Initializer
+	private void mapEditRoundButtonInitializer(){
+		final Button editRoundButton = (Button)findViewById(R.id.editRoundButton);
+
+		editRoundButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					if(editButtonSelected){
+						editButtonSelected = false;
+						editRoundButton.setText("Edit");
+						tabHost.getTabWidget().setEnabled(true);
+					}
+					else{
+						editButtonSelected = true;
+						editRoundButton.setText("Resume");
+
+						tabHost.getTabWidget().setEnabled(false);
+					}
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Initializes the button that cencels the map target
+	private void cancelTargetButtonInitializer(){
+		final Button cancelTargetButton = (Button)findViewById(R.id.cancelMapTargetButton);
+
+		cancelTargetButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					//Sets the vibrate time
+					vibe.vibrate(15);
+
+					targetNotPin = false;
+
+					TextView greenDistance = (TextView) findViewById(R.id.caddyMainSectionDistanceToPinText);
+					cancelTargetButton.setVisibility(View.INVISIBLE);
+					Location tempLocation = new Location("");
+					tempLocation.setLatitude(greenLocations[0][1][holeNumber]);
+					tempLocation.setLongitude(greenLocations[1][1][holeNumber]);
+					distance = (int) Math.round(location.distanceTo(tempLocation) * 1.09361);
+					greenDistance.setText("Distance to Middle of Green: " + distance + " yds");
+
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	//Method that allows the editing of shots on the map screen
+	private void editShotsForMap(){
+		//\todo Justin your code will go here!!!!!
+	}
+
 
 	//\todo Add bogey/birdie images for scorecard
 }

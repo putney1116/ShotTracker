@@ -186,7 +186,6 @@
             android:layout_alignParentLeft="true"
             android:text="Add Player Name: "
             android:layout_marginTop="35dp"
-            android:textColor="#FFFFFF"
             />
         <EditText
             android:id="@+id/addplayername"

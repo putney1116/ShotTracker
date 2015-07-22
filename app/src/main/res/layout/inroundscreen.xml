@@ -482,30 +482,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 						android:gravity="center"
 						android:layout_weight="2"
 						/>
-					<LinearLayout
+					<Button android:id="@+id/girhitbutton"
 						android:layout_width="0dp"
 						android:layout_height="fill_parent"
-						android:orientation="vertical"
-						android:gravity="center"
-						android:layout_weight="2"
-						>
-						<ImageView android:id="@+id/gpsstatusindicator"
-							android:layout_width="wrap_content"
-							android:layout_height="0dp"
-							android:gravity="center"
-							android:src="@drawable/gpsstatusbad"
-							android:layout_weight="1"
-							/>
-						<TextView android:id="@+id/gpsstatustext"
-							android:layout_width="wrap_content"
-							android:layout_height="0dp"
-							android:text="GPS Status"
-							android:textColor="#FFFFFF"
-							android:textSize="6sp"
-							android:gravity="center"
-							android:layout_weight="1"
-							/>
-					</LinearLayout>
+						android:text="GIR"
+						android:layout_gravity="center_horizontal|top"
+						android:layout_weight="3"
+						android:clickable="false"
+						/>
 					<LinearLayout
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
@@ -572,11 +556,20 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 			android:background="@drawable/golfgreen"
 			>
 				<fragment
-                xmlns:android="http://schemas.android.com/apk/res/android"
-        		android:id="@+id/maptab2"
+                android:id="@+id/maptab2"
         		android:layout_width="match_parent"
         		android:layout_height="match_parent"
-                android:name="com.google.android.gms.maps.MapFragment"/>
+                class="com.google.android.gms.maps.SupportMapFragment"/>
+				<Button android:id="@+id/editRoundButton"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Edit"
+					android:gravity="center"
+					android:layout_alignParentBottom="true"
+					android:layout_alignParentLeft="true"
+					android:layout_marginBottom="30dp"
+					android:layout_marginLeft="20dp"
+					/>
 			</RelativeLayout>
 			<RelativeLayout
 			android:orientation="horizontal"
@@ -3441,270 +3434,277 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     			
 			</RelativeLayout>
 			<LinearLayout
-				android:id="@+id/tab4"
+				android:id="@+id/tab4Container"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
-				android:orientation="vertical"
-				android:background="@drawable/greenandsky">
-
+				android:orientation="vertical">
 				<LinearLayout
-					android:id="@+id/caddyTitleBar"
+					android:id="@+id/tab4"
 					android:layout_width="fill_parent"
-					android:layout_height="0dp"
-					android:orientation="horizontal"
-					android:layout_weight="1">
-
-					<TextView
-						android:id="@+id/caddyCourseTitle"
-						android:layout_width="0dp"
-						android:layout_height="fill_parent"
-						android:layout_weight="1"
-						android:text=""
-						android:textColor="#000000"
-						android:textStyle="bold"
-						android:gravity="center"/>
-					<TextView
-						android:id="@+id/caddyHoleNumber"
-						android:layout_width="0dp"
-						android:layout_height="fill_parent"
-						android:layout_weight="1"
-						android:text=""
-						android:textColor="#000000"
-						android:textStyle="bold"
-						android:gravity="center"/>
-
-				</LinearLayout>
-				<LinearLayout
-					android:id="@+id/caddyMainSection"
-					android:layout_width="fill_parent"
-					android:layout_height="0dp"
+					android:layout_height="fill_parent"
 					android:orientation="vertical"
-					android:layout_weight="7">
+					android:background="@drawable/greenandsky">
 
 					<LinearLayout
-						android:id="@+id/caddyMainSectionTitleBar"
-						android:layout_width="fill_parent"
-						android:layout_height="0dp"
-						android:orientation="vertical"
-						android:layout_weight="2">
-						<TextView
-							android:id="@+id/caddyMainSectionPreviousShotText"
-							android:layout_width="fill_parent"
-							android:layout_height="0dp"
-							android:text=""
-							android:textColor="#000000"
-							android:gravity="center"
-							android:layout_weight="5"/>
-						<TextView
-							android:id="@+id/caddyMainSectionDistanceToPinText"
-							android:layout_width="fill_parent"
-							android:layout_height="0dp"
-							android:text="Distance to Middle of Green: --- yds"
-							android:textColor="#000000"
-							android:gravity="center"
-							android:layout_weight="5"/>
-
-					</LinearLayout>
-					<LinearLayout
-						android:id="@+id/caddyMainSectionTopButtons"
-						android:layout_width="fill_parent"
-						android:layout_height="0dp"
-						android:orientation="vertical"
-						android:layout_weight="12">
-
-						<LinearLayout
-							android:id="@+id/caddyMainSectionTopButtonsTitleBar"
-							android:layout_width="fill_parent"
-							android:layout_height="0dp"
-							android:orientation="vertical"
-							android:layout_weight="2">
-
-							<TextView
-								android:id="@+id/caddyMainSectionTopButtonsTitleText"
-								android:layout_width="fill_parent"
-								android:layout_height="fill_parent"
-								android:text="Recommended Club:"
-								android:textColor="#000000"
-								android:textStyle="bold"
-								android:gravity="center"/>
-
-						</LinearLayout>
-						<LinearLayout
-							android:id="@+id/caddyMainSectionTopButtonsMainSpinner"
-							android:layout_width="fill_parent"
-							android:layout_height="0dp"
-							android:orientation="horizontal"
-							android:layout_weight="8">
-
-							<Button
-								android:id="@+id/caddyFarLeftClubButton"
-								android:layout_width="0dp"
-								android:layout_height="fill_parent"
-								android:text=""
-								android:lineSpacingExtra="10dp"
-								android:layout_marginLeft="-100dp"
-								android:layout_marginTop="40dp"
-								android:layout_marginBottom="40dp"
-								android:layout_weight="2"/>
-							<Button
-								android:id="@+id/caddyLeftClubButton"
-								android:layout_width="0dp"
-								android:layout_height="fill_parent"
-								android:text=""
-								android:lineSpacingExtra="10dp"
-								android:layout_marginLeft="10dp"
-								android:layout_marginTop="40dp"
-								android:layout_marginBottom="40dp"
-								android:layout_weight="2"/>
-							<Button
-								android:id="@+id/caddyMiddleClubButton"
-								android:layout_width="0dp"
-								android:layout_height="fill_parent"
-								android:text=""
-								android:lineSpacingExtra="20dp"
-								android:layout_marginLeft="10dp"
-								android:layout_marginRight="10dp"
-								android:layout_marginTop="10dp"
-								android:layout_marginBottom="10dp"
-								android:layout_weight="3"/>
-							<Button
-								android:id="@+id/caddyRightClubButton"
-								android:layout_width="0dp"
-								android:layout_height="fill_parent"
-								android:text=""
-								android:lineSpacingExtra="10dp"
-								android:layout_marginRight="10dp"
-								android:layout_marginTop="40dp"
-								android:layout_marginBottom="40dp"
-								android:layout_weight="2"/>
-							<Button
-								android:id="@+id/caddyFarRightClubButton"
-								android:layout_width="0dp"
-								android:layout_height="fill_parent"
-								android:text=""
-								android:lineSpacingExtra="10dp"
-								android:layout_marginRight="-100dp"
-								android:layout_marginTop="40dp"
-								android:layout_marginBottom="40dp"
-								android:layout_weight="2"/>
-
-						</LinearLayout>
-
-					</LinearLayout>
-					<LinearLayout
-						android:id="@+id/caddyMainSectionBottomButtons"
-						android:layout_width="fill_parent"
-						android:layout_height="0dp"
-						android:orientation="horizontal"
-						android:layout_weight="3">
-
-						<Button
-							android:id="@+id/caddyViewMapButton"
-							android:layout_width="0dp"
-							android:layout_height="fill_parent"
-							android:text="View Map / Change Target"
-							android:layout_marginLeft="10dp"
-							android:layout_weight="1"/>
-						<Button
-							android:id="@+id/caddyEditRoundButton"
-							android:layout_width="0dp"
-							android:layout_height="fill_parent"
-							android:text="View / Edit Round"
-							android:layout_marginLeft="10dp"
-							android:layout_marginRight="10dp"
-							android:layout_weight="1"/>
-
-					</LinearLayout>
-
-				</LinearLayout>
-				<LinearLayout
-					android:id="@+id/caddyBottomSection"
-					android:layout_width="fill_parent"
-					android:layout_height="0dp"
-					android:orientation="vertical"
-					android:layout_weight="3">
-
-					<LinearLayout
-						android:id="@+id/caddyBottomSectionTitleBar"
+						android:id="@+id/caddyTitleBar"
 						android:layout_width="fill_parent"
 						android:layout_height="0dp"
 						android:orientation="horizontal"
 						android:layout_weight="1">
 
 						<TextView
-							android:id="@+id/caddyBottomSectionTitleText"
-							android:layout_width="fill_parent"
+							android:id="@+id/caddyCourseTitle"
+							android:layout_width="0dp"
 							android:layout_height="fill_parent"
-							android:text="Next Shot"
+							android:layout_weight="1"
+							android:text=""
 							android:textColor="#000000"
-							android:gravity="center"
-							android:textStyle="bold"/>
+							android:textStyle="bold"
+							android:gravity="center"/>
+						<TextView
+							android:id="@+id/caddyHoleNumber"
+							android:layout_width="0dp"
+							android:layout_height="fill_parent"
+							android:layout_weight="1"
+							android:text=""
+							android:textColor="#000000"
+							android:textStyle="bold"
+							android:gravity="center"/>
 
 					</LinearLayout>
 					<LinearLayout
-						android:id="@+id/caddyBottomSectionTopButtons"
+						android:id="@+id/caddyMainSection"
 						android:layout_width="fill_parent"
 						android:layout_height="0dp"
-						android:orientation="horizontal"
-						android:layout_weight="3">
+						android:orientation="vertical"
+						android:layout_weight="7">
 
-						<Button
-							android:id="@+id/caddyLieButton"
-							android:layout_width="0dp"
-							android:layout_height="wrap_content"
-							android:text="Lie"
-							android:layout_marginLeft="10dp"
-							android:layout_weight="4"/>
-						<Button
-							android:id="@+id/caddyClubButton"
-							android:layout_width="0dp"
-							android:layout_height="fill_parent"
-							android:text="Club"
-							android:layout_marginLeft="10dp"
-							android:layout_marginRight="10dp"
-							android:layout_weight="5"/>
-						<Button
-							android:id="@+id/caddyResultButton"
-							android:layout_width="0dp"
-							android:layout_height="wrap_content"
-							android:text="Result"
-							android:layout_marginRight="10dp"
-							android:layout_weight="4"/>
+						<LinearLayout
+							android:id="@+id/caddyMainSectionTitleBar"
+							android:layout_width="fill_parent"
+							android:layout_height="0dp"
+							android:orientation="vertical"
+							android:layout_weight="3">
+							<TextView
+								android:id="@+id/caddyMainSectionPreviousShotText"
+								android:layout_width="fill_parent"
+								android:layout_height="0dp"
+								android:text=""
+								android:textColor="#000000"
+								android:gravity="center"
+								android:layout_weight="5"/>
+							<LinearLayout
+								android:layout_width="fill_parent"
+								android:layout_height="0dp"
+								android:orientation="horizontal"
+								android:layout_weight="5">
+								<TextView
+									android:id="@+id/caddyMainSectionDistanceToPinText"
+									android:layout_width="0dp"
+									android:layout_height="fill_parent"
+									android:text="Distance to Middle of Green: --- yds"
+									android:textColor="#000000"
+									android:gravity="center"
+									android:layout_marginLeft="40dp"
+									android:layout_weight="5"/>
+								<Button
+									android:id="@+id/cancelMapTargetButton"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:text="X"
+									android:visibility="invisible"
+									android:textSize="8dp"
+									android:minHeight="0dp"
+									android:minWidth="0dp"
+									android:layout_marginRight="20dp"
+									android:textColor="#FF0000"
+									android:layout_weight="0"/>
+							</LinearLayout>
+
+						</LinearLayout>
+						<LinearLayout
+							android:id="@+id/caddyMainSectionTopButtons"
+							android:layout_width="fill_parent"
+							android:layout_height="0dp"
+							android:orientation="vertical"
+							android:layout_weight="12">
+
+							<LinearLayout
+								android:id="@+id/caddyMainSectionTopButtonsTitleBar"
+								android:layout_width="fill_parent"
+								android:layout_height="0dp"
+								android:orientation="vertical"
+								android:layout_weight="2">
+
+								<TextView
+									android:id="@+id/caddyMainSectionTopButtonsTitleText"
+									android:layout_width="fill_parent"
+									android:layout_height="fill_parent"
+									android:text="Recommended Club:"
+									android:textColor="#000000"
+									android:textStyle="bold"
+									android:gravity="center"/>
+
+							</LinearLayout>
+							<LinearLayout
+								android:id="@+id/caddyMainSectionTopButtonsMainSpinner"
+								android:layout_width="fill_parent"
+								android:layout_height="0dp"
+								android:orientation="horizontal"
+								android:layout_weight="8">
+
+								<Button
+									android:id="@+id/caddyFarLeftClubButton"
+									android:layout_width="0dp"
+									android:layout_height="fill_parent"
+									android:text=""
+									android:lineSpacingExtra="10dp"
+									android:layout_marginLeft="-100dp"
+									android:layout_marginTop="40dp"
+									android:layout_marginBottom="40dp"
+									android:layout_weight="2"/>
+								<Button
+									android:id="@+id/caddyLeftClubButton"
+									android:layout_width="0dp"
+									android:layout_height="fill_parent"
+									android:text=""
+									android:lineSpacingExtra="10dp"
+									android:layout_marginLeft="10dp"
+									android:layout_marginTop="40dp"
+									android:layout_marginBottom="40dp"
+									android:layout_weight="2"/>
+								<Button
+									android:id="@+id/caddyMiddleClubButton"
+									android:layout_width="0dp"
+									android:layout_height="fill_parent"
+									android:text=""
+									android:lineSpacingExtra="20dp"
+									android:layout_marginLeft="10dp"
+									android:layout_marginRight="10dp"
+									android:layout_marginTop="10dp"
+									android:layout_marginBottom="10dp"
+									android:layout_weight="3"/>
+								<Button
+									android:id="@+id/caddyRightClubButton"
+									android:layout_width="0dp"
+									android:layout_height="fill_parent"
+									android:text=""
+									android:lineSpacingExtra="10dp"
+									android:layout_marginRight="10dp"
+									android:layout_marginTop="40dp"
+									android:layout_marginBottom="40dp"
+									android:layout_weight="2"/>
+								<Button
+									android:id="@+id/caddyFarRightClubButton"
+									android:layout_width="0dp"
+									android:layout_height="fill_parent"
+									android:text=""
+									android:lineSpacingExtra="10dp"
+									android:layout_marginRight="-100dp"
+									android:layout_marginTop="40dp"
+									android:layout_marginBottom="40dp"
+									android:layout_weight="2"/>
+
+							</LinearLayout>
+
+						</LinearLayout>
 
 					</LinearLayout>
 					<LinearLayout
-						android:id="@+id/caddyBottomSectionBottomButtons"
+						android:id="@+id/caddyBottomSection"
 						android:layout_width="fill_parent"
 						android:layout_height="0dp"
-						android:orientation="horizontal"
-						android:layout_weight="3">
+						android:orientation="vertical"
+						android:layout_weight="5">
 
-						<Button
-							android:id="@+id/caddyCountDistanceButton"
-							android:layout_width="0dp"
-							android:layout_height="wrap_content"
-							android:text="Count Distance"
-							android:layout_marginLeft="10dp"
-							android:layout_gravity="center"
-							android:layout_weight="4"/>
-						<Button
-							android:id="@+id/caddyRecordLocationButton"
-							android:layout_width="0dp"
-							android:layout_height="fill_parent"
-							android:text="Start Shot"
-							android:layout_marginLeft="10dp"
-							android:layout_marginRight="10dp"
-							android:layout_weight="5"/>
-						<Button
-							android:id="@+id/caddyFinishHoleButton"
-							android:layout_width="0dp"
-							android:layout_height="wrap_content"
-							android:text="Finish Hole"
-							android:layout_marginRight="10dp"
-							android:layout_gravity="center"
-							android:layout_weight="4"/>
+						<LinearLayout
+							android:id="@+id/caddyBottomSectionTitleBar"
+							android:layout_width="fill_parent"
+							android:layout_height="0dp"
+							android:orientation="horizontal"
+							android:layout_weight="1">
+
+							<TextView
+								android:id="@+id/caddyBottomSectionTitleText"
+								android:layout_width="fill_parent"
+								android:layout_height="fill_parent"
+								android:text="Next Shot"
+								android:textColor="#000000"
+								android:gravity="center"
+								android:textStyle="bold"/>
+
+						</LinearLayout>
+						<LinearLayout
+							android:id="@+id/caddyBottomSectionTopButtons"
+							android:layout_width="fill_parent"
+							android:layout_height="0dp"
+							android:orientation="horizontal"
+							android:layout_weight="3">
+
+							<Button
+								android:id="@+id/caddyLieButton"
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:text="Lie"
+								android:layout_marginLeft="10dp"
+								android:layout_weight="4"/>
+							<Button
+								android:id="@+id/caddyClubButton"
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:text="Club"
+								android:layout_marginLeft="10dp"
+								android:layout_marginRight="10dp"
+								android:paddingTop="30dp"
+								android:paddingBottom="30dp"
+								android:layout_weight="5"/>
+							<Button
+								android:id="@+id/caddyResultButton"
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:text="Result"
+								android:layout_marginRight="10dp"
+								android:layout_weight="4"/>
+
+						</LinearLayout>
+						<LinearLayout
+							android:id="@+id/caddyBottomSectionBottomButtons"
+							android:layout_width="fill_parent"
+							android:layout_height="0dp"
+							android:orientation="horizontal"
+							android:layout_weight="3">
+
+							<Button
+								android:id="@+id/caddyCountDistanceButton"
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:text="Count Distance"
+								android:layout_marginLeft="10dp"
+								android:layout_gravity="center"
+								android:layout_weight="4"/>
+							<Button
+								android:id="@+id/caddyRecordLocationButton"
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:text="Start Shot"
+								android:layout_marginLeft="10dp"
+								android:layout_marginRight="10dp"
+								android:layout_marginTop="10dp"
+								android:paddingTop="30dp"
+								android:paddingBottom="30dp"
+								android:layout_weight="5"/>
+							<Button
+								android:id="@+id/caddyFinishHoleButton"
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:text="Finish Hole"
+								android:layout_marginRight="10dp"
+								android:layout_gravity="center"
+								android:layout_weight="4"/>
+						</LinearLayout>
 					</LinearLayout>
 				</LinearLayout>
+
 			</LinearLayout>
 		</FrameLayout>
     	<TabWidget
