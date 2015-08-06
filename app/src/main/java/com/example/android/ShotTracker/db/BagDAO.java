@@ -36,6 +36,7 @@ public class BagDAO extends ShotTrackerDBDAO {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.PLAYERID_COLUMN, player.getID());
         values.put(DataBaseHelper.CLUBID_COLUMN, club.getID());
+        values.put(DataBaseHelper.ACCYARDAGE_COLUMN, club.getAccYardage());
 
         return database.insert(DataBaseHelper.BAG_TABLE, null, values);
     }
@@ -80,7 +81,8 @@ public class BagDAO extends ShotTrackerDBDAO {
         /// Build multi-table query using NATURAL JOIN
         String query = "SELECT "
                 + DataBaseHelper.CLUBID_COLUMN + ", "
-                + DataBaseHelper.CLUBNAME_COLUMN
+                + DataBaseHelper.CLUBNAME_COLUMN + ", "
+                + DataBaseHelper.ACCYARDAGE_COLUMN
                 + " FROM "
                 + DataBaseHelper.BAG_TABLE
                 + " NATURAL JOIN "
@@ -95,6 +97,7 @@ public class BagDAO extends ShotTrackerDBDAO {
             Club club = new Club();
             club.setID(cursor.getLong(0));
             club.setClub(cursor.getString(1));
+            club.setAccYardage(cursor.getInt(2));
 
             clubs.add(club);
         }

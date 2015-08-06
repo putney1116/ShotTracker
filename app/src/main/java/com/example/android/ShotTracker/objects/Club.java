@@ -9,6 +9,7 @@ public class Club {
     private String mClub = "";
     private float mAvgDist = 0;
     private float mAccuracy = 0;
+    private int mAccYardage = 10;
 
     /**
      * Default Constructor
@@ -50,6 +51,8 @@ public class Club {
 
     public void setAccuracy(float acc) { this.mAccuracy = acc; }
 
+    public void setAccYardage(int acc) {this.mAccYardage = acc; }
+
     /**
      * Getters
      */
@@ -64,4 +67,6 @@ public class Club {
     public float getAvgDist() { return this.mAvgDist; }
 
     public float getAccuracy() { return this.mAccuracy; }
+
+    public float getAccYardage() { return  this.mAccYardage; }
 }

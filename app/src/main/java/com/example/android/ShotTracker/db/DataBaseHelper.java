@@ -116,8 +116,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      */
     public static final String CLUBID_COLUMN = "ClubID";
     public static final String CLUBNAME_COLUMN = "ClubName";
-
     public static final String BAGID_COLUMN = "BagID";
+    public static final String ACCYARDAGE_COLUMN = "AccYardage";
 
     /**
      * Table creation statements
@@ -233,6 +233,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + BAGID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + PLAYERID_COLUMN + " INTEGER NOT NULL, "
             + CLUBID_COLUMN + " INTEGER NOT NULL"
+            + ACCYARDAGE_COLUMN + " INTEGER NOT NULL"
             + ");";
 
     private static DataBaseHelper instance;
