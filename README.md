@@ -75,3 +75,8 @@ Room DAO tests are instrumented and run on a device/emulator:
 ```bash
 ./gradlew connectedDebugAndroidTest
 ```
+
+## License
+
+Personal project — all rights reserved. This code is published for reference only
+and is not licensed for reuse, redistribution, or modification.
