@@ -1,0 +1,38 @@
+# Built application files & Gradle
+*.apk
+*.aar
+*.ap_
+*.aab
+.gradle/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Local configuration (SDK path, API keys) — must NOT be committed
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+.kotlin/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local tooling / logs
+.claude/
+build_output.txt
+compile_output.log

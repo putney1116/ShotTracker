@@ -1,0 +1,15 @@
+I want to create a new Android Application called ShotTracker. It will not be publicly available and will only be available to myself.
+
+The purpose of this app will be to track a user's round of golf, capturing statistics about their round, and helping the user measure distances to key places on the course.
+
+When the app opens, the user will be presented with a menu to:
+- Start a new round of golf
+- See history of past rounds
+- See overall statistics of their golf history
+
+
+When the user starts a new round of golf, they will select what tees they are using and hit start.
+From there the current round home screen will be displayed. This view will use the phone's GPS to display distances to the front, middle, and back of the green. The user will also be able to hit a button to track when they hit a shot, with what club, and the app will mark the club used and location of the shot. Then when the next shot is taken, the distance between the two shots can be calculated. The user will also be able to select how many putts they took on the hole. and click a button for when the app should move to the next hole.
+The user will have a menu button be able to view their scorecard where they can fix prior hole scores and see their statistics of the current round.
+The user will be able open a map view that will display a google map view of the current location with the user's location at the bottom of the screen and the green at the top of the screen.
+
